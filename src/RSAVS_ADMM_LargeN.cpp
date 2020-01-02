@@ -4,7 +4,8 @@
 #include <omp.h>
 #define NUM_THREADS 4
 // [[Rcpp::depends(RcppEigen)]]
-using namespace Rcpp; using namespace Eigen; 
+using namespace Rcpp; 
+using namespace Eigen; 
 
 
 /*

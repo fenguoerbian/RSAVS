@@ -1,11 +1,10 @@
 Package: RSAVS
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Robust subgroup analysis and variable selection.
+Version: 0.1
 Date: 2020-01-01
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Authors@R: person("Chao", "Cheng", email = "413557584@qq.com",role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
+License: GPL-2
 Imports: Rcpp (>= 1.0.3), RcppEigen
 LinkingTo: Rcpp, RcppEigen

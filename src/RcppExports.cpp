@@ -6,6 +6,7 @@
 
 using namespace Rcpp;
 using namespace Eigen;
+
 // RSAVS_LargeN_Rcpp
 Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const int n, const int p, const char loss_type, const VectorXd loss_param, const char p1_type, VectorXd p1_param, const char p2_type, VectorXd p2_param, const VectorXd lam1_vec, const VectorXd lam2_vec, const double r1, const double r2, const double r3, const double phi, const double tol, const double max_iter);
 RcppExport SEXP _RSAVS_RSAVS_LargeN_Rcpp(SEXP x_matSEXP, SEXP y_vecSEXP, SEXP nSEXP, SEXP pSEXP, SEXP loss_typeSEXP, SEXP loss_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP lam1_vecSEXP, SEXP lam2_vecSEXP, SEXP r1SEXP, SEXP r2SEXP, SEXP r3SEXP, SEXP phiSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
