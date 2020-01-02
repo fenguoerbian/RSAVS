@@ -30,5 +30,7 @@ Maintainer: \packageMaintainer{RSAVS}
 ~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{
-~~ simple examples of the most important functions ~~
+# ~~ simple examples of the most important functions ~~
+x <- sqrt(1 : 10)
+print(x)
 }
