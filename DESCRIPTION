@@ -6,5 +6,5 @@ Date: 2020-01-01
 Authors@R: person("Chao", "Cheng", email = "413557584@qq.com",role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
 License: GPL-2
-Imports: Rcpp (>= 1.0.3), RcppEigen
+Imports: Rcpp (>= 1.0.3), RcppEigen, fpc, SparseM, quantreg, MASS
 LinkingTo: Rcpp, RcppEigen
