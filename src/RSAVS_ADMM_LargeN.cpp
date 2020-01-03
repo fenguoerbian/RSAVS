@@ -287,11 +287,11 @@ void UpdateW_MCP(Eigen::VectorXd &w_invec, const Eigen::VectorXd &penalty_param,
 
 // main body 
 // [[Rcpp::export]]
-Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const int n, const int p, 
-                             const char loss_type, const VectorXd loss_param, 
-                             const char p1_type, VectorXd p1_param, 
-                             const char p2_type, VectorXd p2_param, 
-                             const VectorXd lam1_vec, const VectorXd lam2_vec,
+Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, 
+                             const char loss_type, const Eigen::VectorXd loss_param, 
+                             const char p1_type, Eigen::VectorXd p1_param, 
+                             const char p2_type, Eigen::VectorXd p2_param, 
+                             const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec,
                              const double r1, const double r2, const double r3, 
                              const double phi, const double tol, const double max_iter){
 /*
@@ -329,58 +329,58 @@ Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const i
     double primal_residual, dual_residual, res_part1, res_part2, res_part3;
     const int lam1_len = lam1_vec.size();
     const int lam2_len = lam2_vec.size();
-    MatrixXd beta_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
+    Eigen::MatrixXd beta_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
     Rcpp::Function r_median("median");    // Access the R function median
     double y_median = Rcpp::as<double>(r_median(y_vec));    // For the initial value of mu vector
-    MatrixXd mu_mat = MatrixXd::Constant(lam1_len * lam2_len, n, y_median);
-    MatrixXd z_mat = MatrixXd::Zero(lam1_len * lam2_len, n);
-    // MatrixXd s_mat = MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
-    MatrixXd w_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
-    MatrixXd q1_mat = MatrixXd::Zero(lam1_len * lam2_len, n);
-    // MatrixXd q2_mat = MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
-    MatrixXd q3_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
-    MatrixXd bic_mat = MatrixXd::Zero(lam1_len, lam2_len);
-    MatrixXd k_mat = MatrixXd::Zero(lam1_len, lam2_len);    // this matrix can tell us whether or not the algorithm converged at that lam1 and lam2
-    void (*UpdateZ)(VectorXd &, const VectorXd &, const double &);
-    void (*UpdateS)(VectorXd &, const VectorXd &, const double &);
-    void (*UpdateW)(VectorXd &, const VectorXd &, const double &);
+    Eigen::MatrixXd mu_mat = Eigen::MatrixXd::Constant(lam1_len * lam2_len, n, y_median);
+    Eigen::MatrixXd z_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);
+    // Eigen::MatrixXd s_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
+    Eigen::MatrixXd w_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
+    Eigen::MatrixXd q1_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);
+    // Eigen::MatrixXd q2_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
+    Eigen::MatrixXd q3_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
+    Eigen::MatrixXd bic_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);
+    Eigen::MatrixXd k_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);    // this matrix can tell us whether or not the algorithm converged at that lam1 and lam2
+    void (*UpdateZ)(VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateS)(VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateW)(VectorXd &, const Eigen::VectorXd &, const double &);
     
     Rcpp::Rcout << "Basic variables initialized." << std::endl;
     // variables needed during algorithm
-    VectorXd beta_vec = MatrixXd::Zero(p, 1); 
-    VectorXd beta_old = MatrixXd::Zero(p, 1);
+    Eigen::VectorXd beta_vec = Eigen::MatrixXd::Zero(p, 1); 
+    Eigen::VectorXd beta_old = Eigen::MatrixXd::Zero(p, 1);
     Rcpp::Rcout << "Beta finished." << std::endl;
-    VectorXd mu_vec = MatrixXd::Constant(n, 1, y_median); 
-    VectorXd mu_old = MatrixXd::Constant(n, 1, y_median);
+    Eigen::VectorXd mu_vec = Eigen::MatrixXd::Constant(n, 1, y_median); 
+    Eigen::VectorXd mu_old = Eigen::MatrixXd::Constant(n, 1, y_median);
     Rcpp::Rcout << "Mu finished." << std::endl;
-    VectorXd z_vec = MatrixXd::Zero(n, 1);
-    VectorXd z_old = MatrixXd::Zero(n, 1);
+    Eigen::VectorXd z_vec = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd z_old = Eigen::MatrixXd::Zero(n, 1);
     Rcpp::Rcout << "Z finished." << std::endl;
-    VectorXd s_vec = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_old = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_anchor = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_best = MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_old = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_anchor = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_best = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
     Rcpp::Rcout << "S finished." << std::endl;
-    VectorXd w_vec = MatrixXd::Zero(p, 1);
-    VectorXd w_old = MatrixXd::Zero(p, 1);
+    Eigen::VectorXd w_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd w_old = Eigen::MatrixXd::Zero(p, 1);
     Rcpp::Rcout << "W finished." << std::endl;
-    VectorXd q1_vec = MatrixXd::Zero(n, 1);
-    VectorXd q1_old = MatrixXd::Zero(n, 1);
+    Eigen::VectorXd q1_vec = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd q1_old = Eigen::MatrixXd::Zero(n, 1);
     Rcpp::Rcout << "q1 finished." << std::endl;
-    VectorXd q2_vec = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd q2_old = MatrixXd::Zero(n * (n - 1) / 2, 1); 
-    VectorXd q2_anchor = MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd q2_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd q2_old = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1); 
+    Eigen::VectorXd q2_anchor = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
     Rcpp::Rcout << "q2 finished." << std::endl;
-    VectorXd q3_vec = MatrixXd::Zero(p, 1);
-    VectorXd q3_old = MatrixXd::Zero(p, 1);
+    Eigen::VectorXd q3_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd q3_old = Eigen::MatrixXd::Zero(p, 1);
     Rcpp::Rcout << "q3 finished." << std::endl;
 
     // variable and function for summarizing the result
     Rcpp::Function r_summary_iteration("RSAVS_Summary_Iteration");
     Rcpp::List current_iteration_info;
-    Eigen::MatrixXd mu_improve_mat = MatrixXd::Zero(lam1_len * lam2_len, n);    // the improved mu vector
-    Eigen::MatrixXd group_num_mat = MatrixXd::Constant(lam1_len, lam2_len, 1);    // the group number
-    Eigen::MatrixXd active_num_mat = MatrixXd::Constant(lam1_len, lam2_len, 0);    // the number of active covariates 
+    Eigen::MatrixXd mu_improve_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);    // the improved mu vector
+    Eigen::MatrixXd group_num_mat = Eigen::MatrixXd::Constant(lam1_len, lam2_len, 1);    // the group number
+    Eigen::MatrixXd active_num_mat = Eigen::MatrixXd::Constant(lam1_len, lam2_len, 0);    // the number of active covariates 
 
 // prepare some values that will be needed in the algorithm
     // Generate the D matrix in sparse form
@@ -388,13 +388,13 @@ Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const i
     Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
     Rcpp::Rcout << "D finished." << std::endl;
     // Generate the lefet matirx for updating beta. In this version, we pre-assume p < n
-    VectorXd beta_right = MatrixXd::Zero(p, 1);
-    MatrixXd beta_left = r1 * x_mat.transpose() * x_mat + r3 * MatrixXd::Identity(p, p);  
-    MatrixXd beta_tmp;    
-    LDLT<MatrixXd> beta_left_solver(p);
-    LDLT<MatrixXd> beta_left_solver_large_p(n);
+    Eigen::VectorXd beta_right = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::MatrixXd beta_left = r1 * x_mat.transpose() * x_mat + r3 * Eigen::MatrixXd::Identity(p, p);  
+    Eigen::MatrixXd beta_tmp;    
+    LDLT<Eigen::MatrixXd> beta_left_solver(p);
+    LDLT<Eigen::MatrixXd> beta_left_solver_large_p(n);
     if(p > n){    // overwrite beta_left, and set the solver beta_left_solver_large_p if p > n
-        beta_left = r1 * x_mat * x_mat.transpose() + r3 * MatrixXd::Identity(n, n);
+        beta_left = r1 * x_mat * x_mat.transpose() + r3 * Eigen::MatrixXd::Identity(n, n);
         beta_left_solver_large_p.compute(beta_left);
         beta_tmp = beta_left_solver_large_p.solve(x_mat);
         // beta_left_solver.compute(beta_left);    //    test when debugging large p
@@ -403,12 +403,12 @@ Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const i
     } 
     Rcpp::Rcout << "beta left finished." << std::endl;
     // Generate the left matrix for updating mu
-    VectorXd mu_right = MatrixXd::Zero(n, 1);
-    // MatrixXd mu_left = r2 * d_mat.transpose() * d_mat + r1 * MatrixXd::Identity(n, n);
+    Eigen::VectorXd mu_right = Eigen::MatrixXd::Zero(n, 1);
+    // Eigen::MatrixXd mu_left = r2 * d_mat.transpose() * d_mat + r1 * Eigen::MatrixXd::Identity(n, n);
     // use a fashion recommended by Eigen
-    MatrixXd mu_left = r1 * MatrixXd::Identity(n, n);
+    Eigen::MatrixXd mu_left = r1 * Eigen::MatrixXd::Identity(n, n);
     mu_left += r2 * d_mat.transpose() * d_mat;    
-    LDLT<MatrixXd> mu_left_solver(n);
+    LDLT<Eigen::MatrixXd> mu_left_solver(n);
     mu_left_solver.compute(mu_left);
     Rcpp::Rcout << "mu left finished." << std::endl;
 // assign the correct updating functions    
@@ -509,7 +509,7 @@ Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const i
                 }else{    // use the large p solver
                     // beta_tmp = beta_left_solver.solve(x_mat);    // its compuation is done before
                     // beta_vec = beta_left_solver.solve(beta_right);    // test when debuggind large p
-                    // beta_vec = 1.0 / r3 * (MatrixXd::Identity(p, p) - r1 * x_mat.transpose() * beta_tmp) * beta_right;    // this one maybe slow
+                    // beta_vec = 1.0 / r3 * (Eigen::MatrixXd::Identity(p, p) - r1 * x_mat.transpose() * beta_tmp) * beta_right;    // this one maybe slow
                     beta_vec = 1.0 / r3 * (beta_right - r1 * x_mat.transpose() * beta_tmp * beta_right);    // this one is a little faster.
                 }
                 
@@ -631,10 +631,10 @@ Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const i
 }
 
 // [[Rcpp::export]]
-Rcpp::List RSAVS_LargeN_L2_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const int n, const int p, 
-                             const char p1_type, VectorXd p1_param, 
-                             const char p2_type, VectorXd p2_param, 
-                             const VectorXd lam1_vec, const VectorXd lam2_vec,
+Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, 
+                             const char p1_type, Eigen::VectorXd p1_param, 
+                             const char p2_type, Eigen::VectorXd p2_param, 
+                             const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec,
                              const double r2, const double r3, 
                              const double phi, const double tol, const double max_iter){
 /*
@@ -672,70 +672,70 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, cons
     double primal_residual, dual_residual, res_part1, res_part2;
     const int lam1_len = lam1_vec.size();
     const int lam2_len = lam2_vec.size();
-    MatrixXd beta_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
+    Eigen::MatrixXd beta_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
     Rcpp::Function r_median("median");    // Access the R function median
     double y_median = Rcpp::as<double>(r_median(y_vec));    // For the initial value of mu vector
-    MatrixXd mu_mat = MatrixXd::Constant(lam1_len * lam2_len, n, y_median);
-    // MatrixXd z_mat = MatrixXd::Zero(lam1_len * lam2_len, n);
-    // MatrixXd s_mat = MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
-    MatrixXd w_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
-    // MatrixXd q1_mat = MatrixXd::Zero(lam1_len * lam2_len, n);
-    // MatrixXd q2_mat = MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
-    MatrixXd q3_mat = MatrixXd::Zero(lam1_len * lam2_len, p);
-    MatrixXd bic_mat = MatrixXd::Zero(lam1_len, lam2_len);
-    MatrixXd k_mat = MatrixXd::Zero(lam1_len, lam2_len);    // this matrix can tell us whether or not the algorithm converged at that lam1 and lam2
-    // void (*UpdateZ)(VectorXd &, const VectorXd &, const double &);
-    void (*UpdateS)(VectorXd &, const VectorXd &, const double &);
-    void (*UpdateW)(VectorXd &, const VectorXd &, const double &);
+    Eigen::MatrixXd mu_mat = Eigen::MatrixXd::Constant(lam1_len * lam2_len, n, y_median);
+    // Eigen::MatrixXd z_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);
+    // Eigen::MatrixXd s_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
+    Eigen::MatrixXd w_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
+    // Eigen::MatrixXd q1_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);
+    // Eigen::MatrixXd q2_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n * (n - 1) / 2);    // danger for large n
+    Eigen::MatrixXd q3_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
+    Eigen::MatrixXd bic_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);
+    Eigen::MatrixXd k_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);    // this matrix can tell us whether or not the algorithm converged at that lam1 and lam2
+    // void (*UpdateZ)(VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateS)(VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateW)(VectorXd &, const Eigen::VectorXd &, const double &);
     
     // variables needed during algorithm
-    VectorXd beta_vec = MatrixXd::Zero(p, 1); 
-    VectorXd beta_old = MatrixXd::Zero(p, 1);
+    Eigen::VectorXd beta_vec = Eigen::MatrixXd::Zero(p, 1); 
+    Eigen::VectorXd beta_old = Eigen::MatrixXd::Zero(p, 1);
     
-    VectorXd mu_vec = MatrixXd::Constant(n, 1, y_median); 
-    VectorXd mu_old = MatrixXd::Constant(n, 1, y_median);
-    // VectorXd z_vec = MatrixXd::Zero(n, 1);
-    // VectorXd z_old = MatrixXd::Zero(n, 1);
-    VectorXd s_vec = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_old = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_anchor = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd s_best = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd w_vec = MatrixXd::Zero(p, 1);
-    VectorXd w_old = MatrixXd::Zero(p, 1);
-    // VectorXd q1_vec = MatrixXd::Zero(n, 1);
-    // VectorXd q1_old = MatrixXd::Zero(n, 1);
-    VectorXd q2_vec = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd q2_old = MatrixXd::Zero(n * (n - 1) / 2, 1); 
-    VectorXd q2_anchor = MatrixXd::Zero(n * (n - 1) / 2, 1);
-    VectorXd q3_vec = MatrixXd::Zero(p, 1);
-    VectorXd q3_old = MatrixXd::Zero(p, 1);
+    Eigen::VectorXd mu_vec = Eigen::MatrixXd::Constant(n, 1, y_median); 
+    Eigen::VectorXd mu_old = Eigen::MatrixXd::Constant(n, 1, y_median);
+    // Eigen::VectorXd z_vec = Eigen::MatrixXd::Zero(n, 1);
+    // Eigen::VectorXd z_old = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd s_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_old = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_anchor = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd s_best = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd w_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd w_old = Eigen::MatrixXd::Zero(p, 1);
+    // Eigen::VectorXd q1_vec = Eigen::MatrixXd::Zero(n, 1);
+    // Eigen::VectorXd q1_old = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd q2_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd q2_old = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1); 
+    Eigen::VectorXd q2_anchor = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd q3_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd q3_old = Eigen::MatrixXd::Zero(p, 1);
     
     // variable and function for summarizing the result
     Rcpp::Function r_summary_iteration("RSAVS_Summary_Iteration");
     Rcpp::List current_iteration_info;
-    Eigen::MatrixXd mu_improve_mat = MatrixXd::Zero(lam1_len * lam2_len, n);    // the improved mu vector
-    Eigen::MatrixXd group_num_mat = MatrixXd::Constant(lam1_len, lam2_len, 1);    // the group number
-    Eigen::MatrixXd active_num_mat = MatrixXd::Constant(lam1_len, lam2_len, 0);    // the number of active covariates 
+    Eigen::MatrixXd mu_improve_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, n);    // the improved mu vector
+    Eigen::MatrixXd group_num_mat = Eigen::MatrixXd::Constant(lam1_len, lam2_len, 1);    // the group number
+    Eigen::MatrixXd active_num_mat = Eigen::MatrixXd::Constant(lam1_len, lam2_len, 0);    // the number of active covariates 
     
     // prepare some values that will be needed in the algorithm
     // Generate the D matrix in sparse form
     Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
     
     // Generate the lefet matirx for updating beta. In this version, we pre-assume p < n
-    VectorXd beta_right = MatrixXd::Zero(p, 1);
-    MatrixXd beta_left = 1.0 / n * x_mat.transpose() * x_mat + r3 / 2.0 * MatrixXd::Identity(p, p);
-    // beta_left = 1.0 / 2.0 * x_mat.transpose() * x_mat + r3 / 2.0 * MatrixXd::Identity(p, p);    // use 1 / 2 \sum\loss, not 1 / n \sum\loss    
-    LDLT<MatrixXd> beta_left_solver(p);
+    Eigen::VectorXd beta_right = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::MatrixXd beta_left = 1.0 / n * x_mat.transpose() * x_mat + r3 / 2.0 * Eigen::MatrixXd::Identity(p, p);
+    // beta_left = 1.0 / 2.0 * x_mat.transpose() * x_mat + r3 / 2.0 * Eigen::MatrixXd::Identity(p, p);    // use 1 / 2 \sum\loss, not 1 / n \sum\loss    
+    LDLT<Eigen::MatrixXd> beta_left_solver(p);
     beta_left_solver.compute(beta_left);
     
     // Generate the left matrix for updating mu
-    VectorXd mu_right = MatrixXd::Zero(n, 1);
-    // MatrixXd mu_left = r2 * d_mat.transpose() * d_mat + r1 * MatrixXd::Identity(n, n);
+    Eigen::VectorXd mu_right = Eigen::MatrixXd::Zero(n, 1);
+    // Eigen::MatrixXd mu_left = r2 * d_mat.transpose() * d_mat + r1 * Eigen::MatrixXd::Identity(n, n);
     // use a fashion recommended by Eigen
-    MatrixXd mu_left = 1.0 / n * MatrixXd::Identity(n, n);
-    // mu_left = 1.0 / 2.0 * MatrixXd::Identity(n, n);    // use 1 / 2 \sum\loss, not 1 / n \sum\loss
+    Eigen::MatrixXd mu_left = 1.0 / n * Eigen::MatrixXd::Identity(n, n);
+    // mu_left = 1.0 / 2.0 * Eigen::MatrixXd::Identity(n, n);    // use 1 / 2 \sum\loss, not 1 / n \sum\loss
     mu_left += r2 / 2.0 * d_mat.transpose() * d_mat;    
-    LDLT<MatrixXd> mu_left_solver(n);
+    LDLT<Eigen::MatrixXd> mu_left_solver(n);
     mu_left_solver.compute(mu_left);
     
 // assign the correct updating functions    

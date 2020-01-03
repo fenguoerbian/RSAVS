@@ -5,26 +5,25 @@
 #include <Rcpp.h>
 
 using namespace Rcpp;
-using namespace Eigen;
 
 // RSAVS_LargeN_Rcpp
-Rcpp::List RSAVS_LargeN_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const int n, const int p, const char loss_type, const VectorXd loss_param, const char p1_type, VectorXd p1_param, const char p2_type, VectorXd p2_param, const VectorXd lam1_vec, const VectorXd lam2_vec, const double r1, const double r2, const double r3, const double phi, const double tol, const double max_iter);
+Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, const char loss_type, const Eigen::VectorXd loss_param, const char p1_type, Eigen::VectorXd p1_param, const char p2_type, Eigen::VectorXd p2_param, const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec, const double r1, const double r2, const double r3, const double phi, const double tol, const double max_iter);
 RcppExport SEXP _RSAVS_RSAVS_LargeN_Rcpp(SEXP x_matSEXP, SEXP y_vecSEXP, SEXP nSEXP, SEXP pSEXP, SEXP loss_typeSEXP, SEXP loss_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP lam1_vecSEXP, SEXP lam2_vecSEXP, SEXP r1SEXP, SEXP r2SEXP, SEXP r3SEXP, SEXP phiSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const MatrixXd >::type x_mat(x_matSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type y_vec(y_vecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd >::type x_mat(x_matSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
     Rcpp::traits::input_parameter< const char >::type loss_type(loss_typeSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type loss_param(loss_paramSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type loss_param(loss_paramSEXP);
     Rcpp::traits::input_parameter< const char >::type p1_type(p1_typeSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type p1_param(p1_paramSEXP);
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type p1_param(p1_paramSEXP);
     Rcpp::traits::input_parameter< const char >::type p2_type(p2_typeSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type p2_param(p2_paramSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type lam1_vec(lam1_vecSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type lam2_vec(lam2_vecSEXP);
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type p2_param(p2_paramSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type lam1_vec(lam1_vecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type lam2_vec(lam2_vecSEXP);
     Rcpp::traits::input_parameter< const double >::type r1(r1SEXP);
     Rcpp::traits::input_parameter< const double >::type r2(r2SEXP);
     Rcpp::traits::input_parameter< const double >::type r3(r3SEXP);
@@ -36,21 +35,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // RSAVS_LargeN_L2_Rcpp
-Rcpp::List RSAVS_LargeN_L2_Rcpp(const MatrixXd x_mat, const VectorXd y_vec, const int n, const int p, const char p1_type, VectorXd p1_param, const char p2_type, VectorXd p2_param, const VectorXd lam1_vec, const VectorXd lam2_vec, const double r2, const double r3, const double phi, const double tol, const double max_iter);
+Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, const char p1_type, Eigen::VectorXd p1_param, const char p2_type, Eigen::VectorXd p2_param, const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec, const double r2, const double r3, const double phi, const double tol, const double max_iter);
 RcppExport SEXP _RSAVS_RSAVS_LargeN_L2_Rcpp(SEXP x_matSEXP, SEXP y_vecSEXP, SEXP nSEXP, SEXP pSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP lam1_vecSEXP, SEXP lam2_vecSEXP, SEXP r2SEXP, SEXP r3SEXP, SEXP phiSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const MatrixXd >::type x_mat(x_matSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type y_vec(y_vecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd >::type x_mat(x_matSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type y_vec(y_vecSEXP);
     Rcpp::traits::input_parameter< const int >::type n(nSEXP);
     Rcpp::traits::input_parameter< const int >::type p(pSEXP);
     Rcpp::traits::input_parameter< const char >::type p1_type(p1_typeSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type p1_param(p1_paramSEXP);
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type p1_param(p1_paramSEXP);
     Rcpp::traits::input_parameter< const char >::type p2_type(p2_typeSEXP);
-    Rcpp::traits::input_parameter< VectorXd >::type p2_param(p2_paramSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type lam1_vec(lam1_vecSEXP);
-    Rcpp::traits::input_parameter< const VectorXd >::type lam2_vec(lam2_vecSEXP);
+    Rcpp::traits::input_parameter< Eigen::VectorXd >::type p2_param(p2_paramSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type lam1_vec(lam1_vecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type lam2_vec(lam2_vecSEXP);
     Rcpp::traits::input_parameter< const double >::type r2(r2SEXP);
     Rcpp::traits::input_parameter< const double >::type r3(r3SEXP);
     Rcpp::traits::input_parameter< const double >::type phi(phiSEXP);
