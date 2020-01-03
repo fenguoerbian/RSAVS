@@ -1,15 +1,45 @@
 # This file contains the pre-define functions for Robust Subgroup Analysis
+
+
+#' Built-in loss functions
+#'
+#' These are built-in loss functions.
+#'
+#' @aliases RSAVS_L2 RSAVS_L1 RSAVS_Huber
+#' @usage RSAVS_L1(x, param)
+#' RSAVS_L2(x, param)
+#' RSAVS_Huber(x, param, derivative)
+#' @param x input numeric vector
+#' @param param parameters needed for the function, takes the form of 
+#' numeric vector. Unused for L1 and L2.
+#' @param derivative logical, whether the return is the loss value or the
+#' derivative.
+#' @return Loss(or derivative) value at x.
+#' @examples
+#' RSAVS_L2(1 : 10)
+#' RSAVS_L1(1 : 10)
+#' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345)
+#' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345, derivative = TRUE)
+#' @name loss function
+NULL
+
+#' @rdname loss function 
+#' @export
 RSAVS_L2 <- function(x, param){
   # The L2 loss function
   return(x ^ 2)
 }
 
+#' @rdname loss function 
+#' @export
 RSAVS_L1 <- function(x, param){
   # The L1 loss function
   return(abs(x))
 }
 
-RSAVS_Huber <- function(x, param, derivative = F){
+#' @rdname loss function 
+#' @export
+RSAVS_Huber <- function(x, param, derivative = FALSE){
   # The huber loss function
   # Huber(x, c) = 0.5 * x ^ 2                 if abs(x) <= c
   #               c * abs(x) - 0.5 * c ^ 2    if abs(x) > c
@@ -27,6 +57,14 @@ RSAVS_Huber <- function(x, param, derivative = F){
   return(res)
 }
 
+#' Generate the pair-wise different matrix
+#'
+#' This function generate the pairwise difference matrix(D matrix in the paper)
+#' By default it returns a sparse matrix(matrix.csr) from the package SparseM
+#'
+#' @param n number of observations.
+#' @param dense logical, whether the return type should be in dense matrix or not
+#' @return a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
 RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   # This function generate the pairwise difference matrix(D matrix in the paper)
   # By default it returns a sparse matrix(matrix.csr) from the package SparseM
@@ -57,6 +95,7 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   return(res)
 }
 
+
 RSAVS_Mu_to_Mat <- function(mu_vec){
     # Generate the intercept term matrix according to mu_vec
     # n = length(mu_vec), p = length(unique(mu_vec))
@@ -77,6 +116,7 @@ RSAVS_Mu_to_Mat <- function(mu_vec){
     }
     return(res)
 }
+
 
 RSAVS_S_to_Groups <- function(s_vec, n){
   # This function converts the s vector from the algorithm to the subgrouping result
@@ -130,6 +170,7 @@ RSAVS_S_to_Groups <- function(s_vec, n){
   return(res)
 }
 
+
 RSAVS_Determine_Mu <- function(mu_vec, group_res){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result
@@ -168,6 +209,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
   }
 }
 
+#' @export
 RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
@@ -233,6 +275,7 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   return(bic)
 }
 
+#' @export
 RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec, loss_type, loss_param, phi){
   # This function is designed to summary and improve the resutls during the iteration of ADMM algorithm
   # It does: 1. Determing and improving beta_vec and mu_vec, if possible
@@ -271,6 +314,7 @@ RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec
   return(res)
 }
 
+#' @export
 RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu_vec, beta_vec){
     # This function is designed for further improving the estimating of mu and beta
     # after the mu vector has been improved by the clustering method.
@@ -334,6 +378,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
     return(res)   
 }
 
+#' @export
 RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                          lam1_vec, lam2_vec, min_lam_ratio = 0.03, lam1_length, lam2_length, 
@@ -528,6 +573,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   return(res)
 }
 
+#' @export
 RSAVS_RI <- function(mu_est, mu_target, detail = FALSE){
   # Compute the Rand Index(RI) of an estimated mu vector(mu_est) against the target mu vector(mu_target)
   # RI = (TP + TN) / (TP + TN + FP + FN)
