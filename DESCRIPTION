@@ -1,10 +1,12 @@
 Package: RSAVS
 Type: Package
-Title: Robust subgroup analysis and variable selection.
+Title: Robust Subgroup Analysis and Variable Selection
 Version: 0.1
 Date: 2020-01-01
-Authors@R: person("Chao", "Cheng", email = "413557584@qq.com",role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
+Authors@R: person("Chao", "Cheng", email = "413557584@qq.com", 
+                  role = c("aut", "cre"))
+Description: An R package for robust subgroup analysis and variable selection. 
+    It supports multiple choices of loss and penalty functions.
 License: GPL-2
 Imports: Rcpp (>= 1.0.3), RcppEigen, fpc, SparseM, quantreg, MASS
 LinkingTo: Rcpp, RcppEigen
