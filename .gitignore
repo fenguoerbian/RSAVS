@@ -264,4 +264,6 @@ vignettes/*.pdf
 # .o files created by R CMD SHLIB
 *.o
 */*.o
+*.dll
+*/*.dll
 
