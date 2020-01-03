@@ -43,8 +43,8 @@ rcppeigen_bothproducts(x)
 }
 \examples{
   x <- sqrt(1:4)
-  rcppeigen_innerproduct(x)
-  rcppeigen_outerproduct(x)
+  RSAVS:::rcppeigen_innerproduct(x)
+  RSAVS:::rcppeigen_outerproduct(x)
 }
 \author{Dirk Eddelbuettel}
 
