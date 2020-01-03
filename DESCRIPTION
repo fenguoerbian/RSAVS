@@ -8,3 +8,4 @@ Description: More about what it does (maybe more than one line)
 License: GPL-2
 Imports: Rcpp (>= 1.0.3), RcppEigen, fpc, SparseM, quantreg, MASS
 LinkingTo: Rcpp, RcppEigen
+RoxygenNote: 7.0.2
