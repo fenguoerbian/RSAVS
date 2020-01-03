@@ -12,7 +12,8 @@
 #' @import RcppEigen
 
 # Other packages needed for this package.
-#' @import stats
+#' @importFrom stats median
+#' @importFrom stats lm
 
 # Package fpc for pamk. Use cluster method to better determine number of subgroups from the mu vector
 #' @import fpc
@@ -21,7 +22,7 @@
 #' @import SparseM
 
 # Package quantreg for further improve result of L-1 loss
-#' @import quantreg
+#' @importFrom quantreg rq
 
 
 # Package MASS for further improve result for Huber loss(rlm() function)
