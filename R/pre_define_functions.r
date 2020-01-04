@@ -209,7 +209,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
   }
 }
 
-#' @export
+
 RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
