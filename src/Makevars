@@ -4,4 +4,11 @@
 
 ## With R 3.1.0 or later, you can uncomment the following line to tell R to 
 ## enable compilation with C++11 (or even C++14) where available
-#CXX_STD = CXX11
+CXX_STD = CXX11
+
+## OpenMP setting
+SHLIB_OPENMP_CFLAGS = -fopenmp
+SHLIB_OPENMP_CXXFLAGS = -fopenmp
+PKG_CFLAGS = ${SHLIB_OPENMP_CFLAGS}
+PKG_CXXFLAGS = ${SHLIB_OPENMP_CXXFLAGS}
+PKG_LIBS = -lgomp
