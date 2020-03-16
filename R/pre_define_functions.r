@@ -59,8 +59,8 @@ RSAVS_Huber <- function(x, param, derivative = FALSE){
 
 #' Generate the pair-wise different matrix
 #'
-#' This function generate the pairwise difference matrix(D matrix in the paper)
-#' By default it returns a sparse matrix(matrix.csr) from the package SparseM
+#' This function generate the pairwise difference matrix(D matrix in the paper).
+#' By default it returns a sparse matrix(matrix.csr) from the package SparseM.
 #'
 #' @param n number of observations.
 #' @param dense logical, whether the return type should be in dense matrix or not
@@ -95,7 +95,20 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   return(res)
 }
 
-
+#' Generate the intercept term matrix according to mu_vec.
+#' 
+#' This function generate the group id matrix according to the subgroup effect vector mu_vec.
+#' 
+#' \itemize{
+#' \item n = length(mu_vec) is the number of observations.
+#' \item p = length(unique(mu_vec)) is the number of subgroups.
+#' }
+#' 
+#' @section Note: 
+#' In the result, 1st observation of mu_vec will always be in the 1st subgroup.
+#' 
+#' @param mu_vec: a length-n vector of the subgroup effect.
+#' @return res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{\in} group_j and res[i, j] = 0 o.w.
 RSAVS_Mu_to_Mat <- function(mu_vec){
     # Generate the intercept term matrix according to mu_vec
     # n = length(mu_vec), p = length(unique(mu_vec))
@@ -182,7 +195,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 
   if(missing(group_res)){    # new version, use cluster method
     n <- length(mu_vec)
-    pamk_res <- try(pamk(mu_vec, krange = 1 : 7, usepam = (n <= 2000)), silent = T)
+    pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : 7, usepam = (n <= 2000)), silent = T)
     if(!inherits(pamk_res, "try-error")){
       group_num <- pamk_res$nc
     }else{

@@ -15,6 +15,6 @@ RSAVS_Generate_D_Matrix(n, dense = FALSE)
 a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
 }
 \description{
-This function generate the pairwise difference matrix(D matrix in the paper)
-By default it returns a sparse matrix(matrix.csr) from the package SparseM
+This function generate the pairwise difference matrix(D matrix in the paper).
+By default it returns a sparse matrix(matrix.csr) from the package SparseM.
 }
