@@ -341,9 +341,9 @@ Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd 
     Eigen::MatrixXd q3_mat = Eigen::MatrixXd::Zero(lam1_len * lam2_len, p);
     Eigen::MatrixXd bic_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);
     Eigen::MatrixXd k_mat = Eigen::MatrixXd::Zero(lam1_len, lam2_len);    // this matrix can tell us whether or not the algorithm converged at that lam1 and lam2
-    void (*UpdateZ)(VectorXd &, const Eigen::VectorXd &, const double &);
-    void (*UpdateS)(VectorXd &, const Eigen::VectorXd &, const double &);
-    void (*UpdateW)(VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateZ)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateS)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*UpdateW)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
     
     Rcpp::Rcout << "Basic variables initialized." << std::endl;
     // variables needed during algorithm
