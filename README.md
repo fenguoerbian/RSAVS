@@ -10,7 +10,7 @@ devtools::install_github("fenguoerbian/RSAVS")
 
 ## Example
 We can generate a toy sample
-```R
+```r
 n <- 200    # number of observations
 q <- 5    # number of active covariates
 p <- 50    # number of total covariates
@@ -26,23 +26,23 @@ y_vec <- alpha_true + x_mat %*% beta_true + err_vec    # response vector
 ```
 
 Then we can conduct the analysis
-```R
-res <- RSAVS_LargeN(y_vec, x_mat, lam1_length = 50, lam2_length = 40, phi = 5)
+```r
+res <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, lam1_length = 50, lam2_length = 40, phi = 5)
 ```
 where `phi` is the parameter needed by mBIC. By default, the function uses `L1` as regression loss function and `SCAD` penalty for both subgroup identification and variable selection. You can use other loss function or penalty term, e.g
-```R
-res_huber <- RSAVS_LargeN(y_vec, x_mat, l_type = "Huber", l_param = 1.345, 
+```r
+res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, l_type = "Huber", l_param = 1.345, 
                           lam1_length = 50, lam2_length = 40, p1_type = "M", p2_type = "L", 
                           phi = 5)
 ```
-uses Huber loss with parameter 1.345, `MCP` penalty for subgroup identification and `Lasso` penalty for variable selection. More details about setting loss type, penalty type and their parameters can be found in the package documentation.
+uses `Huber` loss with parameter 1.345, `MCP` penalty for subgroup identification and `Lasso` penalty for variable selection. More details about setting loss type, penalty type and their parameters can be found in the package documentation.
 
 The function uses ADMM as a solver and the resulting variable `res` is a list containing all `lam1_length` \* `lam2_length` results. And `res$best_id` corresponds to the solution with the lowest mBIC.
 
 You can do post-selection estimation by
-```R
+```r
 ind <- res$best_id    # pick an id of the solution
-res2 <- RSAVS_Further_Improve(y_vec, x_mat, 
+res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, 
                               mu_vec = res$mu_improve_mat[ind, ], 
                               beta_vec = res$w_mat[ind, ])
 ```
