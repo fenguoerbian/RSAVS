@@ -10,7 +10,7 @@ RSAVS_Mu_to_Mat(mu_vec)
 \item{mu_vec:}{a length-n vector of the subgroup effect.}
 }
 \value{
-res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{/in} group_j and res[i, j] = 0 o.w.
+res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{\in} group_j and res[i, j] = 0 o.w.
 }
 \description{
 This function generate the group id matrix according to the subgroup effect vector mu_vec.
@@ -26,3 +26,8 @@ This function generate the group id matrix according to the subgroup effect vect
 In the result, 1st observation of mu_vec will always be in the 1st subgroup.
 }
 
+\examples{
+set.seed(1024)
+mu_vec <- sample(c(0.5, 0, -0.5), size = 10, replace = TRUE)
+group_id_mat <- RSAVS_Mu_to_Mat(mu_vec)
+}

@@ -65,6 +65,9 @@ RSAVS_Huber <- function(x, param, derivative = FALSE){
 #' @param n number of observations.
 #' @param dense logical, whether the return type should be in dense matrix or not
 #' @return a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
+#' @examples 
+#' RSAVS_Generate_D_Matrix(5)
+#' RSAVS_Generate_D_Matrix(4, dense = TRUE)
 RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   # This function generate the pairwise difference matrix(D matrix in the paper)
   # By default it returns a sparse matrix(matrix.csr) from the package SparseM
@@ -109,6 +112,10 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
 #' 
 #' @param mu_vec: a length-n vector of the subgroup effect.
 #' @return res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{\in} group_j and res[i, j] = 0 o.w.
+#' @examples 
+#' set.seed(1024)
+#' mu_vec <- sample(c(0.5, 0, -0.5), size = 10, replace = TRUE)
+#' group_id_mat <- RSAVS_Mu_to_Mat(mu_vec)
 RSAVS_Mu_to_Mat <- function(mu_vec){
     # Generate the intercept term matrix according to mu_vec
     # n = length(mu_vec), p = length(unique(mu_vec))
