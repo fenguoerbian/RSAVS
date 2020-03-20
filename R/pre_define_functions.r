@@ -110,7 +110,7 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
 #' @section Note: 
 #' In the result, 1st observation of mu_vec will always be in the 1st subgroup.
 #' 
-#' @param mu_vec: a length-n vector of the subgroup effect.
+#' @param mu_vec a length-n vector of the subgroup effect.
 #' @return res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{\in} group_j and res[i, j] = 0 o.w.
 #' @examples 
 #' set.seed(1024)
@@ -398,6 +398,90 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
     return(res)   
 }
 
+#' Robust subgroup analysis and variable selection simultaneously.
+#' 
+#' This function carries out robust subgroup analysis and variable selection simultaneously. 
+#' It's implemented in a parallel fashion. It supports different types of loss functions and penalties.
+#' 
+#' @param y_vec numerical vector of response. n = length(y_vec) is the number of observations.
+#' @param x_mat numerical matrix of covariates. Each row for one observation and 
+#'   p = ncol(x_mat) is the number of covariates.
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is NULL.
+#' @param p1_type,p2_type character indicating the penalty types for subgroup identification and variable selection.
+#'   \itemize{
+#'     \item "S": SCAD
+#'     \item "M": MCP
+#'     \item "L": Lasso
+#'   }
+#'   Default values for both parameters are "S".
+#' @param p1_param,p2_param numerical vectors providing necessary parameters for the corresponding penalties.
+#'   \itemize{
+#'     \item For Lasso, lam = p_param[1]
+#'     \item For SCAD and MCP, lam = p_param[1], gamma = p_param[2]
+#'   }
+#'   Default values for both parameters are \code{c(2, 3.7)}. 
+#'   Note: This function searches the whole lam1_vec * lam2_vec grid for the best solution. 
+#'   Hence the \code{lambda}s provided in these parameters will be ignored and overwritten.
+#' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
+#'   It's preferred to be the order from big to small.
+#'   Note: Currently the function uses auto-generated lambda vectors and these parameters are ignored.
+#' @param min_lam_ratio the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
+#'   The default value is 0.03.
+#' @param lam1_length,lam2_length integers, lengths of the auto-generated lambda vectors.
+#' @param initial_vec list of vector, providing initial values for the algorithm. 
+#'   \code{mu_initial = initial_vec$mu}
+#'   and 
+#'   \code{beta_initial = initial_vec$beta}.
+#'   Note: Current the function uses auto-generated lambda vectors 
+#'   and the corresponding initial values are all just shrinked to 0.
+#'   Hence this parameter is ignored.
+#' @param phi numerical variable. A parameter needed for mBIC.
+#' @param tol numerical, convergence tolerance for the algorithm.
+#' @param max_iter integer, max number of iteration during the algorithm.
+#' @param subgroup_benchmark bool. Whether this call should be taken as a benchmark of subgroup identification. 
+#'   If \code{TRUE}, then the penalty for variable selection will be surpressed to a minimal value.
+#' @examples
+#' # a toy example
+#' # first we generate data
+#' n <- 200    # number of observations
+#' q <- 5    # number of active covariates
+#' p <- 50    # number of total covariates
+#' k <- 2    # number of subgroups
+#' 
+#' # k subgroup effect, centered at 0
+#' group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
+#' # covariate effect vector
+#' beta_true <- c(rep(1, q), rep(0, p - q))
+#' # subgroup effect vector    
+#' alpha_true <- sample(group_center, size = n, replace = T)    
+#' x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)    # covariate matrix
+#' err_vec <- rnorm(n, sd = 0.5)    # error term
+#' y_vec <- alpha_true + x_mat %*% beta_true + err_vec    # response vector
+#' 
+#' # a simple analysis using default loss and penalties
+#' res <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
+#'                     lam1_length = 50, lam2_length = 40, 
+#'                     phi = 5)
+#' 
+#' # you can choose different loss and penalties
+#' res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
+#'                           l_type = "Huber", l_param = 1.345,
+#'                           p1_type = "M", p2_type = "L",
+#'                           lam1_length = 50, lam2_length = 40, 
+#'                           phi = 5)
+#' # you can do post-selection estimation by
+#' ind <- res$best_id    # pick an id of the solution
+#' res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, 
+#'                               mu_vec = res$mu_improve_mat[ind, ], 
+#'                               beta_vec = res$w_mat[ind, ])                           
 #' @export
 RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 

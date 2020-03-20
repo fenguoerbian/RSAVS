@@ -7,7 +7,7 @@
 RSAVS_Mu_to_Mat(mu_vec)
 }
 \arguments{
-\item{mu_vec:}{a length-n vector of the subgroup effect.}
+\item{mu_vec}{a length-n vector of the subgroup effect.}
 }
 \value{
 res: a (n * p) matrix. Each row is for one observation and res[i, j] = 1 if i \eqn{\in} group_j and res[i, j] = 0 o.w.
