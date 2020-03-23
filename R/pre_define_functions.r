@@ -334,6 +334,30 @@ RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec
   return(res)
 }
 
+#' Post-selection estimation
+#' 
+#' This function carries out the post-selection estimation given the model structure.
+#' 
+#' @param y_vec numeric vector for response. 
+#'   \code{n = length(y_vec)} is the number of observations.
+#' @param x_mat numeric matrix for covariates. Each row is for one observation.
+#'   \code{p = ncol(x_mat)} is the number of covariates.
+#' @param l_type character, type of loss function.
+#'   \itemize{
+#'     \item "1": L-1 loss.
+#'     \item "2": L-2 loss.
+#'     \item "H": Huber loss.
+#'   }
+#'   The default value is "1".
+#' @param l_param vector of parameters needed by the loss function. 
+#'   For Huber loss, \code{c = l_param[1]} and a popular choice is c = 1.345.
+#'   The Default value is \code{NULL} since no additional parameters are
+#'   needed for the default L-1 loss.
+#' @param mu_vec a length-n vector for subgroup effect.
+#'   The function uses this to determine the subgroup structure.
+#' @param beta_vec a length-p vector for covariate effect.
+#'   The function uses this to find the active covariates.
+#' @return a list containing the improved mu(mu_vec) and beta(beta_vec) vector.
 #' @export
 RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu_vec, beta_vec){
     # This function is designed for further improving the estimating of mu and beta
