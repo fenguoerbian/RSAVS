@@ -295,6 +295,7 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   return(bic)
 }
 
+
 #' @export
 RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec, loss_type, loss_param, phi){
   # This function is designed to summary and improve the resutls during the iteration of ADMM algorithm
@@ -358,6 +359,14 @@ RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec
 #' @param beta_vec a length-p vector for covariate effect.
 #'   The function uses this to find the active covariates.
 #' @return a list containing the improved mu(mu_vec) and beta(beta_vec) vector.
+#' @details This function uses \code{mu_vec} to determine the subgroup structure matrix
+#'   via \code{\link{RSAVS_Mu_to_Mat}}. The active covariates are those with non-zero
+#'   \code{beta_vec} entries.
+#'   
+#'   Since this is the post-selection estimation. It's a regular estimate without
+#'   any penalties. One should make sure the given model structure is identifiable.
+#' @seealso \code{\link{RSAVS_Mu_to_Mat}} for getting the subgroup index matrix
+#'   from the subgroup effect vector.
 #' @export
 RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu_vec, beta_vec){
     # This function is designed for further improving the estimating of mu and beta
