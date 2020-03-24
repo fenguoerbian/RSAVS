@@ -190,7 +190,23 @@ RSAVS_S_to_Groups <- function(s_vec, n){
   return(res)
 }
 
-
+#' Determine the subgroup effects
+#' 
+#' This function determines the final mu vector given the grouping results.
+#' 
+#' @param mu_vec numerical vector. \code{n = length(mu_vec)} is the number of observations.
+#'   Presumably it comes from the ADMM algorithm and is not a very good grouping result.
+#' @param group_res a list, containing the grouping results.
+#'   Each element of group_res is a list containing the indecs from the same subgroup.
+#'   See \code{\link{RSAVS_S_to_Groups}} for the output structure.
+#' @return a length-n vector of subgroup effects. Observations belonging to the same
+#'   subgroup should have the same effects.
+#' @details 
+#'   Currently, the resulting subgrouping effects are the average value of \code{mu_vec}
+#'   for those belonging to the same subgoup according to \code{group_res}.
+#'   
+#'   If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
+#'   to get the estimated grouping result.
 RSAVS_Determine_Mu <- function(mu_vec, group_res){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result
