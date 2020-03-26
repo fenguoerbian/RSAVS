@@ -311,7 +311,51 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   return(bic)
 }
 
-
+#' Summary the iterations during ADMM algorithm
+#' 
+#' This function is designed to summary and improve the resutls during the iteration of ADMM algorithm.
+#' 
+#' This function has two purposes:
+#'   \itemize{
+#'     \item Determine and improve beta_vec and mu_vec, if possible.
+#'     \item Compute BIC.
+#'   }
+#' Since for large scale dataset, especially with big number of observations, it's impossible to first 
+#' save all the varialbes during the ADMM algorithm over the \code{lam1_length * lam2_length} grid points
+#' of lambdas, then pick a best solution with mBIC. For \code{s_vec} alone, this means we have to save a
+#' matrix with \code{n * (n - 1) / 2} rows and \code{lam1_length * lam2_length} columns, which is hard
+#' for a single computer. Instead, we summarise each iteration during the algorithm. Then there's no need
+#' for storing so many data.
+#' @param y_vec numerical response vector. \code{n = length(y_vec)} is the number of observations.
+#' @param x_mat numerical covariate matrix. \code{p = ncol(x_mat)} is the number of covariates.
+#' @param beta_vec covariate effect vector during the ADMM algorithm.
+#' @param mu_vec subgroup effect vector during the ADMM algorithm
+#' @param s_vec augmented vector for pair-wise difference of \code{mu_vec} in ADMM algorithm.
+#' @param w_vec augmented vector for \code{beta_vec} in ADMM algorithm.
+#' @param loss_type character string indicating type of loss function.
+#' @param loss_param numerical vector for necessary parameters in loss function.
+#' @param phi a parameter needed in mBIC. It controls how strong mBIC penalizes the complexity of 
+#'   the candidate model.
+#' @return a list, containing:
+#'   \itemize{
+#'     \item \code{bic}: the bic value.
+#'     \item \code{mu_vec}: the improved mu vector.
+#'     \item \code{group_num}: number of subgroups in the improved \code{mu_vec}.
+#'     \item \code{active_num}: number of active covariates in the \code{beta_vec}.
+#'   }
+#' @details In the ADMM algorithm, it will take many iterations to reach a sharp tolerance.
+#'   But one can stop the algorithm early stage by setting a small \code{max_iter}. This is
+#'   equivalent to setting a loose tolerance. Then the \code{mu_vec} and \code{beta_vec} will
+#'   not be close to their augmented counterparts \code{s_vec} and \code{w_vec}. But these
+#'   counterparts actually provides the sparsity information during the algorithm, therefore
+#'   \itemize{
+#'     \item \code{w_vec} will provide the estimate of covariate effect while \code{beta_vec}
+#'       is just a intermediate variable.
+#'     \item \code{mu_vec} is also the intermediate variable. Improvement is needed like forming 
+#'       a reasonalbe subgroup structure. One possible solution is to utilize \code{s_vec} to 
+#'       improve \code{mu_vec}. Another is to apply some cluster methods on \code{mu_vec}. See
+#'       \code{\link{RSAVS_Determine_Mu}} for more details.
+#'   }
 #' @export
 RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec, loss_type, loss_param, phi){
   # This function is designed to summary and improve the resutls during the iteration of ADMM algorithm
