@@ -286,7 +286,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
   }
 }
 
-#' Modified BIC
+#' Compute Modified BIC
 #' 
 #' This function computes the modified BIC(mBIC), given a specific solution.
 #' 

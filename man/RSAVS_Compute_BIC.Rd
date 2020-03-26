@@ -2,7 +2,7 @@
 % Please edit documentation in R/pre_define_functions.r
 \name{RSAVS_Compute_BIC}
 \alias{RSAVS_Compute_BIC}
-\title{Modified BIC}
+\title{Compute Modified BIC}
 \usage{
 RSAVS_Compute_BIC(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi)
 }
