@@ -138,6 +138,47 @@ RSAVS_Mu_to_Mat <- function(mu_vec){
 }
 
 
+#' Convert pair-wise difference vector to subgroup structure
+#' 
+#' This function converts the augmented pair-wise difference vector(the s vector in the algorithm) 
+#' to the subgrouping result.
+#' 
+#' Detailed definition of the s vector(length \code{n * (n - 1) / 2}) can be found in the paper.
+#' 
+#' @section Note:
+#'   It's possible that there's logical contradiction in the s vector, 
+#'   e.g. \code{s_{12} = s_{13} = 0}, but \code{s_{23} != 0}, especially when the algorithm is
+#'   configured with a loose tolerance. In this function, \code{i} and \code{j} would be put in the
+#'   same subgroup as long as there is a path that connects them. In previous example, 1st, 2nd and
+#'   3rd observations will be classified as in the same subgroup even though \code{s_{23} != 0}. 
+#'   
+#'   This strategy would presumably provide a more concentrate results, hence less number of subgroups. 
+#'   But of course it tends to merge subgroups into big ones and leaving some alone observations.
+#'   
+#'   For large scale data, especially when the number observation is big. It will be difficult to save
+#'   all \code{s_vec}s during the algorithm considering the algorithm have to search over the 
+#'   \code{lam1_length * lam2_length} grid. During the algorithm, the \code{s_vec} is utilized to
+#'   improve the subgrouping results then discarded.
+#'   
+#' @param s_vec:  the s vector(pair-wise difference vector), length \code{n * (n - 1) / 2} and 
+#'   \eqn{s_{ij} = \mu_i - \mu_j}.
+#' @param n: number of observations.
+#' @return a list containing the grouping result. 
+#' @examples 
+#' n <- 10    # number of observations
+#' group_center <- c(-1, 0, 1)    # three group centers
+#' # subgroup effect vector    
+#' alpha_true <- sample(group_center, size = n, replace = T)
+#' d_mat <- RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
+#' s_vec <- d_mat %*% alphat_true
+#' RSAVS_S_to_Groups(s_vec, n)
+#' 
+#' # if there's contradiction in s_vec
+#' s[1] <- 0    # s_{12} = 0
+#' s[2] <- 0    # s_{13} = 0
+#' s[n] <- 1    # s_{23} != 0
+#' # 1, 2, 3 will still be in the same subgroup
+#' RSAVS_S_to_Groups(s_vec, n)
 RSAVS_S_to_Groups <- function(s_vec, n){
   # This function converts the s vector from the algorithm to the subgrouping result
   # Definition of the s vector(length n * (n -1) / 2) is in the paper
@@ -245,7 +286,35 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
   }
 }
 
-
+#' Modified BIC
+#' 
+#' This function computes the modified BIC(mBIC), given a specific solution.
+#' 
+#' @param y_vec numerical vector of response. \code{n = length(y_vec)} is the number of observations.
+#' @param x_mat numerical matrix of covariates. \code{p = ncol(x_mat)} is the number of covariates.
+#' @param beta_vec numerical vector of covariate effects
+#' @param mu_vec numerical vector of subgroup effect(intercept term) for each observations
+#' @param loss_type,loss_param type and parameters of the loss function
+#'   \itemize{
+#'     \item \code{loss_type = "1"}: L-1 loss, no actual parameter is needed.
+#'     \item \code{loss_type = "2"}: L-2 loss, no actual parameter is needed.
+#'     \item \code{loss_type = "H"}, Huber loss, and \code{c = loss_param[0]}, where \code{c}
+#'       is the parameter needed by huber loss. A popular choice is \code{c = 1.345}.
+#'   }
+#' @param phi a positive constant. 
+#' @return the mBIC value.
+#' @details 
+#' \deqn{BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi ,}
+#' where
+#'   \itemize{
+#'     \item mu is the intercept term of each observation. And the number of subgroups is
+#'       \code{K = length(unique(mu_vec))}.
+#'     \item beta is the covariate effect vector. And the number of active covariates is
+#'       \code{Q = sum(beta_vec != 0)}.
+#'     \item the loss function is determined by \code{loss_type} and \code{loss_param}.
+#'     \item |S| is the complexity of the model and \eqn{|S| = K + Q}.
+#'     \item Phi is a constant and \code{Phi = phi * log(log(n + p)) * log(n) / n}.
+#'   }
 RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
