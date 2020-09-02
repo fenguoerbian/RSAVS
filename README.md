@@ -2,11 +2,17 @@
 This package carries out the **R**obust **S**ubgroup **A**nalysis and **V**ariable **S**election simultaneously. It implements the computation in a parallel manner.
 
 ## Installation
-You can use `devtools` to directly install from github
+You can use `devtools` to directly install the latest version from Github
 ```r
 #install.packages("devtools")
 devtools::install_github("fenguoerbian/RSAVS")
 ```
+If you have trouble connecting to Github, this packages is also hosted on Gitlab.
+```r
+#install.packages("devtools")
+devtools::install_gitlab("fenguoerbian/RSAVS")
+```
+
 
 ## Example
 Here is a toy example:
