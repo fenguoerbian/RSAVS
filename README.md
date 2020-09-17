@@ -1,16 +1,20 @@
 # RSAVS
 This package carries out the **R**obust **S**ubgroup **A**nalysis and **V**ariable **S**election simultaneously. It implements the computation in a parallel manner.
 
+## Note
+This branch(`simulation_archive`) stores the exact version for the simulations in the paper.
+For the updated and more optimized version, pleas check the `main` branch.
+
 ## Installation
 You can use `devtools` to directly install the latest version from Github
 ```r
 #install.packages("devtools")
-devtools::install_github("fenguoerbian/RSAVS")
+devtools::install_github("fenguoerbian/RSAVS", ref = "simulation_archive")
 ```
 If you have trouble connecting to Github, this packages is also hosted on Gitlab.
 ```r
 #install.packages("devtools")
-devtools::install_gitlab("fenguoerbian/RSAVS")
+devtools::install_gitlab("fenguoerbian/RSAVS", ref = "simulation_archive")
 ```
 
 
