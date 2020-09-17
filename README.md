@@ -12,7 +12,9 @@ If you have trouble connecting to Github, this packages is also hosted on Gitlab
 #install.packages("devtools")
 devtools::install_gitlab("fenguoerbian/RSAVS")
 ```
-
+___Note___: If you are interested in the original yet unoptimized version of this
+package used in the simulation of our paper, you can check the `simulation_archive`
+branch of this repo.
 
 ## Example
 Here is a toy example:
