@@ -784,7 +784,8 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     lam1_vec <- exp(seq(from = log(lam1_max), to  = log(lam1_min), length.out = lam1_length))
     
   }else{
-    
+    lam1_vec <- sort(abs(lam1_vec), decreasing = T)
+    lam1_length = length(lam1_vec)
   }
   
   if(missing(lam2_vec)){
@@ -806,7 +807,8 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     lam2_min <- lam2_max * min_lam_ratio
     lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_length)) 
   }else{
-    
+    lam2_vec <- sort(abs(lam2_vec), decreasing = T)
+    lam2_length <- length(lam2_vec)
   }
   if(subgroup_benchmark){
     # supress lambda for variable selection if this is subgroup benchmark
