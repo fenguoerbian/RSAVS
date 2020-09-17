@@ -775,7 +775,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     
     if(n <= 500){
       d_inv <- ginv(as.matrix(t(d_mat) %*% d_mat))
-      lam1_max <- max(abs(as.matrix(d_mat %*% d_inv %*% d_vec)))
+      lam1_max <- max(abs(as.matrix(d_mat %*% (d_inv %*% d_vec))))
     }else{
       lam1_max <- 2 / n * max(abs(d_vec))
     }
