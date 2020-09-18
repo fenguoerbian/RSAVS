@@ -7,10 +7,10 @@
 RSAVS_S_to_Groups(s_vec, n)
 }
 \arguments{
-\item{s_vec:}{the s vector(pair-wise difference vector), length \code{n * (n - 1) / 2} and 
+\item{s_vec}{the s vector(pair-wise difference vector), length \code{n * (n - 1) / 2} and 
 \eqn{s_{ij} = \mu_i - \mu_j}.}
 
-\item{n:}{number of observations.}
+\item{n}{number of observations.}
 }
 \value{
 a list containing the grouping result.

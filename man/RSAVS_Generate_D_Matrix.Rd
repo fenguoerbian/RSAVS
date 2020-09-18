@@ -19,6 +19,6 @@ This function generate the pairwise difference matrix(D matrix in the paper).
 By default it returns a sparse matrix(matrix.csr) from the package SparseM.
 }
 \examples{
-RSAVS_Generate_D_Matrix(5)
-RSAVS_Generate_D_Matrix(4, dense = TRUE)
+RSAVS:::RSAVS_Generate_D_Matrix(5)
+RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE)
 }

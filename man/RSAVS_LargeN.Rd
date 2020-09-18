@@ -102,7 +102,7 @@ group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
 # covariate effect vector
 beta_true <- c(rep(1, q), rep(0, p - q))
 # subgroup effect vector    
-alpha_true <- sample(group_center, size = n, replace = T)    
+alpha_true <- sample(group_center, size = n, replace = TRUE)    
 x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)    # covariate matrix
 err_vec <- rnorm(n, sd = 0.5)    # error term
 y_vec <- alpha_true + x_mat \%*\% beta_true + err_vec    # response vector

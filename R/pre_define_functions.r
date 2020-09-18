@@ -66,8 +66,8 @@ RSAVS_Huber <- function(x, param, derivative = FALSE){
 #' @param dense logical, whether the return type should be in dense matrix or not
 #' @return a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
 #' @examples 
-#' RSAVS_Generate_D_Matrix(5)
-#' RSAVS_Generate_D_Matrix(4, dense = TRUE)
+#' RSAVS:::RSAVS_Generate_D_Matrix(5)
+#' RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE)
 RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   # This function generate the pairwise difference matrix(D matrix in the paper)
   # By default it returns a sparse matrix(matrix.csr) from the package SparseM
@@ -160,9 +160,9 @@ RSAVS_Mu_to_Mat <- function(mu_vec){
 #'   \code{lam1_length * lam2_length} grid. During the algorithm, the \code{s_vec} is utilized to
 #'   improve the subgrouping results then discarded.
 #'   
-#' @param s_vec:  the s vector(pair-wise difference vector), length \code{n * (n - 1) / 2} and 
+#' @param s_vec  the s vector(pair-wise difference vector), length \code{n * (n - 1) / 2} and 
 #'   \eqn{s_{ij} = \mu_i - \mu_j}.
-#' @param n: number of observations.
+#' @param n number of observations.
 #' @return a list containing the grouping result. 
 #' @examples 
 #' n <- 10    # number of observations
@@ -623,7 +623,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' # covariate effect vector
 #' beta_true <- c(rep(1, q), rep(0, p - q))
 #' # subgroup effect vector    
-#' alpha_true <- sample(group_center, size = n, replace = T)    
+#' alpha_true <- sample(group_center, size = n, replace = TRUE)    
 #' x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)    # covariate matrix
 #' err_vec <- rnorm(n, sd = 0.5)    # error term
 #' y_vec <- alpha_true + x_mat %*% beta_true + err_vec    # response vector
