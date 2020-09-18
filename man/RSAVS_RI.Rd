@@ -57,12 +57,12 @@ against the target mu vector(mu_target).
 
 \examples{
 n <- 50    # number of observations
-# k subgroup effect, centered at 0
+k <- 2    # k subgroup effect, centered at 0
 group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
 # subgroup effect vector    
-alpha1 <- sample(group_center, size = n, replace = T) 
+alpha1 <- sample(group_center, size = n, replace = TRUE) 
 # another subgroup effect vector
-alpha2 <- sample(group_center, size = n, replace = T)
+alpha2 <- sample(group_center, size = n, replace = TRUE)
 RSAVS_RI(alpha1, alpha2)
 RSAVS_RI(alpha1, alpha2, detail = TRUE)
 }

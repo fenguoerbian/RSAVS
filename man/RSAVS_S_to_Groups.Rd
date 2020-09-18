@@ -43,15 +43,15 @@ Detailed definition of the s vector(length \code{n * (n - 1) / 2}) can be found 
 n <- 10    # number of observations
 group_center <- c(-1, 0, 1)    # three group centers
 # subgroup effect vector    
-alpha_true <- sample(group_center, size = n, replace = T)
-d_mat <- RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
-s_vec <- d_mat \%*\% alphat_true
-RSAVS_S_to_Groups(s_vec, n)
+alpha_true <- sample(group_center, size = n, replace = TRUE)
+d_mat <- RSAVS:::RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
+s_vec <- d_mat \%*\% alpha_true
+RSAVS:::RSAVS_S_to_Groups(s_vec, n)
 
 # if there's contradiction in s_vec
-s[1] <- 0    # s_{12} = 0
-s[2] <- 0    # s_{13} = 0
-s[n] <- 1    # s_{23} != 0
+s_vec[1] <- 0    # s_{12} = 0
+s_vec[2] <- 0    # s_{13} = 0
+s_vec[n] <- 1    # s_{23} != 0
 # 1, 2, 3 will still be in the same subgroup
-RSAVS_S_to_Groups(s_vec, n)
+RSAVS:::RSAVS_S_to_Groups(s_vec, n)
 }

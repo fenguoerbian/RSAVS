@@ -115,7 +115,7 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
 #' @examples 
 #' set.seed(1024)
 #' mu_vec <- sample(c(0.5, 0, -0.5), size = 10, replace = TRUE)
-#' group_id_mat <- RSAVS_Mu_to_Mat(mu_vec)
+#' group_id_mat <- RSAVS:::RSAVS_Mu_to_Mat(mu_vec)
 RSAVS_Mu_to_Mat <- function(mu_vec){
     # Generate the intercept term matrix according to mu_vec
     # n = length(mu_vec), p = length(unique(mu_vec))
@@ -168,17 +168,17 @@ RSAVS_Mu_to_Mat <- function(mu_vec){
 #' n <- 10    # number of observations
 #' group_center <- c(-1, 0, 1)    # three group centers
 #' # subgroup effect vector    
-#' alpha_true <- sample(group_center, size = n, replace = T)
-#' d_mat <- RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
-#' s_vec <- d_mat %*% alphat_true
-#' RSAVS_S_to_Groups(s_vec, n)
+#' alpha_true <- sample(group_center, size = n, replace = TRUE)
+#' d_mat <- RSAVS:::RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
+#' s_vec <- d_mat %*% alpha_true
+#' RSAVS:::RSAVS_S_to_Groups(s_vec, n)
 #' 
 #' # if there's contradiction in s_vec
-#' s[1] <- 0    # s_{12} = 0
-#' s[2] <- 0    # s_{13} = 0
-#' s[n] <- 1    # s_{23} != 0
+#' s_vec[1] <- 0    # s_{12} = 0
+#' s_vec[2] <- 0    # s_{13} = 0
+#' s_vec[n] <- 1    # s_{23} != 0
 #' # 1, 2, 3 will still be in the same subgroup
-#' RSAVS_S_to_Groups(s_vec, n)
+#' RSAVS:::RSAVS_S_to_Groups(s_vec, n)
 RSAVS_S_to_Groups <- function(s_vec, n){
   # This function converts the s vector from the algorithm to the subgrouping result
   # Definition of the s vector(length n * (n -1) / 2) is in the paper
@@ -640,7 +640,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #'                           lam1_length = 50, lam2_length = 40, 
 #'                           phi = 5)
 #' # you can do post-selection estimation by
-#' ind <- res$best_id    # pick an id of the solution
+#' ind <- res$best_ind    # pick an id of the solution
 #' res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, 
 #'                               mu_vec = res$mu_improve_mat[ind, ], 
 #'                               beta_vec = res$w_mat[ind, ])                           
@@ -881,12 +881,12 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #'   Note: if \code{detail = TRUE}, the function also returns the number of TP, TN, FP and FN.
 #' @examples 
 #' n <- 50    # number of observations
-#' # k subgroup effect, centered at 0
+#' k <- 2    # k subgroup effect, centered at 0
 #' group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
 #' # subgroup effect vector    
-#' alpha1 <- sample(group_center, size = n, replace = T) 
+#' alpha1 <- sample(group_center, size = n, replace = TRUE) 
 #' # another subgroup effect vector
-#' alpha2 <- sample(group_center, size = n, replace = T)
+#' alpha2 <- sample(group_center, size = n, replace = TRUE)
 #' RSAVS_RI(alpha1, alpha2)
 #' RSAVS_RI(alpha1, alpha2, detail = TRUE)
 #' @export

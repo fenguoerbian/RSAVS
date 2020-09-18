@@ -29,5 +29,5 @@ In the result, 1st observation of mu_vec will always be in the 1st subgroup.
 \examples{
 set.seed(1024)
 mu_vec <- sample(c(0.5, 0, -0.5), size = 10, replace = TRUE)
-group_id_mat <- RSAVS_Mu_to_Mat(mu_vec)
+group_id_mat <- RSAVS:::RSAVS_Mu_to_Mat(mu_vec)
 }
