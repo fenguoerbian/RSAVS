@@ -170,7 +170,7 @@ RSAVS_Mu_to_Mat <- function(mu_vec){
 #' # subgroup effect vector    
 #' alpha_true <- sample(group_center, size = n, replace = T)
 #' d_mat <- RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
-#' s_vec <- d_mat %*% alphat_true
+#' s_vec <- d_mat %*% alpha_true
 #' RSAVS_S_to_Groups(s_vec, n)
 #' 
 #' # if there's contradiction in s_vec
@@ -640,7 +640,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #'                           lam1_length = 50, lam2_length = 40, 
 #'                           phi = 5)
 #' # you can do post-selection estimation by
-#' ind <- res$best_id    # pick an id of the solution
+#' ind <- res$best_ind    # pick an id of the solution
 #' res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, 
 #'                               mu_vec = res$mu_improve_mat[ind, ], 
 #'                               beta_vec = res$w_mat[ind, ])                           

@@ -45,7 +45,7 @@ group_center <- c(-1, 0, 1)    # three group centers
 # subgroup effect vector    
 alpha_true <- sample(group_center, size = n, replace = T)
 d_mat <- RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
-s_vec <- d_mat \%*\% alphat_true
+s_vec <- d_mat \%*\% alpha_true
 RSAVS_S_to_Groups(s_vec, n)
 
 # if there's contradiction in s_vec

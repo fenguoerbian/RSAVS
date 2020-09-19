@@ -119,7 +119,7 @@ res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat,
                           lam1_length = 50, lam2_length = 40, 
                           phi = 5)
 # you can do post-selection estimation by
-ind <- res$best_id    # pick an id of the solution
+ind <- res$best_ind    # pick an id of the solution
 res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, 
                               mu_vec = res$mu_improve_mat[ind, ], 
                               beta_vec = res$w_mat[ind, ])                           
