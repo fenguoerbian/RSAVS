@@ -18,6 +18,9 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
+      - name: Install system dependencies for pkgdown
+        run: apt install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
+        
       - name: Query dependencies
         run: |
           install.packages('remotes')
