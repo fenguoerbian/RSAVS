@@ -1,7 +1,7 @@
 Package: RSAVS
 Type: Package
 Title: Robust Subgroup Analysis and Variable Selection
-Version: 0.1.1
+Version: 0.1.2
 Date: 2020-01-01
 Authors@R: person("Chao", "Cheng", email = "413557584@qq.com", 
                   role = c("aut", "cre"))
@@ -12,3 +12,6 @@ URL: fenguoerbian.github.io/rsavs/
 Imports: Rcpp (>= 1.0.3), RcppEigen, fpc, SparseM, quantreg, MASS
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
+LazyData: true
