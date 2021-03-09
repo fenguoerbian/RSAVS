@@ -47,7 +47,7 @@ jobs:
       - name: Install package
         # run: R CMD INSTALL .
         run: |
-          install.packages(c("quantreg", "MASS", "SparseM", "fpc", "RcppEigen", "Rcpp"))
+          install.packages(c("quantreg", "MASS", "SparseM", "fpc", "RcppEigen", "Rcpp", "mclust"))
           remotes::install_github("fenguoerbian/RSAVS")
         shell: Rscript {0}
 
