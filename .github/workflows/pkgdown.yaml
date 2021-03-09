@@ -49,7 +49,7 @@ jobs:
         run: |
           # update.packages(lib.loc = .libPaths()[1], ask = FALSE)
           install.packages(c("quantreg", "MASS", "SparseM", "fpc", "RcppEigen", "Rcpp", "mclust", "rmarkdown", "knitr"))    # for install RSAVS in github action
-          install.packages("stringi")    # for vignettes
+          install.packages(c("stringi", "tidyverse", "skimr"))    # for vignettes
           remotes::install_github("fenguoerbian/RSAVS")
         shell: Rscript {0}
 
