@@ -38,6 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           print(dir())
+          installed.packages()
           remotes::install_deps(dependencies = TRUE)
           # install.packages("pkgdown", type = "binary")    # no binary for ubuntu
           install.packages("pkgdown")
@@ -46,6 +47,7 @@ jobs:
       - name: Install package
         # run: R CMD INSTALL .
         run: |
+          install.packages(c("quantreg", "MASS", "SparseM", "fpc", "RcppEigen", "Rcpp"))
           remotes::install_github("fenguoerbian/RSAVS")
         shell: Rscript {0}
 
