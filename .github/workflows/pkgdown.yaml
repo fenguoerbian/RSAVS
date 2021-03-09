@@ -45,7 +45,7 @@ jobs:
       - name: Install package
         # run: R CMD INSTALL .
         run: |
-          remotes:install_github("fenguoerbian/RSAVS")
+          remotes::install_github("fenguoerbian/RSAVS")
         shell: Rscript {0}
 
       - name: Deploy package
