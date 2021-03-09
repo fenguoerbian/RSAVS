@@ -37,6 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          print(dir())
           remotes::install_deps(dependencies = TRUE)
           # install.packages("pkgdown", type = "binary")    # no binary for ubuntu
           install.packages("pkgdown")
