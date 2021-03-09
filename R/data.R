@@ -153,16 +153,14 @@
 #'   numeric: from 0 to 20}
 #' }
 #' 
-#' @source \url{http://www.diamondse.info/}
+#' @section Reference paper:
+#'   P. Cortez and A. Silva. Using Data Mining to Predict Secondary School Student Performance. 
+#'   In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) 
+#'   pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7.
+#'   
+#'   This paper is available at \url{http://www3.dsi.uminho.pt/pcortez/student.pdf}
+#' @source \url{https://archive.ics.uci.edu/ml/datasets/Student+Performance}
 #' @name Student_performance_dataset
 #' @aliases full_df mat_df por_df
 NULL
 
-#' @describeIn Student_performance_dataset
-"full_df"
-
-#' @describeIn Student_performance_dataset
-"mat_df"
-
-#' @describeIn Student_performance_dataset
-"por_df"
