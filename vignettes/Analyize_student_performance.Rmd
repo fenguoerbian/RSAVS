@@ -1,8 +1,8 @@
 ---
-title: "Analyize_student_performance"
+title: "Analyze_student_performance"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyize_student_performance}
+  %\VignetteIndexEntry{Analyze_student_performance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,11 +16,15 @@ knitr::opts_chunk$set(
 
 In this article, we use the student performance dataset to demonstrate how to perform subgroup analysis and variable selection simultaneously via the package `RSAVS`.
 
+__NOTE:__ This article is finished with `RSAVS` version 0.1.2.
+
 ```{r setup}
 library(ggplot2)
 library(skimr)
 library(RSAVS)
 ```
+
+# Introduction to the dataset
 
 This student performance dataset is about the grading point of evaluations of 1044 Portuguese students from two core classes(Math and Portuguese). There are 395 observations in the math data frame `mat_df` and 649 observations in the Portuguese data frame `por_df`. And the full dataset `full_df` is just the combination of these two data frames resulting 1044 observations. You can find details about these datasets via `?full_df`. 
 
@@ -55,6 +59,160 @@ The fitted value doesn't tell much, but the residual plot tells something
 ggplot(fit2, aes(fit2$residuals)) + geom_density() + xlab(NULL)
 ```
 
-It's skewed and potentially multimodal, which indicates a robust regression, along with a latent subgroup structure, would be appropriate.
+It's skewed and potentially multimodal, which indicates a robust regression, along with a latent subgroup structure, would be appropriate.Thus, we analyze the dataset by the proposed method of this package with the `L1` loss and the `SCAD` penalty in this study.
 
-Thus, we analyze the dataset by the proposed method of this package with the `L1` loss and the `SCAD` penalty in this study.
+# Robust subgroup analysis and variable selection
+Before the analysis, we randomly sample 100 observations and denote this dataset as $D_2$, and use the remaining 944 observations as the training dataset $D_1$. 
+
+```{r}
+# prepare the full dataset
+y_vec_full <- full_df$G3
+x_mat_full <- stats::model.matrix(fit2)[, -1]    # do not include the intercept term!
+
+# sample 100 observations as test set
+test_num <- 100
+set.seed(1024)
+test_idx <- sample(1 : nrow(full_df), size = test_num, replace = F)
+
+# get the training set
+x_mat <- x_mat_full[-test_idx, , drop = FALSE]
+y_vec <- y_vec_full[-test_idx]
+n <- nrow(x_mat)
+p <- ncol(x_mat)
+```
+
+Set some basic variables for the proposed algorithm
+```{r}
+lam1_len <- 40    # length of lam1_vec
+lam2_len <- 30    # length of lam2_vec
+phi <- 5    # constant needed for mBIC
+```
+
+Then we can apply our method at the training set. By default, it will use `L1` loss function coupled with the `SCAD` penalty. You can use `?RSAVS_LargeN` to find out more about this function.
+
+```{r}
+# It will take some time!
+res <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
+                    lam1_length = lam1_len, lam2_length = lam2_len,
+                    phi = phi, tol = 0.001, max_iter = 100)
+
+```
+
+The proposed algorithm can do subgroup analysis and variable selection simultaneously via regularization method. It will search over the grid space spanned by `lam1` and `lam2`. And choose a best one according to a modified BIC criteria.
+
+We can check the covariate effect with
+
+```{r}
+best_ind <- res$best_ind
+mu_new <- res$mu_improve_mat[res$best_ind, ]
+beta_new <- res$w_mat[res$best_ind, ]
+names(beta_new) <- colnames(x_mat)
+beta_new
+```
+
+and the estimated subgroup information with
+
+```{r}
+table(mu_new)
+```
+
+Also we can visualize the density plot of `G3` for these identified subgroups
+
+```{r}
+plot(density(y_vec))
+for(i in 1 : length(unique(mu_new))){
+  id <- which(mu_new == unique(mu_new)[i])
+  abline(v = mean(y_vec[id]))
+  abline(v = unique(mu_new)[id], lty = 2)
+}
+```
+
+As we can see, the algorithm gives us a reasonable partition of the observations, but the estimation of subgroup effects `mu_new` is quite indistinguishable due to the presence of the penalty functions.
+
+We can further improve these estimations with an ordinary robust regression without any penalty functions given the estimated parameter structure from the previous results. And we can perform this post-selection estimation over the whole solution plane. (Since there are `lam1` and `lam2`, the regular solution path becomes a solution plane.)
+
+```{r, message=FALSE, warning=FALSE}
+mu_further_improve_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = n)
+beta_further_improve_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = p)
+bic_vec <- rep(0, lam1_len * lam2_len)
+max_bic <- max(res$bic_mat)
+for(i in 1 : (lam1_len * lam2_len)){
+  tmp <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat, mu_vec = res$mu_improve_mat[i, ], beta_vec = res$w_mat[i, ])
+  mu_new <- as.vector(tmp$mu_vec)
+  beta_new <- tmp$beta_vec
+  mu_further_improve_mat[i, ] <- mu_new
+  beta_further_improve_mat[i, ] <- beta_new
+  bic_vec[i] <- RSAVS:::RSAVS_Compute_BIC(y_vec, x_mat, beta_new, mu_new, loss_type = "1", phi = phi)
+  # update bic according to complexsity upper bound
+  current_group_num <- length(unique(mu_new))
+  current_active_num <- sum(beta_new != 0)
+  if((current_active_num + current_group_num) >= 11){
+    bic_vec[i] <- max_bic
+  }
+}
+
+best_id <- which.min(bic_vec)
+if(best_id == 1){
+  best_id <- which.min(bic_vec[-1]) + 1
+}
+mu_new <- mu_further_improve_mat[best_id, ]
+beta_new <- beta_further_improve_mat[best_id, ]
+names(beta_new) <- colnames(x_mat)
+```
+
+After this further improving procedure, the estimated covariate effects are
+```{r}
+beta_new
+```
+
+and the identified subgroups are
+
+```{r}
+table(mu_new)
+```
+
+
+And these identified subgroups are
+
+```{r}
+RSI_Mu_to_ID <- function(mu_vec, mu_unique){
+  # This function converts the original mu vector to a resulting vector, with the same length.
+  # But the entries is replaced with the index of this entry in unique(mu_vec), or the provided variable mu_unique
+  # This functions is designed for the conquer part of the whole algorithm
+  
+  # mu_unique <- unique(mu_vec)
+  if(missing(mu_unique)){
+    mu_unique <- unique(mu_vec)
+  }
+  mu_vec <- sapply(mu_vec, FUN = function(x, unique_vec){
+    return(which(unique_vec == x))
+  }, unique_vec = mu_unique)
+  return(mu_vec)
+}
+
+rsavs_res <- data.frame(fitted = fit2$fitted.values[-test_idx], 
+                        residual = fit2$residuals[-test_idx], 
+                        mu_new = mu_new, 
+                        mu_id = RSI_Mu_to_ID(mu_new, unique(mu_new)), 
+                        subgroup_residual = y_vec - mu_new - x_mat %*% beta_new, 
+                        course = c(rep("por", nrow(por_df)), rep("mat", nrow(mat_df)))[-test_idx])
+
+idx <- which(mu_new == unique(mu_new)[2])
+ggplot(data = NULL, aes(fit2$fitted.values[-test_idx], fill = as.factor(rsavs_res$mu_id), color = as.factor(rsavs_res$mu_id))) + 
+  geom_density(alpha = 0.2) +
+  geom_vline(aes(xintercept = c(
+    median((y_vec - rsavs_res$subgroup_residual)[idx]), 
+    median((y_vec - rsavs_res$subgroup_residual)[-idx]))
+    ), 
+    color = c(median((y_vec - rsavs_res$subgroup_residual)[idx]), 
+                 median((y_vec - rsavs_res$subgroup_residual)[-idx])), 
+    linetype = "dashed"
+    ) +
+  xlab("Response") +
+  labs(color = "Subgroup", fill = "Subgroup")
+```
+
+
+
+
+
