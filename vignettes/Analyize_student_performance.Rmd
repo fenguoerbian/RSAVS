@@ -1,0 +1,59 @@
+---
+title: "Analyize_student_performance"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyize_student_performance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In this article, we use the student performance dataset to demonstrate how to perform subgroup analysis and variable selection simultaneously via the package `RSAVS`.
+
+```{r setup}
+library(tidyverse)
+library(RSAVS)
+```
+
+This student performance dataset is about the grading point of evaluations of 1044 Portuguese students from two core classes(Math and Portuguese). There are 395 observations in the math data frame `mat_df` and 649 observations in the Portuguese data frame `por_df`. And the full dataset `full_df` is just the combination of these two data frames resulting 1044 observations. You can find details about these datasets via `?full_df`. 
+
+In later analysis, we will use the full dataset `full_df`. The basic information of this dataset is shown below:
+
+```{r}
+skimr::skim(full_df)
+```
+
+Our interest is `G3`, the final grade. And we want to understand how it's related to those covariates. Note that although there seems to be several numeric variables in this datasets, most of them are actually binary or nominal coded. 
+
+First of all, we project the data on to the space spaned by most of the binary and nominal variables in the dataset. This gives us some basic understanding about how the average final grade is distributed among different observed subgroups.
+
+```{r}
+fit1 <- lm(G3 ~ school + address + Pstatus + famsize + schoolsup + famsup + activities + paid + internet + nursery + higher + romantic + Mjob + Fjob + guardian + reason, data = full_df)
+plot(density(fit1$fitted.values))
+```
+
+Looks like most of the grades are centered between 10-14 with some heavy tail at the lower end.
+
+Next, we try expolore the relationship between individuals and the average grading point of the observed subgroup via OLS.
+
+```{r}
+fit2 <- lm(fit1$fitted.values ~ sex + age + Medu + Fedu + traveltime + studytime + failures  + famrel + freetime + goout + Dalc + Walc + health + absences, 
+           data = full_df)
+plot(density(fit2$fitted.values))
+```
+
+The fitted value doesn't tell much, but the residual plot tells something
+
+```{r}
+ggplot(fit2, aes(fit2$residuals)) + geom_density() + xlab(NULL)
+```
+
+It's skewed and potentially multimodal, which indicates a robust regression, along with a latent subgroup structure, would be appropriate.
+
+Thus, we analyze the dataset by the proposed method of this package with the `L1` loss and the `SCAD` penalty in this study.
