@@ -1,8 +1,8 @@
 ---
-title: "Analyze_student_performance"
+title: "Analyze student performance"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyze_student_performance}
+  %\VignetteIndexEntry{Analyze student performance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -66,7 +66,7 @@ Before the analysis, we randomly sample 100 observations and denote this dataset
 
 ```{r}
 # prepare the full dataset
-y_vec_full <- full_df$G3
+y_vec_full <- fit1$fitted.values
 x_mat_full <- stats::model.matrix(fit2)[, -1]    # do not include the intercept term!
 
 # sample 100 observations as test set
@@ -81,6 +81,7 @@ n <- nrow(x_mat)
 p <- ncol(x_mat)
 ```
 
+## Analysis on the training set
 Set some basic variables for the proposed algorithm
 ```{r}
 lam1_len <- 40    # length of lam1_vec
@@ -172,15 +173,13 @@ table(mu_new)
 ```
 
 
-And these identified subgroups are
+We can visualize the estimated subgroups. First we just need to prepare a data.frame for `ggplot`.
 
 ```{r}
-RSI_Mu_to_ID <- function(mu_vec, mu_unique){
+Mu_to_ID <- function(mu_vec, mu_unique){
   # This function converts the original mu vector to a resulting vector, with the same length.
   # But the entries is replaced with the index of this entry in unique(mu_vec), or the provided variable mu_unique
-  # This functions is designed for the conquer part of the whole algorithm
-  
-  # mu_unique <- unique(mu_vec)
+
   if(missing(mu_unique)){
     mu_unique <- unique(mu_vec)
   }
@@ -190,29 +189,24 @@ RSI_Mu_to_ID <- function(mu_vec, mu_unique){
   return(mu_vec)
 }
 
-rsavs_res <- data.frame(fitted = fit2$fitted.values[-test_idx], 
-                        residual = fit2$residuals[-test_idx], 
+rsavs_res <- data.frame(target = y_vec, 
+                        fitted = mu_new + x_mat %*% beta_new, 
+                        residual = y_vec - mu_new - x_mat %*% beta_new, 
                         mu_new = mu_new, 
-                        mu_id = RSI_Mu_to_ID(mu_new, unique(mu_new)), 
-                        subgroup_residual = y_vec - mu_new - x_mat %*% beta_new, 
+                        mu_id = as.factor(Mu_to_ID(mu_new, unique(mu_new))), 
                         course = c(rep("por", nrow(por_df)), rep("mat", nrow(mat_df)))[-test_idx])
 
-idx <- which(mu_new == unique(mu_new)[2])
-ggplot(data = NULL, aes(fit2$fitted.values[-test_idx], fill = as.factor(rsavs_res$mu_id), color = as.factor(rsavs_res$mu_id))) + 
-  geom_density(alpha = 0.2) +
-  geom_vline(aes(xintercept = c(
-    median((y_vec - rsavs_res$subgroup_residual)[idx]), 
-    median((y_vec - rsavs_res$subgroup_residual)[-idx]))
-    ), 
-    color = c(median((y_vec - rsavs_res$subgroup_residual)[idx]), 
-                 median((y_vec - rsavs_res$subgroup_residual)[-idx])), 
-    linetype = "dashed"
-    ) +
-  xlab("Response") +
-  labs(color = "Subgroup", fill = "Subgroup")
 ```
 
+Now we can show the density plot of the `G3` given the estimated latent subgroups with the dashed line being the median of each group.
 
+```{r}
+rsavs_res %>% group_by(mu_id) %>% 
+  mutate(subgroup_median = median(fitted)) %>%
+  ggplot(aes(target, fill = mu_id, color = mu_id, group = mu_id)) + 
+  geom_density(alpha = 0.2) + 
+  geom_vline(aes(xintercept = subgroup_median, color = mu_id), linetype = "dashed") + 
+  xlab("Response") + labs(color = "Subgroup", fill = "Subgroup")
+```
 
-
-
+## Some inference on the test set
