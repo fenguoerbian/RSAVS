@@ -79,6 +79,10 @@ x_mat <- x_mat_full[-test_idx, , drop = FALSE]
 y_vec <- y_vec_full[-test_idx]
 n <- nrow(x_mat)
 p <- ncol(x_mat)
+
+# get the test set
+y_vec_test <- y_vec_full[test_idx]
+x_mat_test <- x_mat_full[test_idx, , drop = FALSE]
 ```
 
 ## Analysis on the training set
@@ -210,3 +214,31 @@ rsavs_res %>% group_by(mu_id) %>%
 ```
 
 ## Some inference on the test set
+Based on the results from training set, we can propose a model as
+$$
+y_i = \alpha + \delta d_i + \text{Medu}_i \times \beta_1 + \text{Age}_i \times \beta_2 + \varepsilon_i
+$$
+where $y_i$ refers to the `G3` of the i-th subject and $d_i = 0$ if the i-th subject belongs to the subgroup 1 and otherwise $d_i = 0$. $\delta$ is the difference between these 2 subgroups.
+
+We use regular K-medoids method to partition the dataset $D_2$ into two clusters with respect to the adjusted response with the covariate effects removed with the coefficients given  by our method based on Dataset $D_1$
+
+```{r}
+# residual_test is the adjusted response with the covariate effects removed
+residual_test <- y_vec_test - x_mat_test %*% beta_new
+
+# cluster residual_test into 2 groups with regular kmeans
+tmp_kmeans <- stats::kmeans(residual_test, centers = 2)
+group_indicator <- tmp_kmeans$cluster - 1
+
+# form the simplified covariate matrix with only active covariates
+x_mat_test_active <- x_mat_test[, which(beta_new != 0), drop = FALSE]
+```
+
+We can make inference about these parameters in the models with the simplified robust regression
+
+```{r}
+rqfit <- quantreg::rq(y_vec_test ~ group_indicator + x_mat_test_active)
+summary(rqfit, alpha = 0.05)
+```
+
+
