@@ -20,6 +20,7 @@ __NOTE:__ This article is finished with `RSAVS` version 0.1.2.
 
 ```{r setup}
 library(ggplot2)
+library(dplyr)
 library(skimr)
 library(RSAVS)
 ```
