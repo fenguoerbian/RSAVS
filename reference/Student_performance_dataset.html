@@ -98,6 +98,10 @@ Portuguese students from two core classes(Mathematics and Portuguese)." />
     <li>
       <a href="../articles/Analyize_student_performance.html">Analyze student performance</a>
     </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../articles/index.html">More...</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -141,40 +145,40 @@ Portuguese students from two core classes(Mathematics and Portuguese).</p>
 </ul>
 
 <p>These data frames all have 33 variables:</p><dl>
-  <dt>school</dt><dd><p>character vector. Student's school   (binary: <code>"GP"</code> - Gabriel Pereira or <code>"MS"</code> - Mousinho da Silveira)</p></dd>
-  <dt>sex</dt><dd><p>character vector. Student's sex   (binary: <code>"F"</code> - female or <code>"M"</code> - male)</p></dd>
+  <dt>school</dt><dd><p>character vector. Student's school   binary: <code>"GP"</code> - Gabriel Pereira or <code>"MS"</code> - Mousinho da Silveira</p></dd>
+  <dt>sex</dt><dd><p>character vector. Student's sex   binary: <code>"F"</code> - female or <code>"M"</code> - male</p></dd>
   <dt>age</dt><dd><p>Interger, student's age, from 15 to 22</p></dd>
-  <dt>address</dt><dd><p>Character, student's home address type.   (binary: <code>"U"</code> - urban or <code>"R"</code> - rural)</p></dd>
-  <dt>famsize</dt><dd><p>Character vector, family size   (binary: <code>"LE3"</code> - less or equal to 3 or <code>"GT3"</code> - greater than 3)</p></dd>
-  <dt>Pstatus</dt><dd><p>Character vector, parent's cohabitation status   (binary: "T" - living together or "A" - apart)</p></dd>
-  <dt>Medu</dt><dd><p>Integer, mother's education     (multinomial: <ul>
+  <dt>address</dt><dd><p>Character, student's home address type.   binary: <code>"U"</code> - urban or <code>"R"</code> - rural</p></dd>
+  <dt>famsize</dt><dd><p>Character vector, family size   binary: <code>"LE3"</code> - less or equal to 3 or <code>"GT3"</code> - greater than 3</p></dd>
+  <dt>Pstatus</dt><dd><p>Character vector, parent's cohabitation status   binary: "T" - living together or "A" - apart</p></dd>
+  <dt>Medu</dt><dd><p>Integer, mother's education     multinomial: <ul>
 <li><p>0 - none,</p></li>
 <li><p>1 - primary education (4th grade),</p></li>
 <li><p>2 – 5th to 9th grade,</p></li>
 <li><p>3 – secondary education,</p></li>
-<li><p>4 – higher education)</p></li>
+<li><p>4 – higher education</p></li>
 </ul></p></dd>
-  <dt>Fedu</dt><dd><p>Integer, father's education     (nominal: <ul>
+  <dt>Fedu</dt><dd><p>Integer, father's education     nominal: <ul>
 <li><p>0 - none,</p></li>
 <li><p>1 - primary education (4th grade),</p></li>
 <li><p>2 – 5th to 9th grade,</p></li>
 <li><p>3 – secondary education,</p></li>
-<li><p>4 – higher education)</p></li>
+<li><p>4 – higher education</p></li>
 </ul></p></dd>
-  <dt>Mjob</dt><dd><p>Character vector, mother's job,   (nominal: <ul>
+  <dt>Mjob</dt><dd><p>Character vector, mother's job,   nominal: <ul>
 <li><p>"teacher" - teacher,</p></li>
 <li><p>"health" - health care related,</p></li>
 <li><p>"services" - civil services (e.g. administrative or police),</p></li>
 <li><p>"at_home" - at home,</p></li>
 <li><p>"other" - other</p></li>
-</ul>)</p></dd>
-  <dt>Fjob</dt><dd><p>Character vector, father's job,   (nominal: <ul>
+</ul></p></dd>
+  <dt>Fjob</dt><dd><p>Character vector, father's job,   nominal: <ul>
 <li><p>"teacher" - teacher,</p></li>
 <li><p>"health" - health care related,</p></li>
 <li><p>"services" - civil services (e.g. administrative or police),</p></li>
 <li><p>"at_home" - at home,</p></li>
 <li><p>"other" - other</p></li>
-</ul>)</p></dd>
+</ul></p></dd>
   <dt>reason</dt><dd><p>Character vector, reason to choose this school   nominal: <ul>
 <li><p>"home" - close to home,</p></li>
 <li><p>"reputation" - school reputation,</p></li>
@@ -182,19 +186,19 @@ Portuguese students from two core classes(Mathematics and Portuguese).</p>
 <li><p>"other" - other</p></li>
 </ul></p></dd>
   <dt>guardian</dt><dd><p>Character vector, student's guardian   nominal: "mother", "father" or "other"</p></dd>
-  <dt>traveltime</dt><dd><p>Integer, home to school travel time   nominal: <ul>
+  <dt>traveltime</dt><dd><p>Integer, home to school travel time   nominal/incremental: <ul>
 <li><p>1 - less than 15 min.,</p></li>
 <li><p>2 - 15 to 30 min.,</p></li>
 <li><p>3 - 30 min. to 1 hour,</p></li>
 <li><p>4 - greater than 1 hour</p></li>
 </ul></p></dd>
-  <dt>studytime</dt><dd><p>Integer, weekly study time   nominal: <ul>
+  <dt>studytime</dt><dd><p>Integer, weekly study time   nominal/incremental: <ul>
 <li><p>1 --- less than 2 hours,</p></li>
 <li><p>2 --- 2 to 5 hours,</p></li>
 <li><p>3 --- 5 to 10 hours,</p></li>
 <li><p>4 --- greater than 10 hours</p></li>
 </ul></p></dd>
-  <dt>failures</dt><dd><p>Integer, number of past class failures   nominal: n if 1 &lt;= n &lt; 3, else 4</p></dd>
+  <dt>failures</dt><dd><p>Integer, number of past class failures   nominal/incremental: n if 1 &lt;= n &lt; 3, else 4</p></dd>
   <dt>schoolsup</dt><dd><p>Character vector, extra educational support   binary: "yes" or "no"</p></dd>
   <dt>famsup</dt><dd><p>Character vector, family educational support.   binary: "yes" or "no"</p></dd>
   <dt>paid</dt><dd><p>Character vector, extra paid classes within the course subject (Math or Portuguese)  binary: "yes" or "no"</p></dd>

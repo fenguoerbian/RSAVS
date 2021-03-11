@@ -2,6 +2,7 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  Algorithm_details: Algorithm_details.pdf
   Analyize_student_performance: Analyize_student_performance.html
-last_built: 2021-03-10T12:04Z
+last_built: 2021-03-11T04:18Z
 

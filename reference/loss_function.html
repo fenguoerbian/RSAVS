@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert pair-wise difference vector to subgroup structure — RSAVS_S_to_Groups • RSAVS</title>
+<title>Built-in loss functions — loss_function • RSAVS</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Convert pair-wise difference vector to subgroup structure — RSAVS_S_to_Groups" />
-<meta property="og:description" content="This function converts the augmented pair-wise difference vector(the s vector in the algorithm) 
-to the subgrouping result." />
+<meta property="og:title" content="Built-in loss functions — loss_function" />
+<meta property="og:description" content="These are built-in loss functions." />
 
 
 
@@ -123,83 +122,64 @@ to the subgrouping result." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert pair-wise difference vector to subgroup structure</h1>
+    <h1>Built-in loss functions</h1>
     
-    <div class="hidden name"><code>RSAVS_S_to_Groups.Rd</code></div>
+    <div class="hidden name"><code>loss_function.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function converts the augmented pair-wise difference vector(the s vector in the algorithm) 
-to the subgrouping result.</p>
+    <p>These are built-in loss functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RSAVS_S_to_Groups</span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RSAVS_L2</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>param</span><span class='op'>)</span>
+
+<span class='fu'>RSAVS_L1</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>param</span><span class='op'>)</span>
+
+<span class='fu'>RSAVS_Huber</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>param</span>, derivative <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>s_vec</th>
-      <td><p>the s vector(pair-wise difference vector), length <code>n * (n - 1) / 2</code> and 
-\(s_{ij} = \mu_i - \mu_j\).</p></td>
+      <th>x</th>
+      <td><p>input numeric vector</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>number of observations.</p></td>
+      <th>param</th>
+      <td><p>parameters needed for the function, takes the form of 
+numeric vector. Unused for L1 and L2.</p></td>
+    </tr>
+    <tr>
+      <th>derivative</th>
+      <td><p>logical, whether the return is the loss value or the
+derivative.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list containing the grouping result.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Detailed definition of the s vector(length <code>n * (n - 1) / 2</code>) can be found in the paper.</p>
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    
-
-<p>It's possible that there's logical contradiction in the s vector, 
-  e.g. <code>s_{12} = s_{13} = 0</code>, but <code>s_{23} != 0</code>, especially when the algorithm is
-  configured with a loose tolerance. In this function, <code>i</code> and <code>j</code> would be put in the
-  same subgroup as long as there is a path that connects them. In previous example, 1st, 2nd and
-  3rd observations will be classified as in the same subgroup even though <code>s_{23} != 0</code>.</p>  
-<p>This strategy would presumably provide a more concentrate results, hence less number of subgroups. 
-  But of course it tends to merge subgroups into big ones and leaving some alone observations.</p>  
-<p>For large scale data, especially when the number observation is big. It will be difficult to save
-  all <code>s_vec</code>s during the algorithm considering the algorithm have to search over the 
-  <code>lam1_length * lam2_length</code> grid. During the algorithm, the <code>s_vec</code> is utilized to
-  improve the subgrouping results then discarded.</p>
+    <p>Loss(or derivative) value at x.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>10</span>    <span class='co'># number of observations</span>
-<span class='va'>group_center</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>    <span class='co'># three group centers</span>
-<span class='co'># subgroup effect vector    </span>
-<span class='va'>alpha_true</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>group_center</span>, size <span class='op'>=</span> <span class='va'>n</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>d_mat</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'><a href='RSAVS_Generate_D_Matrix.html'>RSAVS_Generate_D_Matrix</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span>    <span class='co'># pair-wise difference matrix</span>
-<span class='va'>s_vec</span> <span class='op'>&lt;-</span> <span class='va'>d_mat</span> <span class='op'>%*%</span> <span class='va'>alpha_true</span>
-<span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'>RSAVS_S_to_Groups</span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1 2 6 7 8
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 3 5
-#&gt; 
-#&gt; [[3]]
-#&gt; [1]  4  9 10
-#&gt; </div><div class='input'>
-<span class='co'># if there's contradiction in s_vec</span>
-<span class='va'>s_vec</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>    <span class='co'># s_{12} = 0</span>
-<span class='va'>s_vec</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>    <span class='co'># s_{13} = 0</span>
-<span class='va'>s_vec</span><span class='op'>[</span><span class='va'>n</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>1</span>    <span class='co'># s_{23} != 0</span>
-<span class='co'># 1, 2, 3 will still be in the same subgroup</span>
-<span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'>RSAVS_S_to_Groups</span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1 2 3 5 6 7 8
-#&gt; 
-#&gt; [[2]]
-#&gt; [1]  4  9 10
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>RSAVS_L2</span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>:</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1]   1   4   9  16  25  36  49  64  81 100</div><div class='input'><span class='fu'>RSAVS_L1</span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>:</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</div><div class='input'><span class='fu'>RSAVS_Huber</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>3</span>, to <span class='op'>=</span> <span class='fl'>3</span>, by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span>, param <span class='op'>=</span> <span class='fl'>1.345</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] 3.1304875 2.9959875 2.8614875 2.7269875 2.5924875 2.4579875 2.3234875
+#&gt;  [8] 2.1889875 2.0544875 1.9199875 1.7854875 1.6509875 1.5164875 1.3819875
+#&gt; [15] 1.2474875 1.1129875 0.9784875 0.8450000 0.7200000 0.6050000 0.5000000
+#&gt; [22] 0.4050000 0.3200000 0.2450000 0.1800000 0.1250000 0.0800000 0.0450000
+#&gt; [29] 0.0200000 0.0050000 0.0000000 0.0050000 0.0200000 0.0450000 0.0800000
+#&gt; [36] 0.1250000 0.1800000 0.2450000 0.3200000 0.4050000 0.5000000 0.6050000
+#&gt; [43] 0.7200000 0.8450000 0.9784875 1.1129875 1.2474875 1.3819875 1.5164875
+#&gt; [50] 1.6509875 1.7854875 1.9199875 2.0544875 2.1889875 2.3234875 2.4579875
+#&gt; [57] 2.5924875 2.7269875 2.8614875 2.9959875 3.1304875</div><div class='input'><span class='fu'>RSAVS_Huber</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='op'>-</span><span class='fl'>3</span>, to <span class='op'>=</span> <span class='fl'>3</span>, by <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span>, param <span class='op'>=</span> <span class='fl'>1.345</span>, derivative <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.345
+#&gt; [11] -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.345 -1.300 -1.200 -1.100
+#&gt; [21] -1.000 -0.900 -0.800 -0.700 -0.600 -0.500 -0.400 -0.300 -0.200 -0.100
+#&gt; [31]  0.000  0.100  0.200  0.300  0.400  0.500  0.600  0.700  0.800  0.900
+#&gt; [41]  1.000  1.100  1.200  1.300  1.345  1.345  1.345  1.345  1.345  1.345
+#&gt; [51]  1.345  1.345  1.345  1.345  1.345  1.345  1.345  1.345  1.345  1.345
+#&gt; [61]  1.345</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
