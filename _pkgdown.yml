@@ -1,0 +1,33 @@
+articles:
+- title: Data analysis
+  navbar: ~
+  desc: >
+    This section contains articles for data analysis using the RSAVS package.
+  contents: 
+  - Analyize_student_performance
+- title: Additional resources
+  desc: >
+    This section contains additional rescources for the RSAVS package.
+  contents:
+  - Algorithm_details
+
+reference:
+- title: Functions
+  desc: Functions in the package
+  contents:
+  - starts_with("RSAVS_")
+  - loss function
+- title: Datasets
+  desc: Datasets included in the package
+  contents:
+  - Student_performance_dataset
+  - ends_with("_df")
+- title: Package information
+  desc: Basic package informations
+  contents:
+  - RSAVS
+- title: Others
+  desc: Other Functions
+  contents:
+  - starts_with("rcpp")
+  
