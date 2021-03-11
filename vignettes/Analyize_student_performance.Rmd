@@ -242,4 +242,5 @@ rqfit <- quantreg::rq(y_vec_test ~ group_indicator + x_mat_test_active)
 summary(rqfit, alpha = 0.05)
 ```
 
+At 95% confidence level, the results implies that younger students may outperform older ones, and higher `G3` scores can alos be expected for those children whose mothers have been given higher level education.
 
