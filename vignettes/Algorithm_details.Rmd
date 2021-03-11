@@ -1,0 +1,24 @@
+---
+title: "Algorithm details"
+output: 
+  rmarkdown::pdf_document:
+    template: pdf/plain_template.tex
+header-includes:
+  - \usepackage{pdfpages}
+vignette: >
+  %\VignetteIndexEntry{Algorithm details}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+pkgdown:
+  as_is: true
+  extension: pdf
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+\includepdf[pages=-, fitpaper=true]{pdf/RSAVS_algorithm_details.pdf}
