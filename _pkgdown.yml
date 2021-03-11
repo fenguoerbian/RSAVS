@@ -16,7 +16,7 @@ reference:
   desc: Functions in the package
   contents:
   - starts_with("RSAVS_")
-  - loss function
+  - loss_function
 - title: Datasets
   desc: Datasets included in the package
   contents:

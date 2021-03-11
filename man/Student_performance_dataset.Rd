@@ -17,59 +17,59 @@ These data frames all have 33 variables:
 \describe{
   \item{school}{character vector. Student's school 
   
-  (binary: \code{"GP"} - Gabriel Pereira or \code{"MS"} - Mousinho da Silveira)}
+  binary: \code{"GP"} - Gabriel Pereira or \code{"MS"} - Mousinho da Silveira}
   \item{sex}{character vector. Student's sex 
   
-  (binary: \code{"F"} - female or \code{"M"} - male)}
+  binary: \code{"F"} - female or \code{"M"} - male}
   \item{age}{Interger, student's age, from 15 to 22}
   \item{address}{Character, student's home address type. 
   
-  (binary: \code{"U"} - urban or \code{"R"} - rural)}
+  binary: \code{"U"} - urban or \code{"R"} - rural}
   \item{famsize}{Character vector, family size 
   
-  (binary: \code{"LE3"} - less or equal to 3 or \code{"GT3"} - greater than 3)}
+  binary: \code{"LE3"} - less or equal to 3 or \code{"GT3"} - greater than 3}
   \item{Pstatus}{Character vector, parent's cohabitation status 
   
-  (binary: "T" - living together or "A" - apart)}
+  binary: "T" - living together or "A" - apart}
   \item{Medu}{Integer, mother's education 
   
-    (multinomial: \itemize{
+    multinomial: \itemize{
     \item 0 - none,  
     \item 1 - primary education (4th grade), 
     \item 2 – 5th to 9th grade, 
     \item 3 – secondary education, 
-    \item 4 – higher education)
+    \item 4 – higher education
     }
   }
   \item{Fedu}{Integer, father's education 
   
-    (nominal: \itemize{
+    nominal: \itemize{
     \item 0 - none,  
     \item 1 - primary education (4th grade), 
     \item 2 – 5th to 9th grade, 
     \item 3 – secondary education, 
-    \item 4 – higher education)
+    \item 4 – higher education
     }
   }
   \item{Mjob}{Character vector, mother's job, 
   
-  (nominal: \itemize{
+  nominal: \itemize{
     \item "teacher" - teacher, 
     \item "health" - health care related, 
     \item "services" - civil services (e.g. administrative or police), 
     \item "at_home" - at home, 
     \item "other" - other
-  })
+  }
   }
   \item{Fjob}{Character vector, father's job, 
   
-  (nominal: \itemize{
+  nominal: \itemize{
     \item "teacher" - teacher, 
     \item "health" - health care related, 
     \item "services" - civil services (e.g. administrative or police), 
     \item "at_home" - at home, 
     \item "other" - other
-  })
+  }
   }
   \item{reason}{Character vector, reason to choose this school 
   
@@ -84,7 +84,7 @@ These data frames all have 33 variables:
   nominal: "mother", "father" or "other"}
   \item{traveltime}{Integer, home to school travel time 
   
-  nominal: \itemize{
+  nominal/incremental: \itemize{
     \item 1 - less than 15 min., 
     \item 2 - 15 to 30 min., 
     \item 3 - 30 min. to 1 hour, 
@@ -92,14 +92,14 @@ These data frames all have 33 variables:
   }}
   \item{studytime}{Integer, weekly study time 
   
-  nominal: \itemize{
+  nominal/incremental: \itemize{
   \item 1 --- less than 2 hours, 
   \item 2 --- 2 to 5 hours, 
   \item 3 --- 5 to 10 hours, 
   \item 4 --- greater than 10 hours}}
   \item{failures}{Integer, number of past class failures 
   
-  nominal: n if 1 <= n < 3, else 4}
+  nominal/incremental: n if 1 <= n < 3, else 4}
   \item{schoolsup}{Character vector, extra educational support 
   
   binary: "yes" or "no"}

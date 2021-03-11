@@ -6,9 +6,6 @@
 #' These are built-in loss functions.
 #'
 #' @aliases RSAVS_L2 RSAVS_L1 RSAVS_Huber
-#' @usage RSAVS_L1(x, param)
-#' RSAVS_L2(x, param)
-#' RSAVS_Huber(x, param, derivative)
 #' @param x input numeric vector
 #' @param param parameters needed for the function, takes the form of 
 #' numeric vector. Unused for L1 and L2.
@@ -20,24 +17,24 @@
 #' RSAVS_L1(1 : 10)
 #' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345)
 #' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345, derivative = TRUE)
-#' @name loss function
+#' @name loss_function
 NULL
 
-#' @rdname loss function 
+#' @rdname loss_function 
 #' @export
 RSAVS_L2 <- function(x, param){
   # The L2 loss function
   return(x ^ 2)
 }
 
-#' @rdname loss function 
+#' @rdname loss_function 
 #' @export
 RSAVS_L1 <- function(x, param){
   # The L1 loss function
   return(abs(x))
 }
 
-#' @rdname loss function 
+#' @rdname loss_function 
 #' @export
 RSAVS_Huber <- function(x, param, derivative = FALSE){
   # The huber loss function
