@@ -8,7 +8,8 @@ Authors@R: person("Chao", "Cheng", email = "413557584@qq.com",
 Description: An R package for robust subgroup analysis and variable selection. 
     It supports multiple choices of loss and penalty functions.
 License: GPL-2
-URL: fenguoerbian.github.io/RSAVS/
+URL: https://fenguoerbian.github.io/RSAVS/, https://github.com/fenguoerbian/RSAVS/
+BugReports: https://github.com/fenguoerbian/RSAVS/issues
 Imports: Rcpp (>= 1.0.3), RcppEigen, fpc, SparseM, quantreg, MASS
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.1.1
