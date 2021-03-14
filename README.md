@@ -16,6 +16,13 @@ ___Note___: If you are interested in the original yet unoptimized version of thi
 package used in the simulation of our paper, you can check the `simulation_archive`
 branch of this repo.
 
+__Note__: It's recommended to read the vignettes on the package's website. 
+But if you want to build the vignettes locally, you can run
+```r
+devtools::install_github("fenguoerbian/RSAVS", force = TRUE, build_vignettes = TRUE)
+```
+Just keep in mind that this will take some quite long time.
+
 ## Example
 Here is a toy example:
 ```r
