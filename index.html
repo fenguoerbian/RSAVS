@@ -102,12 +102,16 @@
 <code class="sourceCode R"><span class="co">#install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_gitlab</span><span class="op">(</span><span class="st">"fenguoerbian/RSAVS"</span><span class="op">)</span></code></pre></div>
 <p><strong><em>Note</em></strong>: If you are interested in the original yet unoptimized version of this package used in the simulation of our paper, you can check the <code>simulation_archive</code> branch of this repo.</p>
+<p><strong>Note</strong>: It’s recommended to read the vignettes on the package’s website. But if you want to build the vignettes locally, you can run</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"fenguoerbian/RSAVS"</span>, force <span class="op">=</span> <span class="cn">TRUE</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>Just keep in mind that this will take some quite long time.</p>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>Here is a toy example:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span>    <span class="co"># number of observations</span>
 <span class="va">q</span> <span class="op">&lt;-</span> <span class="fl">5</span>    <span class="co"># number of active covariates</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">50</span>    <span class="co"># number of total covariates</span>
@@ -121,17 +125,17 @@
 <span class="va">err_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, sd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>    <span class="co"># error term</span>
 <span class="va">y_vec</span> <span class="op">&lt;-</span> <span class="va">alpha_true</span> <span class="op">+</span> <span class="va">x_mat</span> <span class="op">%*%</span> <span class="va">beta_true</span> <span class="op">+</span> <span class="va">err_vec</span>    <span class="co"># response vector</span></code></pre></div>
 <p>Then we analyze the generated data with the function <code>RSAVS_LargeN</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RSAVS_LargeN.html">RSAVS_LargeN</a></span><span class="op">(</span>y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, lam1_length <span class="op">=</span> <span class="fl">50</span>, lam2_length <span class="op">=</span> <span class="fl">40</span>, phi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p>where <code>phi</code> is the parameter needed by mBIC. By default, this function uses <code>L1</code> as the loss function with the <code>SCAD</code> penalty for both subgroup identification and variable selection. You can use other losses or penalties, e.g</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res_huber</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RSAVS_LargeN.html">RSAVS_LargeN</a></span><span class="op">(</span>y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, l_type <span class="op">=</span> <span class="st">"Huber"</span>, l_param <span class="op">=</span> <span class="fl">1.345</span>, 
                           lam1_length <span class="op">=</span> <span class="fl">50</span>, lam2_length <span class="op">=</span> <span class="fl">40</span>, p1_type <span class="op">=</span> <span class="st">"M"</span>, p2_type <span class="op">=</span> <span class="st">"L"</span>, 
                           phi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p>uses <code>Huber</code> loss with parameter 1.345, <code>MCP</code> penalty for subgroup identification and <code>Lasso</code> penalty for variable selection. More details of options can be found in the package documentation.</p>
 <p>The function uses the ADMM method to obtain the solution and the result stored in the variable <code>res</code> is a list containing all <code>lam1_length</code> * <code>lam2_length</code> results. And <code>res$best_id</code> corresponds to the solution with the lowest mBIC.</p>
 <p>You can do post-selection estimation by</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ind</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">best_ind</span>    <span class="co"># pick an id of the solution</span>
 <span class="va">res2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RSAVS_Further_Improve.html">RSAVS_Further_Improve</a></span><span class="op">(</span>y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, 
                               mu_vec <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">mu_improve_mat</span><span class="op">[</span><span class="va">ind</span>, <span class="op">]</span>, 
