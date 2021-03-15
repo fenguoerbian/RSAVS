@@ -21,7 +21,7 @@ But if you want to build the vignettes locally, you can run
 ```r
 devtools::install_github("fenguoerbian/RSAVS", force = TRUE, build_vignettes = TRUE)
 ```
-Just keep in mind that this will take some quite long time.
+Just keep in mind that this will take some really __long__ time.
 
 ## Example
 Here is a toy example:
