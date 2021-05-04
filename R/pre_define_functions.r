@@ -1,59 +1,5 @@
 # This file contains the pre-define functions for Robust Subgroup Analysis
 
-
-#' Built-in loss functions
-#'
-#' These are built-in loss functions.
-#'
-#' @aliases RSAVS_L2 RSAVS_L1 RSAVS_Huber
-#' @param x input numeric vector
-#' @param param parameters needed for the function, takes the form of 
-#' numeric vector. Unused for L1 and L2.
-#' @param derivative logical, whether the return is the loss value or the
-#' derivative.
-#' @return Loss(or derivative) value at x.
-#' @examples
-#' RSAVS_L2(1 : 10)
-#' RSAVS_L1(1 : 10)
-#' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345)
-#' RSAVS_Huber(seq(from = -3, to = 3, by = 0.1), param = 1.345, derivative = TRUE)
-#' @name loss_function
-NULL
-
-#' @rdname loss_function 
-#' @export
-RSAVS_L2 <- function(x, param){
-  # The L2 loss function
-  return(x ^ 2)
-}
-
-#' @rdname loss_function 
-#' @export
-RSAVS_L1 <- function(x, param){
-  # The L1 loss function
-  return(abs(x))
-}
-
-#' @rdname loss_function 
-#' @export
-RSAVS_Huber <- function(x, param, derivative = FALSE){
-  # The huber loss function
-  # Huber(x, c) = 0.5 * x ^ 2                 if abs(x) <= c
-  #               c * abs(x) - 0.5 * c ^ 2    if abs(x) > c
-  huber_c <- param[1]
-  if(!derivative){
-    res <- x
-    id <- which(abs(x) <= huber_c)
-    res[id] <- 0.5 * (x[id] ^ 2)
-    res[-id] <- huber_c * abs(x[-id]) - 0.5 * huber_c ^ 2
-  }else{
-    res <- x
-    id <- which(abs(x) <= huber_c)
-    res[-id] <- huber_c * sign(x[-id])
-  }
-  return(res)
-}
-
 #' Generate the pair-wise different matrix
 #'
 #' This function generate the pairwise difference matrix(D matrix in the paper).
@@ -644,8 +590,13 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' @export
 RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
-                         lam1_vec, lam2_vec, min_lam_ratio = 0.03, lam1_length, lam2_length, 
-                         initial_vec, phi = 1.0, tol = 0.001, max_iter = 10, subgroup_benchmark = FALSE){
+                         lam1_vec, lam2_vec, 
+                         min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, 
+                         lam1_len, lam2_len, 
+                         const_r123, const_abc = rep(1, 3), 
+                         initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
+                         cd_max_iter = 1, cd_tol = 0.001, 
+                         subgroup_benchmark = FALSE){
   # ADMM algorithm, for large n
   # Args: y_vec: response vector, length(y_vec) = n
   #       x_mat: covariate matrix, nrow(x_mat) = n, ncol(x_mat) = p
@@ -723,27 +674,67 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   
   # preparation for r1, r2 and r3
-  r1 <- 2
-  
-  if(p1_type == "L"){
-    r2 <- 2
-  }
-  if(p1_type == "S"){
-    r2 <- max(1.3 * 1 / (p1_gamma - 1), 1 / (p1_gamma - 1) + 1)
-  }
-  if(p1_type == "M"){
-    r2 <- max(1.3 * 1 / p1_gamma, 1 / p1_gamma + 1)
+  if(missing(const_r123)){
+    message("`const_r123` is missing. Use default settings!")
+    r1 <- 2
+    
+    if(p1_type == "L"){
+      r2 <- 2
+    }
+    if(p1_type == "S"){
+      r2 <- max(1.3 * 1 / (p1_gamma - 1), 1 / (p1_gamma - 1) + 1)
+    }
+    if(p1_type == "M"){
+      r2 <- max(1.3 * 1 / p1_gamma, 1 / p1_gamma + 1)
+    }
+    
+    if(p2_type == "L"){
+      r3 <- 2
+    }
+    if(p2_type == "S"){
+      r3 <- max(1.3 * 1 / (p2_gamma - 1), 1 / (p2_gamma - 1) + 1)
+    }
+    if(p2_type == "M"){
+      r3 <- max(1.3 * 1 / p2_gamma, 1 / p2_gamma + 1)
+    }
+  }else{
+    const_r123 <- abs(const_r123)
+    r1 <- const_r123[1]
+    r2 <- const_r123[2]
+    r3 <- const_r123[3]
+    
+    # check for r2
+    if(p1_type == "S"){
+      r2min <- max(1.3 * 1 / (p1_param[2] - 1), 1 / (p1_param[2] - 1) + 1)
+    }
+    if(p1_type == "M"){ 
+      r2min <- max(1.3 * 1 / p1_param[2], 1 / p1_param[2] + 1)
+    }
+    
+    if(r2 < r2min){
+      message("r2 = ", r2, "< r2min = ", r2min, ". Modify value of r2!")
+      r2 <- r2min
+      const_r123[2] <- r2
+    }
+    # check for r3
+    if(p2_type == "S"){
+      r3min <- max(1.3 * 1 / (p2_param[2] - 1), 1 / (p2_param[2] - 1) + 1)
+    }
+    if(p2_type == "M"){
+      r3min <- max(1.3 * 1 / p2_param[2], 1 / p2_param[2] + 1)
+    }
+    if(r3 < r3min){
+      message("r3 = ", r3, "< r3min = ", r3min, ". Modify value of r3!")
+      r3 <- r3min
+      const_r123[3] <- r3
+    }
   }
 
-  if(p2_type == "L"){
-    r3 <- 2
-  }
-  if(p2_type == "S"){
-    r3 <- max(1.3 * 1 / (p2_gamma - 1), 1 / (p2_gamma - 1) + 1)
-  }
-  if(p2_type == "M"){
-    r3 <- max(1.3 * 1 / p2_gamma, 1 / p2_gamma + 1)
-  }
+  # check const_abc
+  const_abc <- abs(const_abc)
+  # const_a <- const_abc[1]
+  # const_b <- const_abc[2]
+  # const_c <- const_abc[3]
   
   # preparation for lam_vec
   if(missing(lam1_vec)){
@@ -752,61 +743,85 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     # lam1_max <- 1 / (2 - 1)    #use 1 / 2 \sum\loss, not 1 / n \sum\loss
     
     # new version
-    d_mat <- RSAVS_Generate_D_Matrix(n = n)
-    if(l_type == "1"){    # L1 loss
-      y_median <- median(y_vec)
-      d_vec <- (-1) * sign(y_vec - y_median)
-    }
-    if(l_type == "2"){    # L2 loss
-      y_mean <- mean(y_vec)
-      d_vec <- (-2) * (y_vec - y_mean)
-    }
-    if(l_type == "H"){    # Huber loss
-      tmp <- rlm(y_vec ~ 1, k = l_param[1])
-      y_huber <- tmp$coefficients[1]
-      d_vec <- (-1) * RSAVS_Huber(y_vec - y_huber, param = l_param[1], derivative = T)
-      rm(tmp)
-    }
-    d_vec <- d_vec / n    # use 1 / n sum loss
-    # d_vec <- d_vec / 2    # use 1 / 2 sum loss
+    # d_mat <- RSAVS_Generate_D_Matrix(n = n)
+    # if(l_type == "1"){    # L1 loss
+    #   y_median <- median(y_vec)
+    #   d_vec <- (-1) * sign(y_vec - y_median)
+    # }
+    # if(l_type == "2"){    # L2 loss
+    #   y_mean <- mean(y_vec)
+    #   d_vec <- (-2) * (y_vec - y_mean)
+    # }
+    # if(l_type == "H"){    # Huber loss
+    #   tmp <- rlm(y_vec ~ 1, k = l_param[1])
+    #   y_huber <- tmp$coefficients[1]
+    #   d_vec <- (-1) * RSAVS_Huber(y_vec - y_huber, param = l_param[1], derivative = T)
+    #   rm(tmp)
+    # }
+    # d_vec <- d_vec / n    # use 1 / n sum loss
+    # # d_vec <- d_vec / 2    # use 1 / 2 sum loss
+    # 
+    # if(n <= 500){
+    #   d_inv <- ginv(as.matrix(t(d_mat) %*% d_mat))
+    #   lam1_max <- max(abs(as.matrix(d_mat %*% (d_inv %*% d_vec))))
+    # }else{
+    #   lam1_max <- 2 / n * max(abs(d_vec))
+    # }
+    # 
+    # lam1_min <- lam1_max * min_lam_ratio
+    # lam1_vec <- exp(seq(from = log(lam1_max), to  = log(lam1_min), length.out = lam1_length))
     
-    if(n <= 500){
-      d_inv <- ginv(as.matrix(t(d_mat) %*% d_mat))
-      lam1_max <- max(abs(as.matrix(d_mat %*% (d_inv %*% d_vec))))
-    }else{
-      lam1_max <- 2 / n * max(abs(d_vec))
+    # newer version
+    message("lam1_vec is missing, use default values...")
+    lam1_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, l_type = l_type, l_param = l_param, 
+                                  lam_ind = 1, 
+                                  const_abc = const_abc, eps = 10^(-6))
+    lam1_min <- lam1_max * min_lam1_ratio
+    if(p1_type != "L"){
+        lam1_max <- lam1_max * 100    # save guard for non-convex penalties
     }
     
-    lam1_min <- lam1_max * min_lam_ratio
-    lam1_vec <- exp(seq(from = log(lam1_max), to  = log(lam1_min), length.out = lam1_length))
-    
+    # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
+    lam1_vec <- exp(seq(from = log(lam1_min), to = log(lam1_max), length.out = lam1_len))
   }else{
-    lam1_vec <- sort(abs(lam1_vec), decreasing = T)
-    lam1_length = length(lam1_vec)
+    # lam1_vec <- sort(abs(lam1_vec), decreasing = T)
+    # lam1_length = length(lam1_vec)
+    lam1_len <- length(lam1_vec)
+    lam1_vec <- sort(abs(lam1_vec), decreasing = FALSE)
   }
   
   if(missing(lam2_vec)){
-    if(l_type == "1"){    # L-1 loss
-      d_vec <- (-1) * sign(y_vec - median(y_vec))
-    }
-    if(l_type == "2"){    # L-2 loss
-      d_vec <- (-2) * (y_vec - mean(y_vec))
-    }
-    if(l_type == "H"){    # Huber loss
-      tmp <- rlm(y_vec ~ 1, k = l_param[1])
-      y_huber <- tmp$coefficients[1]
-      d_vec <- (-1) * RSAVS_Huber(y_vec - y_huber, param = l_param[1], derivative = T)
-      rm(tmp)
-    }    
-    d_vec <- d_vec / n    # use 1 / n \sum\loss
-    # d_vec <- d_vec / 2    # use 1 / 2 \sum\loss
-    lam2_max <- max(abs(t(x_mat) %*% d_vec))
-    lam2_min <- lam2_max * min_lam_ratio
-    lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_length)) 
+    # if(l_type == "1"){    # L-1 loss
+    #   d_vec <- (-1) * sign(y_vec - median(y_vec))
+    # }
+    # if(l_type == "2"){    # L-2 loss
+    #   d_vec <- (-2) * (y_vec - mean(y_vec))
+    # }
+    # if(l_type == "H"){    # Huber loss
+    #   tmp <- rlm(y_vec ~ 1, k = l_param[1])
+    #   y_huber <- tmp$coefficients[1]
+    #   d_vec <- (-1) * RSAVS_Huber(y_vec - y_huber, param = l_param[1], derivative = T)
+    #   rm(tmp)
+    # }    
+    # d_vec <- d_vec / n    # use 1 / n \sum\loss
+    # # d_vec <- d_vec / 2    # use 1 / 2 \sum\loss
+    # lam2_max <- max(abs(t(x_mat) %*% d_vec))
+    # lam2_min <- lam2_max * min_lam_ratio
+    # lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_length)) 
+    
+    # newer version
+    message("lam2_vec is missing, use default values...")
+    lam2_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, x_mat = x_mat, 
+                                  l_type = l_type, l_param = l_param, 
+                                  lam_ind = 2, 
+                                  const_abc = const_abc, eps = 10^(-6))
+    lam2_min <- lam2_max * min_lam2_ratio
+    lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_len))
   }else{
-    lam2_vec <- sort(abs(lam2_vec), decreasing = T)
-    lam2_length <- length(lam2_vec)
+    lam2_vec <- sort(abs(lam2_vec), decreasing = TRUE)
+    lam2_len <- length(lam2_vec)
   }
+  
   if(subgroup_benchmark){
     # supress lambda for variable selection if this is subgroup benchmark
     lam2_vec <- lam2_vec * 0.05
