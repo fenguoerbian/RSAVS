@@ -22,6 +22,7 @@ __NOTE:__ This article is finished with `RSAVS` version 0.1.2.
 library(ggplot2)
 library(dplyr)
 library(skimr)
+remotes::install_github("fenguoerbian/RSAVS", ref = "v0.1.2")
 library(RSAVS)
 ```
 
