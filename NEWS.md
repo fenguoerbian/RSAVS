@@ -1,3 +1,9 @@
+# Upcoming changes
+
+## API changes
+  
+  - Parameters `lam1_length` and `lam2_length` in function `RSAVS_LargeN` are renamed to `lam1_len` and `lam2_len`..
+
 # RSAVS 0.1.2
 
 ## Minor changes

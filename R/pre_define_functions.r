@@ -540,7 +540,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #'   Note: Currently the function uses auto-generated lambda vectors and these parameters are ignored.
 #' @param min_lam_ratio the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
 #'   The default value is 0.03.
-#' @param lam1_length,lam2_length integers, lengths of the auto-generated lambda vectors.
+#' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
 #' @param initial_vec list of vector, providing initial values for the algorithm. 
 #'   \code{mu_initial = initial_vec$mu}
 #'   and 
@@ -573,14 +573,14 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' 
 #' # a simple analysis using default loss and penalties
 #' res <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
-#'                     lam1_length = 50, lam2_length = 40, 
+#'                     lam1_len = 50, lam2_len = 40, 
 #'                     phi = 5)
 #' 
 #' # you can choose different loss and penalties
 #' res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
 #'                           l_type = "Huber", l_param = 1.345,
 #'                           p1_type = "M", p2_type = "L",
-#'                           lam1_length = 50, lam2_length = 40, 
+#'                           lam1_len = 50, lam2_len = 40, 
 #'                           phi = 5)
 #' # you can do post-selection estimation by
 #' ind <- res$best_ind    # pick an id of the solution
