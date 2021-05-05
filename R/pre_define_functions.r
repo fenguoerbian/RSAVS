@@ -827,7 +827,35 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     lam2_vec <- lam2_vec * 0.05
   }
   
-  # prepare other values
+  # --- prepare other values ---
+  # intermediate variables needed for the algorithm
+  d_mat <- RSAVS_Generate_D_Matrix(n)    # pairwise difference matrix
+  
+  beta_lhs <- NA    # left part for updating beta
+  if(n >= p){
+    beta_lhs <- solve(r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p))
+  }else{
+    beta_lhs <- 1.0 / r3 * (diag(nrow = p) - r1 * t(x_mat) %*% solve(r1 * x_mat %*% t(x_mat) + r3 * diag(nrow = n)) %*% x_mat)
+  }
+  
+  # left part for updating mu
+  mu_lhs <- solve(SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat))
+  
+  mu_beta_lhs <- NA    # left part for updating beta and mu together
+  if(cd_max_iter == 0){
+    mu_beta_lhs <- matrix(0, nrow = n + p, ncol = n + p)
+    mu_beta_lhs[1 : n, 1 : n] <- SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat) 
+    mu_beta_lhs[n + (1 : p), 1 : n] <- r1 * t(x_mat)
+    mu_beta_lhs[1 : n, n + (1 : p)] <- r1 * x_mat
+    mu_beta_lhs[n + (1 : p), n + (1 : p)] <- r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p)
+    mu_beta_lhs <- solve(mu_beta_lhs)
+  }
+  
+  additional <- list(d_mat = d_mat,  
+                     beta_lhs = beta_lhs, 
+                     mu_lhs = mu_lhs, 
+                     mu_beta_lhs = mu_beta_lhs)
+  
   if(l_type == "2"){
     # beta_left_inv <- solve(t(x_mat) %*% x_mat / n + r3 / 2 * diag(nrow = p))
     # d_mat <- RSAVS_Generate_D_Matrix(n)
