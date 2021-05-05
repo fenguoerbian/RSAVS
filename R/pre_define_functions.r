@@ -778,7 +778,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                   const_abc = const_abc, eps = 10^(-6))
     lam1_min <- lam1_max * min_lam1_ratio
     if(p1_type != "L"){
-        lam1_max <- lam1_max * 100    # save guard for non-convex penalties
+        lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
     }
     
     # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
