@@ -17,9 +17,9 @@ RSAVS_Compute_BIC(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi)
 
 \item{loss_type, loss_param}{type and parameters of the loss function
 \itemize{
-  \item \code{loss_type = "1"}: L-1 loss, no actual parameter is needed.
-  \item \code{loss_type = "2"}: L-2 loss, no actual parameter is needed.
-  \item \code{loss_type = "H"}, Huber loss, and \code{c = loss_param[0]}, where \code{c}
+  \item \code{loss_type = "L1"}: L-1 loss, no actual parameter is needed.
+  \item \code{loss_type = "L2"}: L-2 loss, no actual parameter is needed.
+  \item \code{loss_type = "Huber"}, Huber loss, and \code{c = loss_param[0]}, where \code{c}
     is the parameter needed by huber loss. A popular choice is \code{c = 1.345}.
 }}
 

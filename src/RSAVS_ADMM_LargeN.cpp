@@ -288,7 +288,7 @@ void UpdateW_MCP(Eigen::VectorXd &w_invec, const Eigen::VectorXd &penalty_param,
 // main body 
 // [[Rcpp::export]]
 Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, 
-                             const char loss_type, const Eigen::VectorXd loss_param, 
+                             const std::string& loss_type, const Eigen::VectorXd loss_param, 
                              const char p1_type, Eigen::VectorXd p1_param, 
                              const char p2_type, Eigen::VectorXd p2_param, 
                              const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec,
@@ -413,10 +413,10 @@ Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd 
     Rcpp::Rcout << "mu left finished." << std::endl;
 // assign the correct updating functions    
     UpdateZ = UpdateZ_L1;    // default loss type is L1
-    if(loss_type == 'H'){
+    if(loss_type == "Huber"){
         UpdateZ = UpdateZ_Huber;
     }
-    if(loss_type == '2'){
+    if(loss_type == "L2"){
         UpdateZ = UpdateZ_L2;
     }
     

@@ -2,7 +2,8 @@
 
 ## API changes
   
-  - Parameters `lam1_length` and `lam2_length` in function `RSAVS_LargeN` are renamed to `lam1_len` and `lam2_len`..
+  - Parameters `lam1_length` and `lam2_length` in function `RSAVS_LargeN` are renamed to `lam1_len` and `lam2_len`.
+  - Possible choices for parameter `loss_type` are standardized to the same format. Currently they are `"L1"`, `"L2"` and `"Huber"`.
 
 # RSAVS 0.1.2
 

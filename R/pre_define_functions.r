@@ -239,9 +239,9 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 #' @param mu_vec numerical vector of subgroup effect(intercept term) for each observations
 #' @param loss_type,loss_param type and parameters of the loss function
 #'   \itemize{
-#'     \item \code{loss_type = "1"}: L-1 loss, no actual parameter is needed.
-#'     \item \code{loss_type = "2"}: L-2 loss, no actual parameter is needed.
-#'     \item \code{loss_type = "H"}, Huber loss, and \code{c = loss_param[0]}, where \code{c}
+#'     \item \code{loss_type = "L1"}: L-1 loss, no actual parameter is needed.
+#'     \item \code{loss_type = "L2"}: L-2 loss, no actual parameter is needed.
+#'     \item \code{loss_type = "Huber"}, Huber loss, and \code{c = loss_param[0]}, where \code{c}
 #'       is the parameter needed by huber loss. A popular choice is \code{c = 1.345}.
 #'   }
 #' @param phi a positive constant. 
@@ -272,9 +272,9 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   #       beta_vec: vector of estimated covariate effects 
   #       mu_vec: vector of intercept effect of each observation
   #       loss_type, loss_param: type and parameters of the loss function
-  #                              loss_type = "1", L1 loss, no actual parameter is needed
-  #                              loss_type = "2", L2 loss, no actual parameter is needed
-  #                              loss_type = "H", Huber loss, and c = loss_param[0]
+  #                              loss_type = "L1", L1 loss, no actual parameter is needed
+  #                              loss_type = "L2", L2 loss, no actual parameter is needed
+  #                              loss_type = "Huber", Huber loss, and c = loss_param[0]
   #       phi: a constant
   # Returns: bic.
   
@@ -290,10 +290,10 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   
   # Find loss function
   loss_fun <- RSAVS_L1
-  if(loss_type == "H"){
+  if(loss_type == "Huber"){
     loss_fun <- RSAVS_Huber
   } else{
-    if(loss_type == "2"){
+    if(loss_type == "L2"){
       loss_fun <- RSAVS_L2
     }
   }
@@ -632,15 +632,15 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   # preparation for loss function #
   if(l_type == "L2"){
-    l_type = "2"
+    # l_type = "2"
     l_param = 0
   } else{
     if(l_type == "L1"){
-      l_type = "1"
+      # l_type = "1"
       l_param = 0
     } else {
       if(l_type == "Huber"){
-        l_type = "H"
+        # l_type = "H"
         huber_c = l_param[1]
       }else{
         stop("Error of Loss type!")
