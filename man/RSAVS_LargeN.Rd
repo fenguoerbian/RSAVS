@@ -15,13 +15,18 @@ RSAVS_LargeN(
   p2_param = c(2, 3.7),
   lam1_vec,
   lam2_vec,
-  min_lam_ratio = 0.03,
-  lam1_length,
-  lam2_length,
-  initial_vec,
+  min_lam1_ratio = 0.03,
+  min_lam2_ratio = 0.03,
+  lam1_len,
+  lam2_len,
+  const_r123,
+  const_abc = rep(1, 3),
+  initial_values,
   phi = 1,
   tol = 0.001,
   max_iter = 10,
+  cd_max_iter = 1,
+  cd_tol = 0.001,
   subgroup_benchmark = FALSE
 )
 }
@@ -63,18 +68,7 @@ Hence the \code{lambda}s provided in these parameters will be ignored and overwr
 It's preferred to be the order from big to small.
 Note: Currently the function uses auto-generated lambda vectors and these parameters are ignored.}
 
-\item{min_lam_ratio}{the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
-The default value is 0.03.}
-
-\item{lam1_length, lam2_length}{integers, lengths of the auto-generated lambda vectors.}
-
-\item{initial_vec}{list of vector, providing initial values for the algorithm. 
-\code{mu_initial = initial_vec$mu}
-and 
-\code{beta_initial = initial_vec$beta}.
-Note: Current the function uses auto-generated lambda vectors 
-and the corresponding initial values are all just shrinked to 0.
-Hence this parameter is ignored.}
+\item{lam1_len, lam2_len}{integers, lengths of the auto-generated lambda vectors.}
 
 \item{phi}{numerical variable. A parameter needed for mBIC.}
 
@@ -84,6 +78,17 @@ Hence this parameter is ignored.}
 
 \item{subgroup_benchmark}{bool. Whether this call should be taken as a benchmark of subgroup identification. 
 If \code{TRUE}, then the penalty for variable selection will be surpressed to a minimal value.}
+
+\item{min_lam_ratio}{the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
+The default value is 0.03.}
+
+\item{initial_vec}{list of vector, providing initial values for the algorithm. 
+\code{mu_initial = initial_vec$mu}
+and 
+\code{beta_initial = initial_vec$beta}.
+Note: Current the function uses auto-generated lambda vectors 
+and the corresponding initial values are all just shrinked to 0.
+Hence this parameter is ignored.}
 }
 \description{
 This function carries out robust subgroup analysis and variable selection simultaneously. 
@@ -109,14 +114,14 @@ y_vec <- alpha_true + x_mat \%*\% beta_true + err_vec    # response vector
 
 # a simple analysis using default loss and penalties
 res <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
-                    lam1_length = 50, lam2_length = 40, 
+                    lam1_len = 50, lam2_len = 40, 
                     phi = 5)
 
 # you can choose different loss and penalties
 res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
                           l_type = "Huber", l_param = 1.345,
                           p1_type = "M", p2_type = "L",
-                          lam1_length = 50, lam2_length = 40, 
+                          lam1_len = 50, lam2_len = 40, 
                           phi = 5)
 # you can do post-selection estimation by
 ind <- res$best_ind    # pick an id of the solution
