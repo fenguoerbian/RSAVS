@@ -597,32 +597,6 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                          initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
                          cd_max_iter = 1, cd_tol = 0.001, 
                          subgroup_benchmark = FALSE){
-  # ADMM algorithm, for large n
-  # Args: y_vec: response vector, length(y_vec) = n
-  #       x_mat: covariate matrix, nrow(x_mat) = n, ncol(x_mat) = p
-  #       l_type: character string, type of the loss function in the objective function
-  #               "L2": l-2 loss, "L1": l-1 loss, "Huber": huber loss
-  #       l_param: necessary parameters for the corresponding loss function.
-  #                For l-2 and l-1 loss, this parameter is not necessary
-  #                For Huber loss, c = l_param[1]
-  #       p1_type, p2_type: character variable, type of the penalties applied over mu and beta
-  #                         "L: Lasso, "S": SCAD, "M": MCP
-  #       p1_param, p2_param: numeric vector, necessary parameters for the corresponding vector.
-  #                           For lasso: lam = p_param[1]
-  #                           For SCAD and MCP: lam = p_param[1], gamma = p_param[2]
-  #       lam1_vec, lam2_vec:
-  #       min_lam_ratio: the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda)
-  #       lam1_length, lam2_length: the length of lam1_vec and lam2_vec
-  #       initial_vec: list of vector, providing initial values for the algorithm
-  #                    mu_initial = initial_vec$mu
-  #                    beta_initial = initial_vec$beta
-  #       phi: constant needed for computing BIC
-  #       tol: tolerance
-  #       max_iter: maximum number of iteration
-  #       subgroup_benchmark: bool, default to FALSE. Whether this computation is only for subgroup benchmark
-  #                           if true, then the lambda vector of penalty for covariate selection will be shrink to a small value.
-  # Returns: A list containning:
-  
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -658,7 +632,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       p1_lam = p1_param[1]
       p1_gamma = p1_param[2]
     } else {
-        stop("Error of Penalty 1 type!")
+      stop("Error of Penalty 1 type!")
     }
   }
   if(p2_type == "L"){
@@ -729,7 +703,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       const_r123[3] <- r3
     }
   }
-
+  
   # check const_abc
   const_abc <- abs(const_abc)
   # const_a <- const_abc[1]
@@ -778,7 +752,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                   const_abc = const_abc, eps = 10^(-6))
     lam1_min <- lam1_max * min_lam1_ratio
     if(p1_type != "L"){
-        lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
+      lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
     }
     
     # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
@@ -828,6 +802,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   }
   
   # --- prepare other values ---
+  message("prepare intermediate variables needed by the algorithm")
   # intermediate variables needed for the algorithm
   d_mat <- RSAVS_Generate_D_Matrix(n)    # pairwise difference matrix
   
@@ -856,7 +831,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                      mu_lhs = mu_lhs, 
                      mu_beta_lhs = mu_beta_lhs)
   
-  if(l_type == "2"){
+  if(l_type == "L2"){
     # beta_left_inv <- solve(t(x_mat) %*% x_mat / n + r3 / 2 * diag(nrow = p))
     # d_mat <- RSAVS_Generate_D_Matrix(n)
     # mu_left_inv <- solve(diag(nrow = n) / n + r2 / 2 * as.matrix(t(d_mat) %*% d_mat))
@@ -864,7 +839,7 @@ RSAVS_LargeN <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   } else{
     res <- RSAVS_LargeN_Rcpp(x_mat, y_vec, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r1, r2, r3, phi, tol, max_iter)
   }
-
+  
   # Idealy, the result of c(lam1[1], lam2[1]) should be mu being median and beta being 0
   # So the result is directly set to this, without actually computing using ADMM
   # But in actuality, our derivation of lam1[1] and lam2[1] is not that accurate, 
