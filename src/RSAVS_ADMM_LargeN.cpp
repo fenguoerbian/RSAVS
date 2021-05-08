@@ -80,6 +80,145 @@ double SoftThresholding(const double z, const double r) {
     return(0.0);     
 }
 
+/*
+    These are the loss functions of the algorithm
+*/
+Eigen::VectorXd Loss_L1(const Eigen::VectorXd &invec, const Eigen::VectorXd& loss_param){
+    // int n = invec.size();
+    Eigen::VectorXd res = invec.array().abs();
+    return(res);
+}
+
+Eigen::VectorXd Loss_L2(const Eigen::VectorXd &invec, const Eigen::VectorXd& loss_param){
+    Eigen::VectorXd res = invec.array().pow(2);
+    return(res);
+}
+
+Eigen::VectorXd Loss_Huber(const Eigen::VectorXd& invec, const Eigen::VectorXd& loss_param){
+    const double huber_c = loss_param[0];
+    const int n = invec.size();
+    Eigen::VectorXd res = Eigen::MatrixXd::Zero(n, 1);
+    for(int i = 0; i < n; i++){
+        if(fabs(invec[i]) <= huber_c){
+            res[i] = 0.5 * invec[i] * invec[i];
+        }else{
+            res[i] = huber_c * fabs(invec[i]) - 0.5 * huber_c * huber_c;
+        }
+    }
+    return(res);
+}
+
+/*
+    These are penalty functions of the algorithm 
+*/
+Eigen::VectorXd Penalty_Lasso(const Eigen::VectorXd &invec, 
+                              const Eigen::VectorXd &param, 
+                              const bool &derivative){
+    const int n = invec.size();
+    const double lam = fabs(param[0]);
+    Eigen::VectorXd res = Eigen::MatrixXd::Zero(n, 1);
+    if(derivative){
+        for(int i = 0; i < n; i++){
+            if(invec[i] >= 0){
+                res[i] = lam;
+            }else{
+                res[i] = -lam;
+            }
+        }
+    }else{
+        for(int i = 0; i < n; i++){
+            res[i] = lam * fabs(invec[i]);
+        }
+    }
+    return(res);
+}
+
+Eigen::VectorXd Penalty_SCAD(const Eigen::VectorXd &invec, 
+                             const Eigen::VectorXd &param, 
+                             const bool &derivative){
+    const int n = invec.size();
+    const double lam = fabs(param[0]);
+    const double gam = fabs(param[1]);
+    Eigen::VectorXd res = Eigen::MatrixXd::Zero(n, 1);
+    double tmp;
+    if(derivative){
+        for(int i = 0; i < n; i++){
+            tmp= invec[i];
+            if(tmp > lam * gam){
+                res[i] = 0;
+            }else if(tmp >= lam){
+                res[i] = (lam * gam - tmp) / (gam - 1);
+            }else if(tmp >= 0){
+                res[i] = lam;
+            }else if(tmp > -lam){
+                res[i] = -lam;
+            }else if(tmp > -lam * gam){
+                res[i] = (-gam * lam - tmp) / (gam - 1);
+            }else{
+                res[i] = 0;
+            }
+        }
+    }else{
+        for(int i = 0; i < n; i++){
+            tmp = invec[i];
+            if(tmp> lam * gam){
+                res[i] = (gam + 1) * lam * lam / 2;
+            }else if(tmp >= lam){
+                res[i] = (-tmp * tmp / 2 + gam * lam * tmp) / (gam - 1) - lam * lam / 2 / (gam - 1);
+            }else if(tmp > -lam){
+                res[i] = lam * fabs(tmp);
+            }else if(tmp > -lam * gam){
+                res[i] = (-tmp * tmp / 2 - gam * lam * tmp) / (gam - 1) - lam * lam / 2 / (gam - 1);
+            }else{
+                res[i] = (gam + 1) * lam * lam / 2;
+            }
+        }
+    }
+    return(res);
+}
+
+Eigen::VectorXd Penalty_MCP(const Eigen::VectorXd &invec, 
+                            const Eigen::VectorXd &param, 
+                            const bool &derivative){
+    const int n = invec.size();
+    const double lam = fabs(param[0]);
+    const double gam = fabs(param[1]);
+    Eigen::VectorXd res = Eigen::MatrixXd::Zero(n, 1);
+    double tmp;
+    if(derivative){
+        for(int i = 0; i < n; i++){
+            tmp= invec[i];
+            if(tmp > gam * lam){
+                res[i] = 0;
+            }else if(tmp >= 0){
+                res[i] = lam - tmp / gam;
+            }else if(tmp > -lam * gam){
+                res[i] = -lam - tmp / gam;
+            }else{
+                res[i] = 0;
+            }
+        }
+    }else{
+        for(int i = 0; i < n; i++){
+            tmp = invec[i];
+            if(tmp > gam * lam){
+                res[i] = gam * lam * lam / 2;
+            }else if(tmp >= 0){
+                res[i] = lam * tmp - tmp * tmp / 2 / gam;
+            }else if(tmp > -gam * lam){
+                res[i] = -lam * tmp - tmp * tmp / 2 / gam;   
+            }else{
+                res[i] = gam * lam * lam / 2;
+            }
+        }
+    }
+    return(res);
+}
+
+
+
+
+
 /*  
     These are the updates of the algorithm of different types.
     The detail of types still needs modification.
@@ -284,6 +423,49 @@ void UpdateW_MCP(Eigen::VectorXd &w_invec, const Eigen::VectorXd &penalty_param,
 }
 
 
+
+Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
+                                             const std::string& l_type, const Eigen::VectorXd& l_param,
+                                             const char& p1_type, const Eigen::VectorXd p1_param, 
+                                             const char& p2_type, const Eigen::VectorXd p2_param, 
+                                             const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
+                                             const Eigen::VectorXd& mu_vec, const Eigen::VectorXd& beta_vec, 
+                                             const Eigen::VectorXd& z_vec, const Eigen::VectorXd& s_vec, const Eigen::VectorXd& w_vec, 
+                                             const Eigen::VectorXd& q1_vec, const Eigen::VectorXd& q2_vec, const Eigen::VectorXd& q3_vec){
+    
+    double loss_p1, loss_p2, loss_p3, loss_aug1, loss_aug2, loss_aug3;
+    // ------ setup loss function ------
+    Eigen::VectorXd (*Loss_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &);
+    Loss_Function = Loss_L1;
+    if(l_type == "L2"){
+        Loss_Function = Loss_L2;
+    }
+    if(l_type == "Huber"){
+        Loss_Function = Loss_Huber;
+    }
+    
+    // ------ setup p1 penalty function ------
+    Eigen::VectorXd (*P1_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &, const bool &);
+    P1_Function = Penalty_Lasso;
+    if(p1_type == "S"){
+        P1_Function = Penalty_SCAD;
+    }
+    if(p1_type == "M"){
+        P1_Function = Penalty_MCP;
+    }
+    
+    // ------ setup p2 penalty function ------
+    Eigen::VectorXd (*P2_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &, const bool &);
+    P2_Function = Penalty_Lasso;
+    if(p2_type == "S"){
+        P2_Function = Penalty_SCAD;
+    }
+    if(p2_type == "M"){
+        P2_Function = Penalty_MCP;
+    }
+    
+    
+}
 
 // main body 
 // [[Rcpp::export]]
@@ -947,4 +1129,15 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::Vector
     return res;
 }
 
-// wrapper for working with R CMD SHLIB
+
+
+Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
+                            const std::string& l_type, const Eigen::VectorXd& l_param, 
+                            const char& p1_type, const Eigen::VectorXd p1_param, 
+                            const char& p2_type, const Eigen::VectorXd p2_param, 
+                            const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
+                            const double& tol, const int& max_iter, 
+                            const double& cd_tol, const int& cd_max_iter, 
+                            const double& phi){
+                                
+}

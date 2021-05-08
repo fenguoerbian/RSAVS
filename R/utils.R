@@ -65,3 +65,105 @@ RSAVS_Get_Lam_Max <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, lam_i
     
     return(lam_max)
 }
+
+RSAVS_Compute_Loss_Value <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
+                                     p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
+                                     const_r123, const_abc, 
+                                     beta_vec, mu_vec, z_vec, s_vec, w_vec, 
+                                     q1_vec, q2_vec, q3_vec){
+  # This functions computes the current value of loss function(augmented lagrangian form)
+  # There are three parts in the main body of loss function:
+  #   1 / a * sum(rho(z_vec))
+  #   b * sum(P_1(s_vec))
+  #   c * sum(P_2(w_vec))
+  # There are three parts in the augmented part of loss function:
+  #   r_1 / 2 * norm(y_vec - mu_vec - x_mat * beta - z_vec) ^ 2 + inner_product(y_vec - mu_vec - x_mat * beta - z_vec, q1_vec)
+  #   r_2 / 2 * norm(D_mat * mu_vec - s_vec) ^ 2 + inner_product(D_mat * mu_vec - s_vec, q2_vec)
+  #   r_3 / 2 * norm(beta_vec - w_vec) ^ 2 + inner_product(beta_vec - w_vec, q3_vec)
+  # NOTE: for "L2" loss, there should not be a part about the `z_vec`, 
+  #         but currently this is not implemented correctly.
+  # ------ prepare some basic variables ------
+  y_vec <- as.vector(y_vec)
+  n <- length(y_vec)
+  p <- nrow(x_mat)
+  d_mat <- RSAVS_Generate_D_Matrix(n)    # pairwise difference matrix
+  
+  # --- check for loss function ---
+  if(l_type == "L1"){
+    loss_fun <- RSAVS_L1
+  }else{
+    if(l_type == "L2"){
+      loss_fun <- RSAVS_L2
+    }else{
+      if(l_type == "Huber"){
+        loss_fun <- RSAVS_Huber
+      }else{
+        stop("Unsupported type of loss function!")
+      }
+    }
+  }
+  
+  # --- check for penalty 1 ---
+  if(p1_type == "L"){
+    p1_fun <- penalty_lasso
+  }else{
+    if(p1_type == "S"){
+      p1_fun <- penalty_scad
+    }else{
+      if(p1_type == "M"){
+        p1_fun <- penalty_mcp
+      }else{
+        stop("Wrong type of `p1_type`! Must be either `L`, `S` or `M`!")
+      }
+    }
+  }
+  
+  # --- check for penalty 2 --- 
+  if(p2_type == "L"){
+    p2_fun <- penalty_lasso
+  }else{
+    if(p2_type == "S"){
+      p2_fun <- penalty_scad
+    }else{
+      if(p2_type == "M"){
+        p2_fun <- penalty_mcp
+      }else{
+        stop("Wrong type of `p2_type`! Must be either `L`, `S` or `M`!")
+      }
+    }
+  }
+  
+  
+  # ------ compute value of loss function -------
+  # --- main loss function ---
+  loss_part1 <- 1 / const_abc[1] * sum(loss_fun(z_vec, param = l_param))
+  loss_part2 <- const_abc[2] * sum(p1_fun(s_vec, params = p1_param))
+  loss_part3 <- const_abc[3] * sum(p2_fun(w_vec, params = p2_param))
+  
+  # --- augmented lagrangian part ---
+  tmp <- y_vec - mu_vec - x_mat %*% beta_vec - z_vec
+  loss_aug1 <- as.numeric(const_r123[1] / 2 * t(tmp) %*% tmp + t(tmp) %*% q1_vec)
+  diff_z <- as.numeric(t(tmp) %*% tmp)
+  
+  tmp <- SparseM::as.matrix(d_mat %*% mu_vec) - s_vec
+  loss_aug2 <- as.numeric(const_r123[2] / 2 * t(tmp) %*% tmp + t(tmp) %*% q2_vec)
+  diff_s <- as.numeric(t(tmp) %*% tmp)
+  
+  tmp <- beta_vec - w_vec
+  loss_aug3 <- as.numeric(const_r123[3] / 2 * t(tmp) %*% tmp + t(tmp) %*% q3_vec)
+  diff_w <- as.numeric(t(tmp) %*% tmp)
+  
+  loss <- loss_part1 + loss_part2 + loss_part3 + loss_aug1 + loss_aug2 + loss_aug3
+  
+  res <- list(loss = loss, 
+              loss_part1 = loss_part1, 
+              loss_part2 = loss_part2, 
+              loss_part3 = loss_part3, 
+              loss_aug1 = loss_aug1, 
+              loss_aug2 = loss_aug2, 
+              loss_aug3 = loss_aug3, 
+              diff_z = diff_z, 
+              diff_s = diff_s, 
+              diff_w = diff_w)
+  return(res)
+}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pre_define_functions.r
 \name{RSAVS_LargeN}
 \alias{RSAVS_LargeN}
-\title{Robust subgroup analysis and variable selection simultaneously.}
+\title{Robust subgroup analysis and variable selection simultaneously for large scale dataset}
 \usage{
 RSAVS_LargeN(
   y_vec,

@@ -54,8 +54,8 @@ This function has two purposes:
     \item Determine and improve beta_vec and mu_vec, if possible.
     \item Compute BIC.
   }
-Since for large scale dataset, especially with big number of observations, it's impossible to first 
-save all the varialbes during the ADMM algorithm over the \code{lam1_length * lam2_length} grid points
+Since for large scale data set, especially with big number of observations, it's impossible to first 
+save all the variables during the ADMM algorithm over the \code{lam1_length * lam2_length} grid points
 of lambdas, then pick a best solution with mBIC. For \code{s_vec} alone, this means we have to save a
 matrix with \code{n * (n - 1) / 2} rows and \code{lam1_length * lam2_length} columns, which is hard
 for a single computer. Instead, we summarise each iteration during the algorithm. Then there's no need

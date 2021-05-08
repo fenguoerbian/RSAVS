@@ -4,7 +4,16 @@
 \alias{RSAVS_Compute_BIC}
 \title{Compute Modified BIC}
 \usage{
-RSAVS_Compute_BIC(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi)
+RSAVS_Compute_BIC(
+  y_vec,
+  x_mat,
+  beta_vec,
+  mu_vec,
+  loss_type,
+  loss_param,
+  phi,
+  a
+)
 }
 \arguments{
 \item{y_vec}{numerical vector of response. \code{n = length(y_vec)} is the number of observations.}

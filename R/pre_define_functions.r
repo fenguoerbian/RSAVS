@@ -186,8 +186,8 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' @return a length-n vector of subgroup effects. Observations belonging to the same
 #'   subgroup should have the same effects.
 #' @details 
-#'   Currently, the resulting subgrouping effects are the average value of \code{mu_vec}
-#'   for those belonging to the same subgoup according to \code{group_res}.
+#'   Currently, the resulting subgroup effects are the average value of \code{mu_vec}
+#'   for those belonging to the same subgroup according to \code{group_res}.
 #'   
 #'   If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
 #'   to get the estimated grouping result.
@@ -258,7 +258,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 #'     \item |S| is the complexity of the model and \eqn{|S| = K + Q}.
 #'     \item Phi is a constant and \code{Phi = phi * log(log(n + p)) * log(n) / n}.
 #'   }
-RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi){
+RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi, a){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
   # where 1. mu is the intercept term of each observation. 
@@ -283,6 +283,10 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   n <- length(y_vec)
   x_mat <- matrix(x_mat, nrow = n)    # make sure x_mat is a matrix, even if it has only one column
   p <- ncol(x_mat)
+  
+  if(missing(a)){
+    a <- n
+  }
   
   # compute PHI
   # phi <- phi * log(log(n + p)) * log(n + p) / n
@@ -316,7 +320,7 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   # }
   
   # compute bic
-  bic_p1 <- log(1 / n * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param)))
+  bic_p1 <- log(1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param)))
   bic_p2 <- (group_num + active_beta_num) * phi
   bic <- bic_p1 + bic_p2
   
@@ -332,8 +336,8 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
 #'     \item Determine and improve beta_vec and mu_vec, if possible.
 #'     \item Compute BIC.
 #'   }
-#' Since for large scale dataset, especially with big number of observations, it's impossible to first 
-#' save all the varialbes during the ADMM algorithm over the \code{lam1_length * lam2_length} grid points
+#' Since for large scale data set, especially with big number of observations, it's impossible to first 
+#' save all the variables during the ADMM algorithm over the \code{lam1_length * lam2_length} grid points
 #' of lambdas, then pick a best solution with mBIC. For \code{s_vec} alone, this means we have to save a
 #' matrix with \code{n * (n - 1) / 2} rows and \code{lam1_length * lam2_length} columns, which is hard
 #' for a single computer. Instead, we summarise each iteration during the algorithm. Then there's no need
@@ -503,7 +507,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
     return(res)   
 }
 
-#' Robust subgroup analysis and variable selection simultaneously.
+#' Robust subgroup analysis and variable selection simultaneously for large scale dataset
 #' 
 #' This function carries out robust subgroup analysis and variable selection simultaneously. 
 #' It's implemented in a parallel fashion. It supports different types of loss functions and penalties.
