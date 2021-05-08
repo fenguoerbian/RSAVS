@@ -204,8 +204,8 @@ the candidate model.</p></td>
     <p>This function has two purposes:</p><ul>
 <li><p>Determine and improve beta_vec and mu_vec, if possible.</p></li>
 <li><p>Compute BIC.</p></li>
-</ul><p>Since for large scale dataset, especially with big number of observations, it's impossible to first 
-save all the varialbes during the ADMM algorithm over the <code>lam1_length * lam2_length</code> grid points
+</ul><p>Since for large scale data set, especially with big number of observations, it's impossible to first 
+save all the variables during the ADMM algorithm over the <code>lam1_length * lam2_length</code> grid points
 of lambdas, then pick a best solution with mBIC. For <code>s_vec</code> alone, this means we have to save a
 matrix with <code>n * (n - 1) / 2</code> rows and <code>lam1_length * lam2_length</code> columns, which is hard
 for a single computer. Instead, we summarise each iteration during the algorithm. Then there's no need
