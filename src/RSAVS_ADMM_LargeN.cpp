@@ -433,7 +433,11 @@ Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const
                                              const Eigen::VectorXd& z_vec, const Eigen::VectorXd& s_vec, const Eigen::VectorXd& w_vec, 
                                              const Eigen::VectorXd& q1_vec, const Eigen::VectorXd& q2_vec, const Eigen::VectorXd& q3_vec){
     
-    double loss_p1, loss_p2, loss_p3, loss_aug1, loss_aug2, loss_aug3;
+    Eigen::VectorXd loss_vec = Eigen::MatrixXd::Zero(7, 1);
+    double loss, loss_p1, loss_p2, loss_p3, loss_aug1, loss_aug2, loss_aug3;
+    Eigen::VectorXd tmp;
+    Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
+    
     // ------ setup loss function ------
     Eigen::VectorXd (*Loss_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &);
     Loss_Function = Loss_L1;
@@ -464,7 +468,33 @@ Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const
         P2_Function = Penalty_MCP;
     }
     
+    // ------ compute loss value ------
+    // --- main loss function ---
+    loss_p1 = 1.0 / const_abc[0] * (Loss_Function(z_vec, loss_param).sum());
+    loss_p2 = const_abc[1] * (P1_Function(s_vec, p1_param, false).sum());
+    loss_p3 = const_abc[2] * (P2_Function(w_vec, p2_param, false).sum());
     
+    // --- augmented lagrangian part ---
+    tmp = y_vec - mu_vec - x_mat * beta_vec - z_vec;
+    loss_aug1 = const_r123[0] / 2.0 * tmp.dot(tmp) + tmp.dot(q1_vec);
+    
+    tmp = d_mat * mu_vec - s_vec;
+    loss_aug2 = const_r123[1] / 2.0 * tmp.dot(tmp) + tmp.dot(q2_vec);
+    
+    tmp = beta_vec - w_vec;
+    loss_aug3 = const_r123[2] / 2.0 * tmp.dot(tmp) + tmp.dot(q3_vec);
+    
+    loss = loss_p1 + loss_p2 + loss_p3 + loss_aug1 + loss_aug2 + loss_aug3;
+    
+    loss_vec[0] = loss;
+    loss_vec[1] = loss_p1;
+    loss_vec[2] = loss_p2;
+    loss_vec[3] = loss_p3;
+    loss_vec[4] = loss_aug1;
+    loss_vec[5] = loss_aug2;
+    loss_vec[6] = loss_aug3;
+    
+    return(loss_vec);
 }
 
 // main body 
@@ -1133,11 +1163,61 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::Vector
 
 Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
                             const std::string& l_type, const Eigen::VectorXd& l_param, 
-                            const char& p1_type, const Eigen::VectorXd p1_param, 
-                            const char& p2_type, const Eigen::VectorXd p2_param, 
+                            const std::string& p1_type, const Eigen::VectorXd p1_param, 
+                            const std::string& p2_type, const Eigen::VectorXd p2_param, 
                             const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
                             const double& tol, const int& max_iter, 
                             const double& cd_tol, const int& cd_max_iter, 
+                            const Rcpp::List& initial_values,
                             const double& phi){
-                                
-}
+    
+    // Update functions for z, s and w
+    void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    
+    Update_Z = UpdateZ_L1;
+    if(l_type == "L2"){
+        Update_Z = UpdateZ_L2;
+    }
+    if(l_type == "Huber"){
+        Update_Z = UpdateZ_Huber;
+    }
+    
+    Update_S = UpdateW_Lasso;
+    if(p1_type == "S"){
+        Update_S = UpdateW_SCAD;
+    }
+    if(p1_type == "M"){
+        Update_S = UpdateW_MCP;
+    }
+    
+    Update_W = UpdateW_Lasso;
+    if(p2_type == "S"){
+        Update_W = UpdateW_SCAD;
+    }
+    if(p2_type == "M"){
+        Update_W = UpdateW_MCP;
+    }
+    
+    // prepare initial values for the algorithm
+    Eigen::VectorXd beta_old = Rcpp::as<Eigen::VectorXd>(initial_values["beta_init"]);
+    Eigen::VectorXd mu_old = Rcpp::as<Eigen::VectorXd>(initial_values["mu_init"]);
+    Eigen::VectorXd z_old = Rcpp::as<Eigen::VectorXd>(initial_values["z_init"]);
+    Eigen::VectorXd s_old = Rcpp::as<Eigen::VectorXd>(initial_values["s_init"]);
+    Eigen::VectorXd w_old = Rcpp::as<Eigen::VectorXd>(initial_values["w_init"]);
+    Eigen::VectorXd q1_old = Rcpp::as<Eigen::VectorXd>(initial_values["q1_init"]);
+    Eigen::VectorXd q2_old = Rcpp::as<Eigen::VectorXd>(initial_values["q2_init"]);
+    Eigen::VectorXd q3_old = Rcpp::as<Eigen::VectorXd>(initial_values["q3_init"]);
+    
+    // prepare variables for the algorithm
+    Eigen::VectorXd beta_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd mu_vec = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd z_vec = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd s_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd w_vec = Eigen::MatrixXd::Zero(p, 1);
+    Eigen::VectorXd q1_vec = Eigen::MatrixXd::Zero(n, 1);
+    Eigen::VectorXd q2_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
+    Eigen::VectorXd q3_vec = Eigen::MatrixXd::Zero(p, 1);
+    
+    
