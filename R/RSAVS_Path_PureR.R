@@ -1,5 +1,5 @@
 #' @export
-RSAVS_Solver2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
+RSAVS_Solver_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                          const_r123, const_abc = rep(1, 3), 
                          initial_values, additional, tol = 0.001, max_iter = 10, cd_max_iter = 1, cd_tol = 0.001, 
@@ -81,51 +81,136 @@ RSAVS_Solver2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   
   #------ main algorithm ------
-  res <- RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, 
-                          p1_type, p1_param, p2_type, p2_param, 
-                          const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, 
-                          initial_values, additional, phi)
-  # res <- list(beta_vec = beta_vec, 
-  #             mu_vec = mu_vec, 
-  #             z_vec = z_vec, 
-  #             s_vec = s_vec, 
-  #             w_vec = w_vec, 
-  #             q1_vec = q1_vec, 
-  #             q2_vec = q2_vec, 
-  #             q3_vec = q3_vec, 
-  #             current_step = current_step - 1,
-  #             diff = diff, 
-  #             loss_vec = loss_record)
+  #--- initial values ---
+  beta_old = initial_values$beta_init
+  mu_old = initial_values$mu_init
+  z_old = initial_values$z_init
+  s_old = initial_values$s_init
+  w_old = initial_values$w_init
+  q1_old = initial_values$q1_init
+  q2_old = initial_values$q2_init
+  q3_old = initial_values$q3_init
+  
+  
+  loss_vec <- RSAVS_Compute_Loss_Value(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
+                                       p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                                       const_r123 = const_r123, const_abc = const_abc, 
+                                       beta_vec = beta_old, mu_vec = mu_old, 
+                                       z_vec = z_old, s_vec = s_old, w_vec = w_old, 
+                                       q1_vec = q1_old, q2_vec = q2_old, q3_vec = q3_old)
+  loss_old <- loss_vec$loss
+  loss_record = rep(loss_old, max_iter + 1)    # record the loss value at the start of each iteration, including the final value of last iteration
+  #--- algorithm status ---
+  current_step <- 1
+  diff <- tol + 1
+  
+  
+  while((current_step <= max_iter) && (diff > tol)){
+    # message("Start the ADMM iteration with loss_value = ", loss_old)
+    # update beta and mu
+    if(cd_max_iter == 0){
+      # update beta and mu together
+      rhs <- matrix(0, nrow = n + p, ncol = 1)
+      rhs[1 : n, 1] <- r1 * (y_vec - z_old) + SparseM::as.matrix(SparseM::t(additional$d_mat) %*% (r2 * s_old - q2_old)) * (p1_param[1] != 0) + q1_old
+      rhs[n + (1 : p), 1] <- r1 * t(x_mat) %*% (y_vec - z_old) + r3 * w_old * (p2_param[1] != 0) + t(x_mat) %*% q1_old  - q3_old
+      
+      mu_beta <- additional$mu_beta_lhs %*% rhs
+      
+      mu_vec <- mu_beta[1 : n, 1, drop = FALSE]
+      beta_vec <- mu_beta[n + (1 : p), 1, drop = FALSE]
+      
+    }else{
+      cd_step <- 1
+      cd_diff <- cd_tol + 1
+      while((cd_step <= cd_max_iter) && (cd_diff > cd_tol)){
+        # update beta
+        beta_rhs <- r1 * t(x_mat) %*% (y_vec - z_old - mu_old) + r3 * w_old + t(x_mat) %*% q1_old - q3_old
+        beta_vec <- additional$beta_lhs %*% beta_rhs
+        
+        # update mu
+        mu_rhs <- r1 * (y_vec - x_mat %*% beta_vec - z_old) +  SparseM::as.matrix(SparseM::t(additional$d_mat) %*% (r2 * s_old - q2_old)) + q1_old
+        mu_vec <- additional$mu_lhs %*% mu_rhs
+        
+        # check and update CD status
+        cd_step <- cd_step + 1
+        cd_diff <- max(sqrt(sum((beta_vec - beta_old) ^ 2)), 
+                       sqrt(sum((mu_vec - mu_old) ^ 2)))
+        
+        beta_old <- beta_vec
+        mu_old <- mu_old
+      }
+    }
+    
+    # update z
+    invec <- y_vec - mu_vec - x_mat %*% beta_vec + q1_old / r1
+    z_vec <- UpdateZ(invec, param = l_param, r1, const_a)
+    
+    # update s
+    invec <- SparseM::as.matrix(additional$d_mat %*% mu_vec) + q2_old / r2
+    s_vec <- UpdateS(invec, p1_param, r2, const_b)
+    
+    # update w
+    invec <- beta_vec + q3_old / r3
+    w_vec <- UpdateW(invec, p2_param, r3, const_c)
+    
+    # update q1, q2 and q3
+    q1_vec <- q1_old + r1 * (y_vec - mu_vec - x_mat %*% beta_vec - z_vec)
+    q2_vec <- q2_old + r2 * SparseM::as.matrix(additional$d_mat %*% mu_vec - s_vec)
+    q3_vec <- q3_old + r3 * (beta_vec - w_vec)
+    
+    # possible post-selection estimation here?
+    
+    # check algorithm status
+    diff <- max(sqrt(sum((y_vec - mu_vec - x_mat %*% beta_vec - z_vec) ^ 2)), 
+                sqrt(sum(SparseM::as.matrix(additional$d_mat %*% mu_vec - s_vec) ^ 2)), 
+                sqrt(sum((beta_vec - w_vec) ^ 2)))
+    
+    beta_old <- beta_vec
+    mu_old <- mu_vec
+    z_old <- z_vec
+    s_old <- s_vec
+    w_old <- w_vec
+    q1_old <- q1_vec
+    q2_old <- q2_vec
+    q3_old <- q3_vec
+    
+    
+    current_step <- current_step + 1
+    
+    loss_vec <- RSAVS_Compute_Loss_Value(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
+                                         p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                                         const_r123 = const_r123, const_abc = const_abc, 
+                                         beta_vec = beta_old, mu_vec = mu_old, 
+                                         z_vec = z_old, s_vec = s_old, w_vec = w_old, 
+                                         q1_vec = q1_old, q2_vec = q2_old, q3_vec = q3_old)
+    loss_old <- loss_vec$loss
+    loss_record[current_step] <- loss_old
+  }
+  # print(length(loss_record))
+  res <- list(beta_vec = beta_vec, 
+              mu_vec = mu_vec, 
+              z_vec = z_vec, 
+              s_vec = s_vec, 
+              w_vec = w_vec, 
+              q1_vec = q1_vec, 
+              q2_vec = q2_vec, 
+              q3_vec = q3_vec, 
+              current_step = current_step - 1,
+              diff = diff, 
+              loss_vec = loss_record)
   return(res)
 }
 
-
-# n <- 200
-# p <- 5
-# q <- 5    # number of active covariates
-# k <- 3    # number of groups
-# err_ratio <- 0.5
-# x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)
-# beta_true <- c(rep(1, q), rep(0, p - q))
-# group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
-# alpha_true <- sample(group_center, size = n, replace = T)
-# err_vec <- rt(n, df = 5)
-# # err_vec <- rnorm(n)
-# y_vec <- alpha_true + x_mat %*% beta_true + err_vec * err_ratio
-# 
-# lam1_len <- 50
-# lam2_len <- 5
-# phi <- 1
 #' @export
-RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
-                       p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
-                       lam1_vec, lam2_vec, 
-                       min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, 
-                       lam1_len, lam2_len, 
-                       const_r123, const_abc = rep(1, 3), 
-                       initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
-                       cd_max_iter = 1, cd_tol = 0.001, 
-                       subgroup_benchmark = FALSE){
+RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
+                             p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
+                             lam1_vec, lam2_vec, 
+                             min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, 
+                             lam1_len, lam2_len, 
+                             const_r123, const_abc = rep(1, 3), 
+                             initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
+                             cd_max_iter = 1, cd_tol = 0.001, 
+                             subgroup_benchmark = FALSE){
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -323,7 +408,7 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   mu_lhs <- solve(SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat))
   
   
-  mu_beta_lhs <- matrix(0, nrow = 1, ncol = 1)    # left part for updating beta and mu together
+  mu_beta_lhs <- NA    # left part for updating beta and mu together
   if(cd_max_iter == 0){
     message("compute `mu_beta_lhs'")
     mu_beta_lhs <- matrix(0, nrow = n + p, ncol = n + p)
@@ -340,7 +425,6 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                      mu_beta_lhs = mu_beta_lhs)
   message("additional variables prepared!")
   
-  
   # --- variables storing the results ---
   beta_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = p)
   mu_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = n)
@@ -355,7 +439,7 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   loss_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = max_iter + 1)
   
   # run algorithm over the path
-  # pb <- progressr::progressor(steps = lam1_len * lam2_len)
+  pb <- progressr::progressor(steps = lam1_len * lam2_len)
   for(i in 1 : lam1_len){
     for(j in 1 : lam2_len){
       # index for current solution and initial values
@@ -388,12 +472,12 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       p2_param[1] <- lam2_vec[j]
       
       # carry out the algorithm
-      res <- RSAVS_Solver2(y_vec, x_mat, l_type = l_type, l_param = l_param, 
-                          p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
-                          const_r123 = const_r123, const_abc = const_abc, 
-                          initial_values = initial_values, additional = additional, 
-                          tol = tol, max_iter = max_iter, cd_max_iter = cd_max_iter, cd_tol = cd_tol, 
-                          phi = phi, subgroup_benchmark = subgroup_benchmark)
+      res <- RSAVS_Solver_PureR(y_vec, x_mat, l_type = l_type, l_param = l_param, 
+                                p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                                const_r123 = const_r123, const_abc = const_abc, 
+                                initial_values = initial_values, additional = additional, 
+                                tol = tol, max_iter = max_iter, cd_max_iter = cd_max_iter, cd_tol = cd_tol, 
+                                phi = phi, subgroup_benchmark = subgroup_benchmark)
       
       
       # store the results
@@ -433,11 +517,12 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                q3_init = res$q3_vec)
       }
       
-      # pb(message = paste("lam1: ", i, "/", lam1_len, ", lam2: ", j, "/", lam2_len, sep = ""))
+      pb(message = paste("lam1: ", i, "/", lam1_len, ", lam2: ", j, "/", lam2_len, sep = ""))
     }
   }
   
   # --- Use mBIC to find the best solution in this solution plane ---
+  
   res <- list(beta_mat = beta_mat, 
               mu_mat = mu_mat, 
               z_mat = z_mat, 
@@ -452,7 +537,9 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
               lam2_vec = lam2_vec, 
               loss_mat = loss_mat, 
               const_r123 = const_r123, 
-              const_abc = const_abc)
+              const_abc = const_abc, 
+              initial_values = initial_values, 
+              additional = additional)
   
   return(res)
   
