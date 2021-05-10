@@ -1,3 +1,4 @@
+#' @export
 RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                          const_r123, const_abc = rep(1, 3), 
@@ -200,6 +201,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   return(res)
 }
 
+#' @export
 RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                          lam1_vec, lam2_vec, 
@@ -283,6 +285,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
         if(p2_type == "M"){
             r3 <- max(1.3 * 1 / p2_gamma, 1 / p2_gamma + 1)
         }
+        const_r123 <- c(r1, r2, r3)
     }else{
         const_r123 <- abs(const_r123)
         r1 <- const_r123[1]
@@ -379,7 +382,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
         
         initial_values <- list(beta_init = rep(0, p), 
                                mu_init = mu_init, 
-                               z_init = y_vec - mu0, 
+                               z_init = y_vec - mu_init, 
                                s_init = rep(0, n * (n - 1) / 2), 
                                w_init = rep(0, p), 
                                q1_init = rep(0, n), 
@@ -389,33 +392,38 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     # --- prepare other values ---
     message("prepare intermediate variables needed by the algorithm")
     # intermediate variables needed for the algorithm
+    message("generate pairwise difference matrix")
     d_mat <- RSAVS_Generate_D_Matrix(n)    # pairwise difference matrix
     
+    message("compute `beta_lhs`")
     beta_lhs <- NA    # left part for updating beta
     if(n >= p){
-        beta_lhs <- solve(r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p))
+      beta_lhs <- solve(r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p))
     }else{
-        beta_lhs <- 1.0 / r3 * (diag(nrow = p) - r1 * t(x_mat) %*% solve(r1 * x_mat %*% t(x_mat) + r3 * diag(nrow = n)) %*% x_mat)
+      beta_lhs <- 1.0 / r3 * (diag(nrow = p) - r1 * t(x_mat) %*% solve(r1 * x_mat %*% t(x_mat) + r3 * diag(nrow = n)) %*% x_mat)
     }
     
     # left part for updating mu
+    message("compute `mu_lhs`")
     mu_lhs <- solve(SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat))
+    
     
     mu_beta_lhs <- NA    # left part for updating beta and mu together
     if(cd_max_iter == 0){
-        mu_beta_lhs <- matrix(0, nrow = n + p, ncol = n + p)
-        mu_beta_lhs[1 : n, 1 : n] <- SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat) 
-        mu_beta_lhs[n + (1 : p), 1 : n] <- r1 * t(x_mat)
-        mu_beta_lhs[1 : n, n + (1 : p)] <- r1 * x_mat
-        mu_beta_lhs[n + (1 : p), n + (1 : p)] <- r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p)
-        mu_beta_lhs <- solve(mu_beta_lhs)
+      message("compute `mu_beta_lhs'")
+      mu_beta_lhs <- matrix(0, nrow = n + p, ncol = n + p)
+      mu_beta_lhs[1 : n, 1 : n] <- SparseM::as.matrix(r1 * diag(nrow = n) + r2 * SparseM::t(d_mat) %*% d_mat) 
+      mu_beta_lhs[n + (1 : p), 1 : n] <- r1 * t(x_mat)
+      mu_beta_lhs[1 : n, n + (1 : p)] <- r1 * x_mat
+      mu_beta_lhs[n + (1 : p), n + (1 : p)] <- r1 * t(x_mat) %*% x_mat + r3 * diag(nrow = p)
+      mu_beta_lhs <- solve(mu_beta_lhs)
     }
     
     additional <- list(d_mat = d_mat,  
                        beta_lhs = beta_lhs, 
                        mu_lhs = mu_lhs, 
                        mu_beta_lhs = mu_beta_lhs)
-    
+    message("additional variables prepared!")
     
     # --- variables storing the results ---
     beta_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = p)
@@ -515,6 +523,23 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     
     # --- Use mBIC to find the best solution in this solution plane ---
     
+    res <- list(beta_mat = beta_mat, 
+                mu_mat = mu_mat, 
+                z_mat = z_mat, 
+                s_mat = s_mat, 
+                w_mat = w_mat, 
+                q1_mat = q1_mat, 
+                q2_mat = q2_mat, 
+                q3_mat = q3_mat, 
+                step_vec = step_vec, 
+                diff_vec = diff_vec,
+                lam1_vec = lam1_vec, 
+                lam2_vec = lam2_vec, 
+                loss_mat = loss_mat, 
+                const_r123 = const_r123, 
+                const_abc = const_abc)
+    
+    return(res)
     
     # if(l_type == "L2"){
     #     # beta_left_inv <- solve(t(x_mat) %*% x_mat / n + r3 / 2 * diag(nrow = p))
@@ -538,5 +563,4 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     #     res$best_j <- (min_bic_id + 1 - 1) %/% length(lam1_vec) + 1
     #     res$repick <- TRUE
     # }
-    return(res)
 }

@@ -90,7 +90,7 @@ Eigen::VectorXd Loss_L1(const Eigen::VectorXd &invec, const Eigen::VectorXd& los
 }
 
 Eigen::VectorXd Loss_L2(const Eigen::VectorXd &invec, const Eigen::VectorXd& loss_param){
-    Eigen::VectorXd res = invec.array().pow(2);
+    Eigen::VectorXd res = invec.array().pow(2.0);
     return(res);
 }
 
@@ -423,6 +423,91 @@ void UpdateW_MCP(Eigen::VectorXd &w_invec, const Eigen::VectorXd &penalty_param,
 }
 
 
+/*
+    New update functions for z, s and w which support more flexible parameters
+*/
+void UpdateZ_L1_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param, const double &const_r1, const double &const_a){
+    const int n = z_invec.size();
+    for(int i = 0; i < n; i++){
+        z_invec[i] = SoftThresholding(z_invec[i], 1.0 / const_a / const_r1);
+    }
+}
+
+void UpdateZ_L2_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param, const double &const_r1, const double &const_a){
+    const int n = z_invec.size();
+    for(int i = 0; i < n; i++){
+        z_invec[i] = z_invec[i] / (1.0 + 2.0 / const_r1 / const_a);
+    }
+}
+
+void UpdateZ_Huber_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param, const double &const_r1, const double &const_a){
+    const int n = z_invec.size();
+    const double thresh = loss_param[0] / const_r1 / const_a;
+    double tmp;
+    for(int i = 0; i < n; i++){
+        tmp = z_invec[i];
+        if(tmp > (thresh + loss_param[0])){
+            z_invec[i] = tmp - thresh;
+        }else{
+            if(tmp < (-thresh - loss_param[0])){
+                z_invec[i] = tmp + thresh;
+            }else{
+                z_invec[i] = tmp / (1.0 + 1.0 / const_r1 / const_a);
+            }
+        }
+    }
+}
+
+void UpdateSW_Identity_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc){
+/*
+    Update the w vector for the identity penalty
+    Args:w_invec: the inputting w vector.
+                  During the algorithm its value is \beta + q3 / r3
+         penalty_param: the parameters for the penalty
+                        For Lasso, lambda = penlaty_param[0].
+         r: the quadratic term in the algorithm
+    Return: no return values, but the w_invec is updated
+    NOTE: for the identity penalty, nothing is changed
+*/   
+    // const int n = 1;
+}
+
+void UpdateSW_Lasso_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc){
+    const double lam = penalty_param[0];
+    
+    for(int i = 0; i < sw_invec.size(); i++){
+        sw_invec[i] = SoftThresholding(sw_invec[i], lam * const_bc / const_r);
+    }  
+}
+
+void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc){
+    const double lambda = penalty_param[0];
+    const double gamma = penalty_param[1];
+    double tmp;
+    for(int i = 0; i < sw_invec.size(); i++){
+        tmp = fabs(sw_invec[i]);
+        if(tmp <= (1.0 + const_bc / const_r) * lambda){
+            sw_invec[i] = SoftThresholding(sw_invec[i], const_bc * lambda / const_r);
+        }else{
+            if(tmp <= lambda * gamma){
+                sw_invec[i] = SoftThresholding(sw_invec[i], const_bc * gamma * lambda / const_r / (gamma - 1)) / (1.0 - const_bc / const_r / (gamma - 1));
+            }
+        }
+    }
+}
+
+void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc){
+    const double lambda = penalty_param[0];
+    const double gamma = penalty_param[1];
+    double tmp;
+    for(int i = 0; i < sw_invec.size(); i++){
+        tmp = fabs(sw_invec[i]);
+        if(tmp <= lambda * gamma){
+            sw_invec[i] = SoftThresholding(sw_invec[i], const_bc * lambda / const_r) / (1.0 - const_bc / const_r / gamma);
+        }
+    }
+}
+
 
 Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
                                              const std::string& l_type, const Eigen::VectorXd& l_param,
@@ -451,26 +536,26 @@ Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const
     // ------ setup p1 penalty function ------
     Eigen::VectorXd (*P1_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &, const bool &);
     P1_Function = Penalty_Lasso;
-    if(p1_type == "S"){
+    if(p1_type == 'S'){
         P1_Function = Penalty_SCAD;
     }
-    if(p1_type == "M"){
+    if(p1_type == 'M'){
         P1_Function = Penalty_MCP;
     }
     
     // ------ setup p2 penalty function ------
     Eigen::VectorXd (*P2_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &, const bool &);
     P2_Function = Penalty_Lasso;
-    if(p2_type == "S"){
+    if(p2_type == 'S'){
         P2_Function = Penalty_SCAD;
     }
-    if(p2_type == "M"){
+    if(p2_type == 'M'){
         P2_Function = Penalty_MCP;
     }
     
     // ------ compute loss value ------
     // --- main loss function ---
-    loss_p1 = 1.0 / const_abc[0] * (Loss_Function(z_vec, loss_param).sum());
+    loss_p1 = 1.0 / const_abc[0] * (Loss_Function(z_vec, l_param).sum());
     loss_p2 = const_abc[1] * (P1_Function(s_vec, p1_param, false).sum());
     loss_p3 = const_abc[2] * (P2_Function(w_vec, p2_param, false).sum());
     
@@ -1160,45 +1245,63 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::Vector
 }
 
 
-
+// [[Rcpp::export]]
 Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
                             const std::string& l_type, const Eigen::VectorXd& l_param, 
-                            const std::string& p1_type, const Eigen::VectorXd p1_param, 
-                            const std::string& p2_type, const Eigen::VectorXd p2_param, 
+                            const char& p1_type, const Eigen::VectorXd p1_param, 
+                            const char& p2_type, const Eigen::VectorXd p2_param, 
                             const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
                             const double& tol, const int& max_iter, 
                             const double& cd_tol, const int& cd_max_iter, 
-                            const Rcpp::List& initial_values,
+                            const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
                             const double& phi){
+    const double const_r1 = const_r123[0];
+    const double const_r2 = const_r123[1];
+    const double const_r3 = const_r123[2];
+    const double const_a = const_abc[0];
+    const double const_b = const_abc[1];
+    const double const_c = const_abc[2];
     
     // Update functions for z, s and w
-    void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
-    void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
-    void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &);
+    void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
+    void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
+    void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
     
-    Update_Z = UpdateZ_L1;
-    if(l_type == "L2"){
-        Update_Z = UpdateZ_L2;
+    Update_Z = UpdateZ_L1_New;
+    if(l_type.compare("L2") == 0){
+        Update_Z = UpdateZ_L2_New;
     }
-    if(l_type == "Huber"){
-        Update_Z = UpdateZ_Huber;
-    }
-    
-    Update_S = UpdateW_Lasso;
-    if(p1_type == "S"){
-        Update_S = UpdateW_SCAD;
-    }
-    if(p1_type == "M"){
-        Update_S = UpdateW_MCP;
+    if(l_type.compare("Huber") == 0){
+        Update_Z = UpdateZ_Huber_New;
     }
     
-    Update_W = UpdateW_Lasso;
-    if(p2_type == "S"){
-        Update_W = UpdateW_SCAD;
+
+    if(p1_param[0] != 0){
+        Update_S = UpdateSW_Lasso_New;
+        if(p1_type == 'S'){
+            Update_S = UpdateSW_SCAD_New;
+        }
+        if(p1_type == 'M'){
+            Update_S = UpdateSW_MCP_New;
+        } 
+    }else{
+        Rcpp::Rcout << "Warning, no penalty for mu!" << std::endl;
+        Update_S = UpdateSW_Identity_New;
     }
-    if(p2_type == "M"){
-        Update_W = UpdateW_MCP;
+    
+    if(p2_param[0] != 0){
+        Update_W = UpdateSW_Lasso_New;
+        if(p2_type == 'S'){
+            Update_W = UpdateSW_SCAD_New;
+        }
+        if(p2_type == 'M'){
+            Update_W = UpdateSW_MCP_New;
+        }        
+    }else{
+        Rcpp::Rcout << "No penalty for beta!" << std::endl;
+        Update_W = UpdateSW_Identity_New;
     }
+
     
     // prepare initial values for the algorithm
     Eigen::VectorXd beta_old = Rcpp::as<Eigen::VectorXd>(initial_values["beta_init"]);
@@ -1220,4 +1323,136 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     Eigen::VectorXd q2_vec = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 1);
     Eigen::VectorXd q3_vec = Eigen::MatrixXd::Zero(p, 1);
     
+    // prepare intermediate variables needed during the update steps
+    Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
+    Eigen::MatrixXd beta_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["beta_lhs"]);
+    Eigen::MatrixXd mu_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["mu_lhs"]);
+    Eigen::MatrixXd mu_beta_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["mu_beta_lhs"]);
+    Eigen::VectorXd beta_rhs, mu_rhs, mu_beta_rhs, mu_beta;
     
+    int current_step, current_cd_step;
+    double diff, cd_diff;
+    double loss, loss_old;
+    Eigen::VectorXd loss_detail, loss_vec, diff_detail;
+    diff_detail = Eigen::MatrixXd::Constant(3, 1, tol + 1);
+    
+    // set up initial status for the algorithm
+    current_step = 1;
+    current_cd_step = 1;
+    diff = tol + 1;
+    cd_diff = cd_tol + 1;
+    loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
+                                            mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
+    loss_old = loss_vec[0];
+    loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
+    
+    // main algorithm
+    while((current_step <= max_iter) && (diff > tol)){
+        // update beta and mu
+        if(cd_max_iter < 1){    // update beta and mu together
+            // construct mu_beta_rhs
+            mu_beta_rhs = Eigen::MatrixXd::Zero(n + p, 1);
+            mu_beta_rhs.segment(0, n) = const_r1 * (y_vec - z_old) + q1_old;
+            if(p1_param[0] != 0){
+                mu_beta_rhs.segment(0, n) += d_mat.transpose() * (const_r2 * s_old - q2_old);
+            }
+            mu_beta_rhs.segment(n, p) = const_r1 * x_mat.transpose() * (y_vec - z_old) + x_mat.transpose() * q1_old;
+            if(p2_param[0] != 0){
+                mu_beta_rhs.segment(n, p) += const_r3 * w_old - q3_old;
+            }
+            
+            // update mu and beta together
+            mu_beta = mu_beta_lhs * mu_beta_rhs;
+            mu_vec = mu_beta.segment(0, n);
+            beta_vec = mu_beta.segment(n, p);
+            
+            
+        }else{    // update beta and mu via coordinate descent
+            current_cd_step = 1;
+            cd_diff = cd_tol + 1;
+            while((current_cd_step <= cd_max_iter) && (cd_diff > cd_tol)){
+                // construct beta_rhs and mu_rhs
+                beta_rhs = const_r1 * x_mat.transpose() * (y_vec - mu_old - z_old) + x_mat.transpose() * q1_old;
+                if(p2_param[0] != 0){
+                    beta_rhs += const_r3 * w_old - q3_old;
+                }
+                
+                mu_rhs = const_r1 * (y_vec - x_mat * beta_old - z_old) + q1_old;
+                if(p1_param[0] != 0){
+                    mu_rhs += d_mat.transpose() * (const_r2 * s_old - q2_old);
+                }
+                
+                // update beta_vec and mu_vec
+                beta_vec = beta_lhs * beta_rhs;
+                mu_vec = mu_lhs * mu_rhs;
+                
+                // update cd status
+                cd_diff = std::max((beta_vec - beta_old).norm(), (mu_vec - mu_old).norm());
+                current_cd_step += 1;
+                beta_old = beta_vec;
+                mu_old = mu_vec;
+            }
+        }
+        
+        // update z
+        z_vec = y_vec - mu_vec - x_mat * beta_vec+ q1_old / const_r1;
+        Update_Z(z_vec, l_param, const_r1, const_a);
+        
+        // update s
+        s_vec = q2_old / const_r2;
+        s_vec += d_mat * mu_vec;
+        Update_S(s_vec, p1_param, const_r2, const_b);
+        
+        // update w
+        w_vec = beta_vec + q3_old / const_r3;
+        Update_W(w_vec, p2_param, const_r3, const_c);
+        
+        // update q1, q2 and q3
+        q1_vec = q1_old + const_r1 * (y_vec - mu_vec - x_mat * beta_vec - z_vec);
+        q2_vec = q2_old + const_r2 * (d_mat * mu_vec - s_vec);
+        q3_vec = q3_old + const_r3 * (beta_vec - w_vec);
+        
+        // should we do post-selection estimation here?
+        
+        // update status
+        diff_detail[0] = (y_vec - mu_vec - x_mat * beta_vec - z_vec).norm();
+        diff_detail[1] = (d_mat * mu_vec - s_vec).norm();
+        diff_detail[2] = (beta_vec - w_vec).norm();
+        diff = diff_detail.maxCoeff();
+        
+        beta_old = beta_vec;
+        mu_old = mu_vec;
+        z_old = z_vec;
+        s_old = s_vec;
+        w_old = w_vec;
+        q1_old = q1_vec;
+        q2_old = q2_vec;
+        q3_old = q3_vec;
+        
+        current_step += 1;
+        
+        loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
+                                                   mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
+        loss= loss_vec[0];
+        
+        loss_old = loss;    // should we check for loss drop?
+        
+        loss_vec[current_step] = loss_old;
+    }
+    
+    // create and return the results
+    Rcpp::List res = Rcpp::List::create(
+        Rcpp::Named("beta_vec", beta_vec), 
+        Rcpp::Named("mu_vec", mu_vec), 
+        Rcpp::Named("z_vec", z_vec), 
+        Rcpp::Named("s_vec", s_vec),    // danger for large n
+        Rcpp::Named("w_vec", w_vec),
+        Rcpp::Named("q1_vec", q1_vec),
+        Rcpp::Named("q2_vec", q2_vec),
+        Rcpp::Named("q3_vec", q3_vec),
+        Rcpp::Named("current_step", current_step),
+        Rcpp::Named("diff", diff),
+        Rcpp::Named("loss_vec", loss_vec)
+    );
+    return res;
+}

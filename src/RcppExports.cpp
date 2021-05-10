@@ -59,6 +59,35 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RSAVS_Solver_Cpp
+Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, const std::string& l_type, const Eigen::VectorXd& l_param, const char& p1_type, const Eigen::VectorXd p1_param, const char& p2_type, const Eigen::VectorXd p2_param, const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, const double& tol, const int& max_iter, const double& cd_tol, const int& cd_max_iter, const Rcpp::List& initial_values, const Rcpp::List& additional_values, const double& phi);
+RcppExport SEXP _RSAVS_RSAVS_Solver_Cpp(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP nSEXP, SEXP pSEXP, SEXP l_typeSEXP, SEXP l_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP const_r123SEXP, SEXP const_abcSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP cd_tolSEXP, SEXP cd_max_iterSEXP, SEXP initial_valuesSEXP, SEXP additional_valuesSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type y_vec(y_vecSEXP);
+    Rcpp::traits::input_parameter< const Eigen::MatrixXd& >::type x_mat(x_matSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const int& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type l_type(l_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type l_param(l_paramSEXP);
+    Rcpp::traits::input_parameter< const char& >::type p1_type(p1_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type p1_param(p1_paramSEXP);
+    Rcpp::traits::input_parameter< const char& >::type p2_type(p2_typeSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd >::type p2_param(p2_paramSEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type const_r123(const_r123SEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type const_abc(const_abcSEXP);
+    Rcpp::traits::input_parameter< const double& >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< const double& >::type cd_tol(cd_tolSEXP);
+    Rcpp::traits::input_parameter< const int& >::type cd_max_iter(cd_max_iterSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type initial_values(initial_valuesSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type additional_values(additional_valuesSEXP);
+    Rcpp::traits::input_parameter< const double& >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcppeigen_hello_world
 Eigen::MatrixXd rcppeigen_hello_world();
 RcppExport SEXP _RSAVS_rcppeigen_hello_world() {
@@ -106,6 +135,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_RSAVS_RSAVS_LargeN_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_Rcpp, 18},
     {"_RSAVS_RSAVS_LargeN_L2_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_L2_Rcpp, 15},
+    {"_RSAVS_RSAVS_Solver_Cpp", (DL_FUNC) &_RSAVS_RSAVS_Solver_Cpp, 19},
     {"_RSAVS_rcppeigen_hello_world", (DL_FUNC) &_RSAVS_rcppeigen_hello_world, 0},
     {"_RSAVS_rcppeigen_outerproduct", (DL_FUNC) &_RSAVS_rcppeigen_outerproduct, 1},
     {"_RSAVS_rcppeigen_innerproduct", (DL_FUNC) &_RSAVS_rcppeigen_innerproduct, 1},
