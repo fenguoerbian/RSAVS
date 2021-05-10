@@ -1255,6 +1255,8 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                             const double& cd_tol, const int& cd_max_iter, 
                             const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
                             const double& phi){
+    
+    Rcpp::Rcout << "Starting!" << std::endl;
     const double const_r1 = const_r123[0];
     const double const_r2 = const_r123[1];
     const double const_r3 = const_r123[2];
@@ -1263,6 +1265,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     const double const_c = const_abc[2];
     
     // Update functions for z, s and w
+    Rcpp::Rcout << "Setup Updates" << std::endl;
     void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
     void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
     void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
@@ -1304,6 +1307,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
 
     
     // prepare initial values for the algorithm
+    Rcpp::Rcout << "Get initial values" << std::endl;
     Eigen::VectorXd beta_old = Rcpp::as<Eigen::VectorXd>(initial_values["beta_init"]);
     Eigen::VectorXd mu_old = Rcpp::as<Eigen::VectorXd>(initial_values["mu_init"]);
     Eigen::VectorXd z_old = Rcpp::as<Eigen::VectorXd>(initial_values["z_init"]);
@@ -1324,6 +1328,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     Eigen::VectorXd q3_vec = Eigen::MatrixXd::Zero(p, 1);
     
     // prepare intermediate variables needed during the update steps
+    Rcpp::Rcout << "Get intermediates" << std::endl;
     Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
     Eigen::MatrixXd beta_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["beta_lhs"]);
     Eigen::MatrixXd mu_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["mu_lhs"]);
@@ -1337,6 +1342,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     diff_detail = Eigen::MatrixXd::Constant(3, 1, tol + 1);
     
     // set up initial status for the algorithm
+    Rcpp::Rcout << "Setup status" << std::endl;
     current_step = 1;
     current_cd_step = 1;
     diff = tol + 1;
@@ -1347,8 +1353,9 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
     
     // main algorithm
+    /*
     while((current_step <= max_iter) && (diff > tol)){
-        // update beta and mu
+        // update beta and mu 
         if(cd_max_iter < 1){    // update beta and mu together
             // construct mu_beta_rhs
             mu_beta_rhs = Eigen::MatrixXd::Zero(n + p, 1);
@@ -1436,9 +1443,10 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         loss= loss_vec[0];
         
         loss_old = loss;    // should we check for loss drop?
-        
+
         loss_vec[current_step] = loss_old;
     }
+    */
     
     // create and return the results
     Rcpp::List res = Rcpp::List::create(
