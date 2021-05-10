@@ -273,7 +273,7 @@ Hence this parameter is ignored.</p></td>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS_LargeN</span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
                     lam1_len <span class='op'>=</span> <span class='fl'>50</span>, lam2_len <span class='op'>=</span> <span class='fl'>40</span>, 
                     phi <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Basic variables initialized.
+</div><div class='output co'>#&gt; <span class='message'>`const_r123` is missing. Use default settings!</span></div><div class='output co'>#&gt; <span class='message'>lam1_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>lam2_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>prepare intermediate variables needed by the algorithm</span></div><div class='output co'>#&gt; Basic variables initialized.
 #&gt; Beta finished.
 #&gt; Mu finished.
 #&gt; Z finished.
@@ -293,7 +293,7 @@ Hence this parameter is ignored.</p></td>
                           p1_type <span class='op'>=</span> <span class='st'>"M"</span>, p2_type <span class='op'>=</span> <span class='st'>"L"</span>,
                           lam1_len <span class='op'>=</span> <span class='fl'>50</span>, lam2_len <span class='op'>=</span> <span class='fl'>40</span>, 
                           phi <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Basic variables initialized.
+</div><div class='output co'>#&gt; <span class='message'>`const_r123` is missing. Use default settings!</span></div><div class='output co'>#&gt; <span class='message'>lam1_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>lam2_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>prepare intermediate variables needed by the algorithm</span></div><div class='output co'>#&gt; Basic variables initialized.
 #&gt; Beta finished.
 #&gt; Mu finished.
 #&gt; Z finished.
@@ -311,7 +311,7 @@ Hence this parameter is ignored.</p></td>
 <span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='RSAVS_Further_Improve.html'>RSAVS_Further_Improve</a></span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
                               mu_vec <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>mu_improve_mat</span><span class='op'>[</span><span class='va'>ind</span>, <span class='op'>]</span>, 
                               beta_vec <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>w_mat</span><span class='op'>[</span><span class='va'>ind</span>, <span class='op'>]</span><span class='op'>)</span>                           
-</div></pre>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Solution may be nonunique</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
