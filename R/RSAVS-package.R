@@ -22,3 +22,18 @@
 #' @docType  package
 #' @name RSAVS
 NULL
+
+## usethis namespace: start
+#' @useDynLib RSAVS, .registration = TRUE
+## usethis namespace: end
+NULL
+
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+## usethis namespace: end
+NULL
+
+## usethis namespace: start
+#' @import RcppEigen
+## usethis namespace: end
+NULL

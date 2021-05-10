@@ -537,7 +537,9 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                 lam2_vec = lam2_vec, 
                 loss_mat = loss_mat, 
                 const_r123 = const_r123, 
-                const_abc = const_abc)
+                const_abc = const_abc, 
+                initial_values = initial_values, 
+                additional = additional)
     
     return(res)
     

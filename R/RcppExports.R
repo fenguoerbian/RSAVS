@@ -2,30 +2,34 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 RSAVS_LargeN_Rcpp <- function(x_mat, y_vec, n, p, loss_type, loss_param, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r1, r2, r3, phi, tol, max_iter) {
-    .Call('_RSAVS_RSAVS_LargeN_Rcpp', PACKAGE = 'RSAVS', x_mat, y_vec, n, p, loss_type, loss_param, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r1, r2, r3, phi, tol, max_iter)
+    .Call(`_RSAVS_RSAVS_LargeN_Rcpp`, x_mat, y_vec, n, p, loss_type, loss_param, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r1, r2, r3, phi, tol, max_iter)
 }
 
 RSAVS_LargeN_L2_Rcpp <- function(x_mat, y_vec, n, p, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r2, r3, phi, tol, max_iter) {
-    .Call('_RSAVS_RSAVS_LargeN_L2_Rcpp', PACKAGE = 'RSAVS', x_mat, y_vec, n, p, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r2, r3, phi, tol, max_iter)
+    .Call(`_RSAVS_RSAVS_LargeN_L2_Rcpp`, x_mat, y_vec, n, p, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r2, r3, phi, tol, max_iter)
+}
+
+RSAVS_Solver_Cpp2 <- function(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi) {
+    .Call(`_RSAVS_RSAVS_Solver_Cpp2`, y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi)
 }
 
 RSAVS_Solver_Cpp <- function(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi) {
-    .Call('_RSAVS_RSAVS_Solver_Cpp', PACKAGE = 'RSAVS', y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi)
+    .Call(`_RSAVS_RSAVS_Solver_Cpp`, y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi)
 }
 
 rcppeigen_hello_world <- function() {
-    .Call('_RSAVS_rcppeigen_hello_world', PACKAGE = 'RSAVS')
+    .Call(`_RSAVS_rcppeigen_hello_world`)
 }
 
 rcppeigen_outerproduct <- function(x) {
-    .Call('_RSAVS_rcppeigen_outerproduct', PACKAGE = 'RSAVS', x)
+    .Call(`_RSAVS_rcppeigen_outerproduct`, x)
 }
 
 rcppeigen_innerproduct <- function(x) {
-    .Call('_RSAVS_rcppeigen_innerproduct', PACKAGE = 'RSAVS', x)
+    .Call(`_RSAVS_rcppeigen_innerproduct`, x)
 }
 
 rcppeigen_bothproducts <- function(x) {
-    .Call('_RSAVS_rcppeigen_bothproducts', PACKAGE = 'RSAVS', x)
+    .Call(`_RSAVS_rcppeigen_bothproducts`, x)
 }
 

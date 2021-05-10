@@ -1246,6 +1246,20 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::Vector
 
 
 // [[Rcpp::export]]
+Rcpp::List RSAVS_Solver_Cpp2(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
+                            const std::string& l_type, const Eigen::VectorXd& l_param, 
+                            const char& p1_type, const Eigen::VectorXd p1_param, 
+                            const char& p2_type, const Eigen::VectorXd p2_param, 
+                            const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
+                            const double& tol, const int& max_iter, 
+                            const double& cd_tol, const int& cd_max_iter, 
+                            const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
+                            const double& phi){
+                            Rcpp::List res = Rcpp::List::create(Rcpp::Named("test", 0.0));
+                            return res;
+                            }
+                            
+// [[Rcpp::export]]                           
 Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
                             const std::string& l_type, const Eigen::VectorXd& l_param, 
                             const char& p1_type, const Eigen::VectorXd p1_param, 
@@ -1263,9 +1277,10 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     const double const_a = const_abc[0];
     const double const_b = const_abc[1];
     const double const_c = const_abc[2];
-    
+
     // Update functions for z, s and w
     Rcpp::Rcout << "Setup Updates" << std::endl;
+
     void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
     void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
     void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &);
@@ -1347,13 +1362,15 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     current_cd_step = 1;
     diff = tol + 1;
     cd_diff = cd_tol + 1;
+
     loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
                                             mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
-    loss_old = loss_vec[0];
+    loss_old = loss_detail[0];
     loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
+    // Rcpp::Rcout << "loss_detail = " << loss_detail << std::endl;
     
     // main algorithm
-    /*
+
     while((current_step <= max_iter) && (diff > tol)){
         // update beta and mu 
         if(cd_max_iter < 1){    // update beta and mu together
@@ -1440,15 +1457,17 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         
         loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
                                                    mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
-        loss= loss_vec[0];
+        loss = loss_detail[0];
         
         loss_old = loss;    // should we check for loss drop?
 
-        loss_vec[current_step] = loss_old;
+        loss_vec[current_step - 1] = loss_old;
     }
-    */
+
     
     // create and return the results
+    // Rcpp::List res = Rcpp::List::create(Rcpp::Named("test", 0.0));
+    
     Rcpp::List res = Rcpp::List::create(
         Rcpp::Named("beta_vec", beta_vec), 
         Rcpp::Named("mu_vec", mu_vec), 
@@ -1462,5 +1481,6 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         Rcpp::Named("diff", diff),
         Rcpp::Named("loss_vec", loss_vec)
     );
+
     return res;
 }

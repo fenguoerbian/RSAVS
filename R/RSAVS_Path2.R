@@ -355,7 +355,7 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   loss_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = max_iter + 1)
   
   # run algorithm over the path
-  pb <- progressr::progressor(steps = lam1_len * lam2_len)
+  # pb <- progressr::progressor(steps = lam1_len * lam2_len)
   for(i in 1 : lam1_len){
     for(j in 1 : lam2_len){
       # index for current solution and initial values
@@ -433,7 +433,7 @@ RSAVS_Path2 <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                q3_init = res$q3_vec)
       }
       
-      pb(message = paste("lam1: ", i, "/", lam1_len, ", lam2: ", j, "/", lam2_len, sep = ""))
+      # pb(message = paste("lam1: ", i, "/", lam1_len, ", lam2: ", j, "/", lam2_len, sep = ""))
     }
   }
   
