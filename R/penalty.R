@@ -1,3 +1,45 @@
+#' Built-in penalty functions
+#' 
+#' These are built-in penalty functions. They are implemented purely in R.
+#' 
+#' @aliases penalty_lasso penalty_scad penalty_mcp
+#' @param x input numeric vector
+#' @param params numerical vector, parameters needed for the corresponding 
+#'   penalty function. Refer to the following sections for more details.
+#' @param derivative boolen, whether the derivatives at \code{x} should be computed 
+#'   instead of the actual penalized value. Default to \code{FALSE}.
+#' @section Parameters for different penalties:
+#'   \itemize{
+#'     \item For lasso, 
+#'       \deqn{
+#'         f(x, \lambda) = \lambda |x|
+#'       }
+#'       where \eqn{\lambda} = \code{param[1]}.
+#'     \item For SCAD and MCP, \eqn{\lambda} = \code{param[1]} and \eqn{\gamma} = \code{param[2]}
+#'   }
+#' @return A numerical vector storing the penalty function's value at \code{x} if
+#'   \code{derivative = FALSE}. Otherwise the derivative of the penalty function at
+#'   \code{x}
+#'   
+#' @examples 
+#' x <- seq(from = -10, to = 10, by = 0.001)
+#' lasso <- penalty_lasso(x, 1.0)
+#' dlasso <- penalty_lasso(x, 1.0, TRUE)
+#' 
+#' scad <- penalty_scad(x, c(1.5, 3.7))
+#' dscad <- penalty_scad(x, c(1.5, 3.7), TRUE)
+#' 
+#' mcp <- penalty_mcp(x, c(1.5, 2.7))
+#' dmcp <- penalty_mcp(x, c(1.5, 2.7), TRUE)
+#'   
+#' matplot(x, cbind(lasso, scad, mcp), type = "l", ylab = "penalty")
+#' legend(-10, 2.5, legend = c("lasso", "scad", "mcp"), col = 1 : 3, lty = 1 : 3)
+#' matplot(x, cbind(dlasso, dscad, dmcp), type = "l", ylab = "derivative")
+#' legend(-10, 1.5, legend = c("lasso", "scad", "mcp"), col = 1 : 3, lty = 1 : 3)
+#' @name penalty_function 
+NULL
+
+#' @rdname penalty_function
 penalty_lasso <- function(x, params, derivative = FALSE){
   # Lasso penalty function
   #     p(x) = lam * abs(x)
@@ -30,6 +72,7 @@ penalty_lasso <- function(x, params, derivative = FALSE){
   return(res)
 }
 
+#' @rdname penalty_function
 penalty_scad <- function(x, params, derivative = FALSE){
   # SCAD penalty function
   #     p(x) = lam * abs(x)
@@ -87,6 +130,7 @@ penalty_scad <- function(x, params, derivative = FALSE){
   return(res)
 }
 
+#' @rdname penalty_function
 penalty_mcp <- function(x, params, derivative = FALSE){
   # MCP penalty function
   #     
