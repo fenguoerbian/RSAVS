@@ -1,3 +1,31 @@
+#' Compute psi_vec 
+#' 
+#' This function computes the psi_vec needed by the algorithm.
+#' 
+#' In the algorithm, when all \eqn{\mu} are shrinked to the same value, we have
+#' \deqn{
+#'   \mu_0 = \mathrm{argmin}_{\mu} \sum_i\rho(y_i - \mu)
+#' }
+#' and 
+#' \deqn{
+#'   psi\_vec = (\psi(y_1 - \mu_0), \cdots, \psi(y_n - \mu_0))
+#' }
+#' where \eqn{\psi = \partial \rho}.
+#' 
+#' @note there is a SIGN different between this \code{psi_vec} and 
+#'   \eqn{\partial \rho} w.r.t \eqn{\mu}
+#' @note for non-differential loss like L1 at 0, the derivative at 0+ is returned.
+#' @param y_vec numeric vector
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is \code{NULL}.
+#' @return the \code{psi_vec}
 RSAVS_Get_Psi <- function(y_vec, l_type = "L1", l_param = NULL){
     # This function gets the default psi vec for the algorithm
     # Be default, we mean: 
@@ -36,6 +64,48 @@ RSAVS_Get_Psi <- function(y_vec, l_type = "L1", l_param = NULL){
     return(psi_vec)
 }
 
+#' Compute lam_max
+#' 
+#' This function computes the values of \code{lam1_max} or \code{lam2_max} which 
+#'   can shrink same type of covariates to the same value. 
+#'   
+#' For \code{beta}, they will be shrinked to 0. For \code{mu}, the final value 
+#' is determined by the type of loss function. Please refer to \code{\link{RSAVS_Get_Psi}}
+#' for more details. Basically, we have
+#' \deqn{
+#'   \mu_0 = \mathrm{argmin}_{\mu} \sum_i\rho(y_i - \mu)
+#' }
+#' and 
+#' \deqn{
+#'   psi\_vec = (\psi(y_1 - \mu_0), \cdots, \psi(y_n - \mu_0))
+#' }
+#' where \eqn{\psi = \partial \rho}.
+#' 
+#' @param y_vec numeric vector, the response
+#' @param x_mat numeric matrix, the covariate matrix
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is \code{NULL}.
+#' @param lam_ind integer, indicating computation for \code{mu} or \code{beta}.
+#'   \itemize{
+#'     \item 1: compute \code{lam_max} for \code{mu}.
+#'     \item 2: compute \code{lam_max} for \code{beta}.
+#'   }
+#' @param const_abc a length-3 numeric vector, providing the scalars to adjust weight
+#'   of regression function, penalty for subgroup identification and penalty for 
+#'   variable selection in the overall objective function. Defaults to \code{c(1, 1, 1)}.
+#' @param eps a samll safe guard constant
+#' @return \code{lam_max}, a numerical variable
+#' @seealso \code{\link{RSAVS_Get_Psi}}.
+#' @note For convex penalty like lasso, this \code{lam_max} can guarantee the global
+#'   condition for shrinking the corresponding variables to the same value. For non-convex
+#'   penalties such as SCAD and MCP, this is just a local condition.
 RSAVS_Get_Lam_Max <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, lam_ind = 1, const_abc = rep(1, 3), eps = 10^(-6)){
     # lam_ind: 1: lam1
     #          2: lam2
@@ -66,6 +136,71 @@ RSAVS_Get_Lam_Max <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, lam_i
     return(lam_max)
 }
 
+#' Compute value of objective function
+#' 
+#' This function computes objective function's value for the ADMM algorithm.
+#' 
+#' The augmented lagrangian objective function for the ADMM algorithm contains
+#'   \itemize{
+#'     \item regression part, \code{1 / const_a * sum(rho(z_vec))}, where \code{rho} is
+#'       the loss function. Refer to \code{\link{loss_function}} for more details.
+#'     \item subgroup analysis part, \code{const_b * sum(P_1(s_vec))}.
+#'     \item variable selection part, \code{const_c * sum(P_2(w_vec))}.
+#'     \item augmented part1:
+#'       \code{r_1 / 2 * norm(y_vec - mu_vec - x_mat * beta - z_vec) ^ 2 + inner_product(y_vec - mu_vec - x_mat * beta - z_vec, q1_vec)}
+#'     \item augmented part1:
+#'       \code{r_2 / 2 * norm(D_mat * mu_vec - s_vec) ^ 2 + inner_product(D_mat * mu_vec - s_vec, q2_vec)}
+#'     \item augmented part1:
+#'       \code{r_3 / 2 * norm(beta_vec - w_vec) ^ 2 + inner_product(beta_vec - w_vec, q3_vec)}              
+#'   }
+#' @note for "L2" loss, the \code{z_vec} could be eliminated, but currently this
+#'   is not implemented. 
+#' @param y_vec numerical vector of response. n = length(y_vec) is the number of observations.
+#' @param x_mat numerical matrix of covariates. Each row for one observation and 
+#'   \code{p = ncol(x_mat)} is the number of covariates.
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is \code{NULL}.
+#' @param p1_type,p2_type a character indicating the penalty types for subgroup identification and variable selection.
+#'   \itemize{
+#'     \item "S": SCAD
+#'     \item "M": MCP
+#'     \item "L": Lasso
+#'   }
+#'   Default values for both parameters are "S".
+#' @param p1_param,p2_param numerical vectors providing necessary parameters for the corresponding penalties.
+#'   \itemize{
+#'     \item For Lasso, lam = p_param[1]
+#'     \item For SCAD and MCP, lam = p_param[1], gamma = p_param[2]
+#'   }
+#'   Default values for both parameters are \code{c(2, 3.7)}. 
+#' @param const_r123 a length-3 numerical vector, providing the scalars needed in the 
+#'   augmented lagrangian part of the ADMM algorithm
+#' @param const_abc a length-3 numeric vector, providing the scalars to adjust weight
+#'   of regression function, penalty for subgroup identification and penalty for 
+#'   variable selection in the overall objective function. Defaults to \code{c(1, 1, 1)}.
+#' @param beta_vec,mu_vec,z_vec,s_vec,w_vec,q1_vec,q2_vec,q3_vec variables needed
+#'   in the objective function
+#' @return a list containing
+#' \itemize{
+#'     \item \code{loss}: overall loss value
+#'     \item \code{loss_part1}: loss value from regression part
+#'     \item \code{loss_part2}: loss value from subgroup analysis part
+#'     \item \code{loss_part3}: loss value from variable selection part
+#'     \item \code{loss_aug1}: loss value from augmented part1
+#'     \item \code{loss_aug2}: loss value from augmented part2
+#'     \item \code{loss_aug3}: loss value from augmented part3   
+#'     \item \code{diff_z}: difference between \code{z_vec} and \code{y_vec - mu_vec - x_mat \%*\% beta_vec} 
+#'     \item \code{diff_s}: difference between \code{s_vec} and \code{d_mat \%*\% mu_vec}
+#'     \item \code{diff_w}: difference between \code{w_vec} and \code{beta_vec}
+#'   }
+#' @seealso \code{\link{loss_function}}
 RSAVS_Compute_Loss_Value <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                                      p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                                      const_r123, const_abc, 

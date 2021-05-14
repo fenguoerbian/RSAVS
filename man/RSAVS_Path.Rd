@@ -123,7 +123,7 @@ y_vec <- alpha_true + x_mat \%*\% beta_true + err_vec    # response vector
 
 # a simple analysis using default loss and penalties
 res <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, 
-                 lam1_len = 10, lam2_len = 8, 
+                 lam1_len = 50, lam2_len = 40, 
                  phi = 5)
 }
 \seealso{
