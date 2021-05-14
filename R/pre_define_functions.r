@@ -514,7 +514,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' 
 #' @param y_vec numerical vector of response. n = length(y_vec) is the number of observations.
 #' @param x_mat numerical matrix of covariates. Each row for one observation and 
-#'   p = ncol(x_mat) is the number of covariates.
+#'   \code{p = ncol(x_mat)} is the number of covariates.
 #' @param l_type character string, type of loss function.
 #'   \itemize{
 #'     \item "L1": l-1 loss(absolute value loss)
@@ -524,7 +524,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #'   Default value is "L1".
 #' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
 #'   The default value is NULL.
-#' @param p1_type,p2_type character indicating the penalty types for subgroup identification and variable selection.
+#' @param p1_type,p2_type a character indicating the penalty types for subgroup identification and variable selection.
 #'   \itemize{
 #'     \item "S": SCAD
 #'     \item "M": MCP
@@ -540,9 +540,8 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #'   Note: This function searches the whole lam1_vec * lam2_vec grid for the best solution. 
 #'   Hence the \code{lambda}s provided in these parameters will be ignored and overwritten.
 #' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
-#'   It's preferred to be the order from big to small.
-#'   Note: Currently the function uses auto-generated lambda vectors and these parameters are ignored.
-#' @param min_lam_ratio the ration between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
+#'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
+#' @param min_lam_ratio the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
 #'   The default value is 0.03.
 #' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
 #' @param initial_vec list of vector, providing initial values for the algorithm. 
@@ -572,7 +571,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' # subgroup effect vector    
 #' alpha_true <- sample(group_center, size = n, replace = TRUE)    
 #' x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)    # covariate matrix
-#' err_vec <- rnorm(n, sd = 0.5)    # error term
+#' err_vec <- rnorm(n, sd = 0.1)    # error term
 #' y_vec <- alpha_true + x_mat %*% beta_true + err_vec    # response vector
 #' 
 #' # a simple analysis using default loss and penalties
@@ -584,7 +583,7 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
 #' res_huber <- RSAVS_LargeN(y_vec = y_vec, x_mat = x_mat, 
 #'                           l_type = "Huber", l_param = 1.345,
 #'                           p1_type = "M", p2_type = "L",
-#'                           lam1_len = 50, lam2_len = 40, 
+#'                           lam1_len = 40, lam2_len = 30, 
 #'                           phi = 5)
 #' # you can do post-selection estimation by
 #' ind <- res$best_ind    # pick an id of the solution

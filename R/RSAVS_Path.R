@@ -1,4 +1,60 @@
-#' @export
+#' Robust subgroup analysis and variable selection simultaneously
+#' 
+#' This function utilize the cpp solver when carring out robust subgroup 
+#'   analysis and variable selection simultaneously. And it is the core solver
+#'   for \code{\link{RSAVS_Path}}.
+#' 
+#' @param y_vec numerical vector of response. n = length(y_vec) is the number of observations.
+#' @param x_mat numerical matrix of covariates. Each row for one observation and 
+#'   \code{p = ncol(x_mat)} is the number of covariates.
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is \code{NULL}.
+#' @param p1_type,p2_type a character indicating the penalty types for subgroup identification and variable selection.
+#'   \itemize{
+#'     \item "S": SCAD
+#'     \item "M": MCP
+#'     \item "L": Lasso
+#'   }
+#'   Default values for both parameters are "S".
+#' @param p1_param,p2_param numerical vectors providing necessary parameters for the corresponding penalties.
+#'   \itemize{
+#'     \item For Lasso, lam = p_param[1]
+#'     \item For SCAD and MCP, lam = p_param[1], gamma = p_param[2]
+#'   }
+#'   Default values for both parameters are \code{c(2, 3.7)}. 
+#'   Note: This function searches the whole lam1_vec * lam2_vec grid for the best solution. 
+#'   Hence the \code{lambda}s provided in these parameters serve only as placeholder 
+#'   and will be ignored and overwritten in the actual computation.
+#' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
+#'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
+#' @param min_lam_ratio the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
+#'   The default value is 0.03.
+#' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
+#' @param initial_values list of vector, providing initial values for the algorithm. 
+#' @param additional a list providing additional variables needed during the algorithm.
+#' @param phi numerical variable. A parameter needed for mBIC.
+#' @param const_r123 a length-3 numerical vector, providing the scalars needed in the 
+#'   augmented lagrangian part of the ADMM algorithm
+#' @param const_abc a length-3 numeric vector, providing the scalars to adjust weight
+#'   of regression function, penalty for subgroup identification and penalty for 
+#'   variable selection in the overall objective function. Defaults to \code{c(1, 1, 1)}.
+#' @param tol numerical, convergence tolerance for the algorithm.
+#' @param cd_tol numerical, convergence tolerance for the coordinate descent part 
+#'   when updating \code{mu} and \code{beta}.
+#' @param max_iter integer, max number of iteration during the algorithm.
+#' @param cd_max_iter integer, max number of iteration during the coordinate descent
+#'   update of \code{mu} and \code{beta}. If set to 0, will use analytical solution(
+#'   instead of coordinate descent algorithm) to update \code{mu} and \code{beta}.
+#' @param subgroup_benchmark bool. Whether this call should be taken as a benchmark of subgroup identification. 
+#'   If \code{TRUE}, then the penalty for variable selection will be surpressed to a minimal value.
+#' @seealso \code{\link{RSAVS_Path}}, \code{\link{RSAVS_Path_PureR}}, \code{\link{RSAVS_LargeN}}
 RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                          const_r123, const_abc = rep(1, 3), 
@@ -90,22 +146,84 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 }
 
 
-# n <- 200
-# p <- 5
-# q <- 5    # number of active covariates
-# k <- 3    # number of groups
-# err_ratio <- 0.5
-# x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)
-# beta_true <- c(rep(1, q), rep(0, p - q))
-# group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
-# alpha_true <- sample(group_center, size = n, replace = T)
-# err_vec <- rt(n, df = 5)
-# # err_vec <- rnorm(n)
-# y_vec <- alpha_true + x_mat %*% beta_true + err_vec * err_ratio
-# 
-# lam1_len <- 50
-# lam2_len <- 5
-# phi <- 1
+#' Robust subgroup analysis and variable selection simultaneously
+#' 
+#' This function carries out robust subgroup analysis and variable selection 
+#' simultaneously. It utilizes the cpp core solver and supports different 
+#'   types of loss functions and penalties.
+#' 
+#' @param y_vec numerical vector of response. n = length(y_vec) is the number of observations.
+#' @param x_mat numerical matrix of covariates. Each row for one observation and 
+#'   \code{p = ncol(x_mat)} is the number of covariates.
+#' @param l_type character string, type of loss function.
+#'   \itemize{
+#'     \item "L1": l-1 loss(absolute value loss)
+#'     \item "L2": l-2 loss(squared error loss)
+#'     \item "Huber": Huber loss. Its parameter is given in l_param.
+#'   }
+#'   Default value is "L1".
+#' @param l_param numeric vector containing necessary parameters of the corresponding loss function. 
+#'   The default value is \code{NULL}.
+#' @param p1_type,p2_type a character indicating the penalty types for subgroup identification and variable selection.
+#'   \itemize{
+#'     \item "S": SCAD
+#'     \item "M": MCP
+#'     \item "L": Lasso
+#'   }
+#'   Default values for both parameters are "S".
+#' @param p1_param,p2_param numerical vectors providing necessary parameters for the corresponding penalties.
+#'   \itemize{
+#'     \item For Lasso, lam = p_param[1]
+#'     \item For SCAD and MCP, lam = p_param[1], gamma = p_param[2]
+#'   }
+#'   Default values for both parameters are \code{c(2, 3.7)}. 
+#'   Note: This function searches the whole lam1_vec * lam2_vec grid for the best solution. 
+#'   Hence the \code{lambda}s provided in these parameters serve only as placeholder 
+#'   and will be ignored and overwritten in the actual computation.
+#' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
+#'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
+#' @param min_lam_ratio the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
+#'   The default value is 0.03.
+#' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
+#' @param initial_vec list of vector, providing initial values for the algorithm. 
+#' @param phi numerical variable. A parameter needed for mBIC.
+#' @param const_r123 a length-3 numerical vector, providing the scalars needed in the 
+#'   augmented lagrangian part of the ADMM algorithm
+#' @param const_abc a length-3 numeric vector, providing the scalars to adjust weight
+#'   of regression function, penalty for subgroup identification and penalty for 
+#'   variable selection in the overall objective function. Defaults to \code{c(1, 1, 1)}.
+#' @param tol numerical, convergence tolerance for the algorithm.
+#' @param cd_tol numerical, convergence tolerance for the coordinate descent part 
+#'   when updating \code{mu} and \code{beta}.
+#' @param max_iter integer, max number of iteration during the algorithm.
+#' @param cd_max_iter integer, max number of iteration during the coordinate descent
+#'   update of \code{mu} and \code{beta}. If set to 0, will use analytical solution(
+#'   instead of coordinate descent algorithm) to update \code{mu} and \code{beta}.
+#' @param subgroup_benchmark bool. Whether this call should be taken as a benchmark of subgroup identification. 
+#'   If \code{TRUE}, then the penalty for variable selection will be surpressed to a minimal value.
+#' @seealso \code{\link{RSAVS_Solver}}, \code{\link{RSAVS_Path_PureR}}, \code{\link{RSAVS_LargeN}}
+#' @examples
+#' # a toy example
+#' # first we generate data
+#' n <- 200    # number of observations
+#' q <- 5    # number of active covariates
+#' p <- 50    # number of total covariates
+#' k <- 2    # number of subgroups
+#' 
+#' # k subgroup effect, centered at 0
+#' group_center <- seq(from = 0, to = 2 * (k - 1), by = 2) - (k - 1)
+#' # covariate effect vector
+#' beta_true <- c(rep(1, q), rep(0, p - q))
+#' # subgroup effect vector    
+#' alpha_true <- sample(group_center, size = n, replace = TRUE)    
+#' x_mat <- matrix(rnorm(n * p), nrow = n, ncol = p)    # covariate matrix
+#' err_vec <- rnorm(n, sd = 0.1)    # error term
+#' y_vec <- alpha_true + x_mat %*% beta_true + err_vec    # response vector
+#' 
+#' # a simple analysis using default loss and penalties
+#' res <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, 
+#'                  lam1_len = 50, lam2_len = 40, 
+#'                  phi = 5)
 #' @export
 RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                        p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
