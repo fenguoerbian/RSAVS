@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Robust subgroup analysis and variable selection simultaneously for large scale dataset — RSAVS_LargeN • RSAVS</title>
+<title>Robust subgroup analysis and variable selection simultaneously — RSAVS_Path • RSAVS</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Robust subgroup analysis and variable selection simultaneously for large scale dataset — RSAVS_LargeN" />
-<meta property="og:description" content="This function carries out robust subgroup analysis and variable selection simultaneously. 
-It's implemented in a parallel fashion. It supports different types of loss functions and penalties." />
+<meta property="og:title" content="Robust subgroup analysis and variable selection simultaneously — RSAVS_Path" />
+<meta property="og:description" content="This function carries out robust subgroup analysis and variable selection 
+simultaneously. It utilizes the cpp core solver and supports different 
+  types of loss functions and penalties." />
 
 
 
@@ -128,17 +129,18 @@ It's implemented in a parallel fashion. It supports different types of loss func
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Robust subgroup analysis and variable selection simultaneously for large scale dataset</h1>
-    <small class="dont-index">Source: <a href='https://github.com/fenguoerbian/RSAVS/blob/master/R/pre_define_functions.r'><code>R/pre_define_functions.r</code></a></small>
-    <div class="hidden name"><code>RSAVS_LargeN.Rd</code></div>
+    <h1>Robust subgroup analysis and variable selection simultaneously</h1>
+    <small class="dont-index">Source: <a href='https://github.com/fenguoerbian/RSAVS/blob/master/R/RSAVS_Path.R'><code>R/RSAVS_Path.R</code></a></small>
+    <div class="hidden name"><code>RSAVS_Path.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function carries out robust subgroup analysis and variable selection simultaneously. 
-It's implemented in a parallel fashion. It supports different types of loss functions and penalties.</p>
+    <p>This function carries out robust subgroup analysis and variable selection 
+simultaneously. It utilizes the cpp core solver and supports different 
+  types of loss functions and penalties.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RSAVS_LargeN</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>RSAVS_Path</span><span class='op'>(</span>
   <span class='va'>y_vec</span>,
   <span class='va'>x_mat</span>,
   l_type <span class='op'>=</span> <span class='st'>"L1"</span>,
@@ -187,7 +189,7 @@ It's implemented in a parallel fashion. It supports different types of loss func
     <tr>
       <th>l_param</th>
       <td><p>numeric vector containing necessary parameters of the corresponding loss function. 
-The default value is NULL.</p></td>
+The default value is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>p1_type, p2_type</th>
@@ -204,7 +206,8 @@ The default value is NULL.</p></td>
 <li><p>For SCAD and MCP, lam = p_param[1], gamma = p_param[2]</p></li>
 </ul><p>Default values for both parameters are <code><a href='https://rdrr.io/r/base/c.html'>c(2, 3.7)</a></code>. 
 Note: This function searches the whole lam1_vec * lam2_vec grid for the best solution. 
-Hence the <code>lambda</code>s provided in these parameters will be ignored and overwritten.</p></td>
+Hence the <code>lambda</code>s provided in these parameters serve only as placeholder 
+and will be ignored and overwritten in the actual computation.</p></td>
     </tr>
     <tr>
       <th>lam1_vec, lam2_vec</th>
@@ -214,6 +217,17 @@ For <code>lam1_vec</code>, it's preferred to be in the order from small to big.<
     <tr>
       <th>lam1_len, lam2_len</th>
       <td><p>integers, lengths of the auto-generated lambda vectors.</p></td>
+    </tr>
+    <tr>
+      <th>const_r123</th>
+      <td><p>a length-3 numerical vector, providing the scalars needed in the 
+augmented lagrangian part of the ADMM algorithm</p></td>
+    </tr>
+    <tr>
+      <th>const_abc</th>
+      <td><p>a length-3 numeric vector, providing the scalars to adjust weight
+of regression function, penalty for subgroup identification and penalty for 
+variable selection in the overall objective function. Defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(1, 1, 1)</a></code>.</p></td>
     </tr>
     <tr>
       <th>phi</th>
@@ -228,6 +242,17 @@ For <code>lam1_vec</code>, it's preferred to be in the order from small to big.<
       <td><p>integer, max number of iteration during the algorithm.</p></td>
     </tr>
     <tr>
+      <th>cd_max_iter</th>
+      <td><p>integer, max number of iteration during the coordinate descent
+update of <code>mu</code> and <code>beta</code>. If set to 0, will use analytical solution(
+instead of coordinate descent algorithm) to update <code>mu</code> and <code>beta</code>.</p></td>
+    </tr>
+    <tr>
+      <th>cd_tol</th>
+      <td><p>numerical, convergence tolerance for the coordinate descent part 
+when updating <code>mu</code> and <code>beta</code>.</p></td>
+    </tr>
+    <tr>
       <th>subgroup_benchmark</th>
       <td><p>bool. Whether this call should be taken as a benchmark of subgroup identification. 
 If <code>TRUE</code>, then the penalty for variable selection will be surpressed to a minimal value.</p></td>
@@ -239,16 +264,13 @@ The default value is 0.03.</p></td>
     </tr>
     <tr>
       <th>initial_vec</th>
-      <td><p>list of vector, providing initial values for the algorithm. 
-<code>mu_initial = initial_vec$mu</code>
-and 
-<code>beta_initial = initial_vec$beta</code>.
-Note: Current the function uses auto-generated lambda vectors 
-and the corresponding initial values are all just shrinked to 0.
-Hence this parameter is ignored.</p></td>
+      <td><p>list of vector, providing initial values for the algorithm.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='RSAVS_Solver.html'>RSAVS_Solver</a></code>, <code><a href='RSAVS_Path_PureR.html'>RSAVS_Path_PureR</a></code>, <code><a href='RSAVS_LargeN.html'>RSAVS_LargeN</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># a toy example</span>
@@ -269,48 +291,10 @@ Hence this parameter is ignored.</p></td>
 <span class='va'>y_vec</span> <span class='op'>&lt;-</span> <span class='va'>alpha_true</span> <span class='op'>+</span> <span class='va'>x_mat</span> <span class='op'>%*%</span> <span class='va'>beta_true</span> <span class='op'>+</span> <span class='va'>err_vec</span>    <span class='co'># response vector</span>
 
 <span class='co'># a simple analysis using default loss and penalties</span>
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS_LargeN</span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
-                    lam1_len <span class='op'>=</span> <span class='fl'>50</span>, lam2_len <span class='op'>=</span> <span class='fl'>40</span>, 
-                    phi <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>`const_r123` is missing. Use default settings!</span></div><div class='output co'>#&gt; <span class='message'>lam1_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>lam2_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>prepare intermediate variables needed by the algorithm</span></div><div class='output co'>#&gt; Basic variables initialized.
-#&gt; Beta finished.
-#&gt; Mu finished.
-#&gt; Z finished.
-#&gt; S finished.
-#&gt; W finished.
-#&gt; q1 finished.
-#&gt; q2 finished.
-#&gt; q3 finished.
-#&gt; D started.
-#&gt; D finished.
-#&gt; beta left finished.
-#&gt; mu left finished.
-#&gt; [1] "pamk fail!"</div><div class='input'>
-<span class='co'># you can choose different loss and penalties</span>
-<span class='va'>res_huber</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS_LargeN</span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
-                          l_type <span class='op'>=</span> <span class='st'>"Huber"</span>, l_param <span class='op'>=</span> <span class='fl'>1.345</span>,
-                          p1_type <span class='op'>=</span> <span class='st'>"M"</span>, p2_type <span class='op'>=</span> <span class='st'>"L"</span>,
-                          lam1_len <span class='op'>=</span> <span class='fl'>40</span>, lam2_len <span class='op'>=</span> <span class='fl'>30</span>, 
-                          phi <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>`const_r123` is missing. Use default settings!</span></div><div class='output co'>#&gt; <span class='message'>lam1_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>lam2_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>prepare intermediate variables needed by the algorithm</span></div><div class='output co'>#&gt; Basic variables initialized.
-#&gt; Beta finished.
-#&gt; Mu finished.
-#&gt; Z finished.
-#&gt; S finished.
-#&gt; W finished.
-#&gt; q1 finished.
-#&gt; q2 finished.
-#&gt; q3 finished.
-#&gt; D started.
-#&gt; D finished.
-#&gt; beta left finished.
-#&gt; mu left finished.
-#&gt; [1] "pamk fail!"</div><div class='input'><span class='co'># you can do post-selection estimation by</span>
-<span class='va'>ind</span> <span class='op'>&lt;-</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>best_ind</span>    <span class='co'># pick an id of the solution</span>
-<span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='RSAVS_Further_Improve.html'>RSAVS_Further_Improve</a></span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
-                              mu_vec <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>mu_improve_mat</span><span class='op'>[</span><span class='va'>ind</span>, <span class='op'>]</span>, 
-                              beta_vec <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>w_mat</span><span class='op'>[</span><span class='va'>ind</span>, <span class='op'>]</span><span class='op'>)</span>                           
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Solution may be nonunique</span></div></pre>
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS_Path</span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
+                 lam1_len <span class='op'>=</span> <span class='fl'>50</span>, lam2_len <span class='op'>=</span> <span class='fl'>40</span>, 
+                 phi <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>`const_r123` is missing. Use default settings!</span></div><div class='output co'>#&gt; <span class='message'>lam1_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>lam2_vec is missing, use default values...</span></div><div class='output co'>#&gt; <span class='message'>`initial_values` is missing, use default settings!</span></div><div class='output co'>#&gt; <span class='message'>prepare intermediate variables needed by the algorithm</span></div><div class='output co'>#&gt; <span class='message'>generate pairwise difference matrix</span></div><div class='output co'>#&gt; <span class='message'>compute `beta_lhs`</span></div><div class='output co'>#&gt; <span class='message'>compute `mu_lhs`</span></div><div class='output co'>#&gt; <span class='message'>additional variables prepared!</span></div><div class='output co'>#&gt; <span class='error'>Error in loadNamespace(name): there is no package called ‘progressr’</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

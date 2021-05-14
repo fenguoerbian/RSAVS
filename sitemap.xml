@@ -10,6 +10,9 @@
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_BIC.html</loc>
   </url>
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_Loss_Value.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Determine_Mu.html</loc>
   </url>
   <url>
@@ -19,16 +22,34 @@
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Generate_D_Matrix.html</loc>
   </url>
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Lam_Max.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Psi.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_LargeN.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Mu_to_Mat.html</loc>
   </url>
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path_PureR.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_RI.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_S_to_Groups.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver_PureR.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Summary_Iteration.html</loc>
@@ -38,6 +59,9 @@
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/loss_function.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/penalty_function.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/rcppeigen_hello_world.html</loc>
