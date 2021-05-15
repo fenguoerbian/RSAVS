@@ -1,0 +1,40 @@
+---
+title: "Why Lasso is not suitable for subgroup analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Why Lasso is not suitable for subgroup_analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+# remotes::install_github("fenguoerbian/RSAVS")
+library(RSAVS)
+```
+
+In this article, we talk about why lasso penalty is not suitable for subgroup analysis in our model setting. The original problem is
+$$\hat{\mu}, \hat{\beta} = \mathrm{argmin}
+\sum\limits_{i = 1}^n\rho\left(y_i - \mu_i - x_i^T\beta\right)
++ \sum\limits_{1\leq i < j \leq 2}P_1\left(\mu_i - \mu_j\right)
++ \sum\limits_{j = 1}^p P_2\left(\beta_j\right).
+$$
+To simplify the problem, we assume true value of `beta` is known. Then the subgroup analysis problem becomes a clustering problem:
+$$\hat{\mu} = 
+\mathrm{argmin}\sum\limits_{i = 1}^n\rho\left(y_i - \mu_i\right)
++ \sum\limits_{1 \leq i < j \leq n}P_1\left(\mu_i - \mu_j\right).
+$$
+Here we further simply the notation by omitting `const_abc` in the algorith.
+
+For lasso penalty $P_1\left(x\right) = \lambda|x|$, the objective function is 
+$$\hat{\mu} = 
+\mathrm{argmin}\sum\limits_{i = 1}^n\rho\left(y_i - \mu_i\right)
++ \sum\limits_{1 \leq i < j \leq n}|\mu_i - \mu_j|.
+$$
