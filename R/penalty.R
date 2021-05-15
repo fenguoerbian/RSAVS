@@ -40,6 +40,7 @@
 NULL
 
 #' @rdname penalty_function
+#' @export
 penalty_lasso <- function(x, params, derivative = FALSE){
   # Lasso penalty function
   #     p(x) = lam * abs(x)
@@ -73,6 +74,7 @@ penalty_lasso <- function(x, params, derivative = FALSE){
 }
 
 #' @rdname penalty_function
+#' @export
 penalty_scad <- function(x, params, derivative = FALSE){
   # SCAD penalty function
   #     p(x) = lam * abs(x)
@@ -131,6 +133,7 @@ penalty_scad <- function(x, params, derivative = FALSE){
 }
 
 #' @rdname penalty_function
+#' @export
 penalty_mcp <- function(x, params, derivative = FALSE){
   # MCP penalty function
   #     
