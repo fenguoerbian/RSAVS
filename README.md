@@ -62,3 +62,22 @@ res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat,
                               beta_vec = res$w_mat[ind, ])
 ```
 This function carries out ordinary low dimensional estimation(without any penalties) given the parameter structure indicated by `mu_vec` and `beta_vec`.
+
+Besides `RSAVS_LargeN`, there are also `RSAVS_Path` and `RSAVS_Path_PureR` which can perform the same task. The use the progress bar framework provided by package `progressr`.
+
+```r
+library(progressr)
+if(as.numeric(version$major) >= 4){
+    # For R >= 4.0, one can enable global handler so that
+    #   there is NO need to enclose expression in `with_progress`
+    handlers(global = TRUE)
+}
+handlers("progress")    # "progress" handlers requires the package `progress`
+                        # defualt handler is `txtprogress` from base R
+
+with_progress({
+res3 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = "Huber", l_param = 1.345, 
+                   lam1_len = 50, lam2_len = 40, p1_type = "M", p2_type = "L", 
+                   phi = 5)
+})
+```
