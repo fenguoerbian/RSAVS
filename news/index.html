@@ -102,8 +102,22 @@
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    News
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Releases</li>
+    <li>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2">RSAVS 0.1.2</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a href="../news/index.html">Changelog</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -145,7 +159,7 @@
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
 <ul>
-<li>Add pure R implementation of RSAVS. Refer to <code>RSAVS_Path_PureR</code> and <code>RSAVS_Solver_PureR</code>.</li>
+<li>Add pure R implementation of RSAVS. Refer to <code>RSAVS_Path_PureR</code> and <code>RSAVS_Solver_PureR</code>for more details.</li>
 <li>Add cpp implementation of RSAVS. The detailed algorithm uses the original design, which might be unstable when dealing with large scale dataset but is more flexible. Refer to <code>RSAVS_Path</code> and <code>RSAVS_Solver</code> for more details.</li>
 <li>By default, <code>lam1_vec</code> is now in order from small to big.</li>
 <li>The newly added <code>RSAVS_Path</code> and <code>RSAVS_Path_PureR</code> now supports progress bar via package <code>progressr</code>.</li>
@@ -155,7 +169,7 @@
 <h2 class="hasAnchor">
 <a href="#future-plans" class="anchor"></a>Future plans</h2>
 <ul>
-<li>Finish the vignette about the detail design of the internal ADMM algorithm</li>
+<li>[done] Finish the vignette about the detail design of the internal ADMM algorithm</li>
 <li>Clean up the code</li>
 <li>[done] Add functionality for smaller dataset</li>
 <li>Add RSI/LLA algorithm</li>
