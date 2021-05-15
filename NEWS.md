@@ -9,14 +9,14 @@
 
 ## Major changes
 
-  - Add pure R implementation of RSAVS. Refer to `RSAVS_Path_PureR` and `RSAVS_Solver_PureR`.
+  - Add pure R implementation of RSAVS. Refer to `RSAVS_Path_PureR` and `RSAVS_Solver_PureR`for more details.
   - Add cpp implementation of RSAVS. The detailed algorithm uses the original design, which might be unstable when dealing with large scale dataset but is more flexible. Refer to `RSAVS_Path` and `RSAVS_Solver` for more details.
   - By default, `lam1_vec` is now in order from small to big.
   - The newly added `RSAVS_Path` and `RSAVS_Path_PureR` now supports progress bar via package `progressr`.
 
 ## Future plans
 
-  - Finish the vignette about the detail design of the internal ADMM algorithm
+  - [done] Finish the vignette about the detail design of the internal ADMM algorithm
   - Clean up the code
   - [done] Add functionality for smaller dataset
   - Add RSI/LLA algorithm

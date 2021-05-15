@@ -21,6 +21,10 @@ RSAVS_Mu_to_Mat
 RSAVS_RI
 RSAVS_Summary_Iteration
 RSAVS_S_to_Groups
+RSAVS_Path
+RSAVS_Path_PureR
+RSAVS_Solver
+RSAVS_Solver_PureR
 }
 
 \section{RSAVS datesets}{

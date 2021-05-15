@@ -16,8 +16,24 @@ articles:
 reference:
 - title: Functions
   desc: Functions in the package
-  contents:
+- subtitle: Solution path
+  desc: Functions (and their core solvers) for finding solution path.
+- contents:
+  - RSAVS_LargeN
+  - RSAVS_Path
+  - RSAVS_Solver
+  - RSAVS_Path_PureR
+  - RSAVS_Solver_PureR
+- subtitle: Utilities
+  desc: Utility functions
+- contents:
   - starts_with("RSAVS_")
+  - -RSAVS_LargeN
+  - -RSAVS_Path
+  - -RSAVS_Solver
+  - -RSAVS_Path_PureR
+  - -RSAVS_Solver_PureR
+  - -RSAVS
   - loss_function
   - penalty_function
 - title: Datasets
@@ -33,4 +49,8 @@ reference:
   desc: Other Functions
   contents:
   - starts_with("rcpp")
-  
+
+news:
+ releases:
+ - text: "RSAVS 0.1.2"
+   href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2
