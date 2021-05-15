@@ -46,6 +46,9 @@
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_S_to_Groups.html</loc>
   </url>
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Softthresh.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver.html</loc>
   </url>
   <url>
@@ -53,6 +56,12 @@
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Summary_Iteration.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateSW.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateZ.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/Student_performance_dataset.html</loc>

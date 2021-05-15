@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>RSAVS: A package for robust subgroup analysis and variable selection. — RSAVS • RSAVS</title>
+<title>Update S and W — RSAVS_UpdateSW • RSAVS</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,20 @@
 
 
 
-<meta property="og:title" content="RSAVS: A package for robust subgroup analysis and variable selection. — RSAVS" />
-<meta property="og:description" content="The RSAVS can do subgroup analysis and variable selection simultaneously and 
-it supports multiple choices of loss and penalty functions.
-It implements the computation in a parallel manner." />
+<meta property="og:title" content="Update S and W — RSAVS_UpdateSW" />
+<meta property="og:description" content="These functions perform the updating step of s_vec and w_vec in 
+  the ADMM algorithm for different types of penalty functions.  
+The updating steps of s_vec and w_vec share the same pattern in 
+  the ADMM algorithm. These functions correspond to different penalty types
+  (p1_type and p2_type) provided from the original solver function.
+UpdateSW_Identity: identity update, this is needed when there
+      is no shrinkage applied, possibly since the corresponding lam is 
+      set to 0.
+UpdateSW_Lasso: Lasso update
+UpdateSW_SCAD: SCAD update
+UpdateSW_MCP: MCP update
+
+" />
 
 
 
@@ -129,38 +139,65 @@ It implements the computation in a parallel manner." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>RSAVS: A package for robust subgroup analysis and variable selection.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/fenguoerbian/RSAVS/blob/master/R/RSAVS-package.R'><code>R/RSAVS-package.R</code></a></small>
-    <div class="hidden name"><code>RSAVS.Rd</code></div>
+    <h1>Update S and W</h1>
+    <small class="dont-index">Source: <a href='https://github.com/fenguoerbian/RSAVS/blob/master/R/update_functions.R'><code>R/update_functions.R</code></a></small>
+    <div class="hidden name"><code>RSAVS_UpdateSW.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The RSAVS can do subgroup analysis and variable selection simultaneously and 
-it supports multiple choices of loss and penalty functions.
-It implements the computation in a parallel manner.</p>
+    <p>These functions perform the updating step of <code>s_vec</code> and <code>w_vec</code> in 
+  the ADMM algorithm for different types of penalty functions.</p>  
+<p>The updating steps of <code>s_vec</code> and <code>w_vec</code> share the same pattern in 
+  the ADMM algorithm. These functions correspond to different penalty types
+  (<code>p1_type</code> and <code>p2_type</code>) provided from the original solver function.</p><ul>
+<li><p><code>UpdateSW_Identity</code>: identity update, this is needed when there
+      is no shrinkage applied, possibly since the corresponding <code>lam</code> is 
+      set to 0.</p></li>
+<li><p><code>UpdateSW_Lasso</code>: Lasso update</p></li>
+<li><p><code>UpdateSW_SCAD</code>: SCAD update</p></li>
+<li><p><code>UpdateSW_MCP</code>: MCP update</p></li>
+</ul>
+
     </div>
 
+    <pre class="usage"><span class='fu'>RSAVS_UpdateSW_Identity</span><span class='op'>(</span><span class='va'>invec</span>, <span class='va'>param</span>, <span class='va'>const_r</span>, <span class='va'>const_bc</span><span class='op'>)</span>
 
+<span class='fu'>RSAVS_UpdateSW_Lasso</span><span class='op'>(</span><span class='va'>invec</span>, <span class='va'>param</span>, <span class='va'>const_r</span>, <span class='va'>const_bc</span><span class='op'>)</span>
 
-    <h2 class="hasAnchor" id="rsavs-functions"><a class="anchor" href="#rsavs-functions"></a>RSAVS functions</h2>
+<span class='fu'>RSAVS_UpdateSW_SCAD</span><span class='op'>(</span><span class='va'>invec</span>, <span class='va'>param</span>, <span class='va'>const_r</span>, <span class='va'>const_bc</span><span class='op'>)</span>
 
-    
+<span class='fu'>RSAVS_UpdateSW_MCP</span><span class='op'>(</span><span class='va'>invec</span>, <span class='va'>param</span>, <span class='va'>const_r</span>, <span class='va'>const_bc</span><span class='op'>)</span></pre>
 
-<p>RSAVS_Compute_BIC
-RSAVS_Determine_Mu
-RSAVS_Further_Improve
-RSAVS_Generate_D_Matrix
-loss_function: RSAVS_Huber, RSAVS_L1, RSAVS_L2
-RSAVS_LargeN
-RSAVS_Mu_to_Mat
-RSAVS_RI
-RSAVS_Summary_Iteration
-RSAVS_S_to_Groups</p>
-    <h2 class="hasAnchor" id="rsavs-datesets"><a class="anchor" href="#rsavs-datesets"></a>RSAVS datesets</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>invec</th>
+      <td><p>numerical vector, the orignal <code>s_vec</code> or <code>w_vec</code>.</p></td>
+    </tr>
+    <tr>
+      <th>param</th>
+      <td><p>numerical vector, parameters needed for the penalty function.</p></td>
+    </tr>
+    <tr>
+      <th>const_r</th>
+      <td><p>numerical scalar, parameter needed in the quadratic term in the 
+augmented part.</p></td>
+    </tr>
+    <tr>
+      <th>const_bc</th>
+      <td><p>numerical scalar, parameter represents the weight of corresponding
+penalty part in the objective function</p></td>
+    </tr>
+    </table>
 
-    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-<p>Student performance dataset: full_df, mat_df, por_df</p>
+    <p>Please refer to the vignette about the algorithm detail design to find out
+  more about how these parameters are defined.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='RSAVS_Path_PureR.html'>RSAVS_Path_PureR</a></code>, <code><a href='RSAVS_Solver_PureR.html'>RSAVS_Solver_PureR</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
