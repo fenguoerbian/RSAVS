@@ -19,6 +19,7 @@ reference:
   contents:
   - starts_with("RSAVS_")
   - loss_function
+  - penalty_function
 - title: Datasets
   desc: Datasets included in the package
   contents:
