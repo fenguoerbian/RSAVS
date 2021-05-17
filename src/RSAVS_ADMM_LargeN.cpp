@@ -1245,19 +1245,6 @@ Rcpp::List RSAVS_LargeN_L2_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::Vector
 }
 
 
-// [[Rcpp::export]]
-Rcpp::List RSAVS_Solver_Cpp2(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
-                            const std::string& l_type, const Eigen::VectorXd& l_param, 
-                            const char& p1_type, const Eigen::VectorXd p1_param, 
-                            const char& p2_type, const Eigen::VectorXd p2_param, 
-                            const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
-                            const double& tol, const int& max_iter, 
-                            const double& cd_tol, const int& cd_max_iter, 
-                            const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
-                            const double& phi){
-                            Rcpp::List res = Rcpp::List::create(Rcpp::Named("test", 0.0));
-                            return res;
-                            }
                             
 // [[Rcpp::export]]                           
 Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
