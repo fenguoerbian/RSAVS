@@ -1,5 +1,10 @@
-## Upcoming changes
+# Upcoming changes
 
+## API changes
+
+  - Make API about specifing loss function's type more consistent. See the changes of `RSAVS_Further_Improve` for more details.
+  - Tidy up some scirpt.
+  
 # RSAVS 0.1.3
 
 ## API changes
