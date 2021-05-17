@@ -320,7 +320,8 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   # }
   
   # compute bic
-  bic_p1 <- log(1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param)))
+  # bic_p1 <- log(1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param)))
+  bic_p1 <- 1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param))
   bic_p2 <- (group_num + active_beta_num) * phi
   bic <- bic_p1 + bic_p2
   
@@ -421,9 +422,9 @@ RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec
 #'   \code{p = ncol(x_mat)} is the number of covariates.
 #' @param l_type character, type of loss function.
 #'   \itemize{
-#'     \item "1": L-1 loss.
-#'     \item "2": L-2 loss.
-#'     \item "H": Huber loss.
+#'     \item "L1": L-1 loss.
+#'     \item "L2": L-2 loss.
+#'     \item "Huber": Huber loss.
 #'   }
 #'   The default value is "1".
 #' @param l_param vector of parameters needed by the loss function. 
@@ -444,7 +445,7 @@ RSAVS_Summary_Iteration <- function(y_vec, x_mat, beta_vec, mu_vec, s_vec, w_vec
 #' @seealso \code{\link{RSAVS_Mu_to_Mat}} for getting the subgroup index matrix
 #'   from the subgroup effect vector.
 #' @export
-RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu_vec, beta_vec){
+RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, mu_vec, beta_vec){
     # This function is designed for further improving the estimating of mu and beta
     # after the mu vector has been improved by the clustering method.
     # The idea is simple, the clustering method will provide a good estimate of subgroups
@@ -482,17 +483,17 @@ RSAVS_Further_Improve <- function(y_vec, x_mat, l_type = "1", l_param = NULL, mu
       res <- list(mu_vec = mu_vec, beta_vec = beta_vec)
     } else{
       # re-fit the model
-      if(l_type == "1"){
+      if(l_type == "L1"){
           tmp <- rq(y_vec ~ newx_mat - 1, tau = 0.5)
           new_mu <- tmp$coefficients[1 : group_num]
           new_beta <- tmp$coefficients[(1 : length(active_id)) + group_num]
       } else{
-        if(l_type == "2"){
+        if(l_type == "L2"){
             tmp <- lm(y_vec ~ newx_mat - 1)
             new_mu <- tmp$coefficients[1 : group_num]
             new_beta <- tmp$coefficients[(1 : length(active_id)) + group_num]
         } else{
-          if(l_type == "H"){
+          if(l_type == "Huber"){
             tmp <- rlm(y_vec ~ newx_mat - 1, k = l_param[1])
             new_mu <- tmp$coefficients[1 : group_num]
             new_beta <- tmp$coefficients[(1 : length(active_id)) + group_num]

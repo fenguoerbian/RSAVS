@@ -7,7 +7,7 @@
 RSAVS_Further_Improve(
   y_vec,
   x_mat,
-  l_type = "1",
+  l_type = "L1",
   l_param = NULL,
   mu_vec,
   beta_vec
@@ -22,9 +22,9 @@ RSAVS_Further_Improve(
 
 \item{l_type}{character, type of loss function.
 \itemize{
-  \item "1": L-1 loss.
-  \item "2": L-2 loss.
-  \item "H": Huber loss.
+  \item "L1": L-1 loss.
+  \item "L2": L-2 loss.
+  \item "Huber": Huber loss.
 }
 The default value is "1".}
 
