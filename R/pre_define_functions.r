@@ -258,7 +258,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 #'     \item |S| is the complexity of the model and \eqn{|S| = K + Q}.
 #'     \item Phi is a constant and \code{Phi = phi * log(log(n + p)) * log(n) / n}.
 #'   }
-RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi, a){
+RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi, a, double_log_lik = TRUE){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
   # where 1. mu is the intercept term of each observation. 
@@ -322,6 +322,9 @@ RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_pa
   # compute bic
   # bic_p1 <- log(1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param)))
   bic_p1 <- 1 / a * sum(loss_fun(y_vec - mu_vec - x_mat %*% beta_vec, loss_param))
+  if(double_log_lik){
+    bic_p1 <- log(bic_p1)
+  }
   bic_p2 <- (group_num + active_beta_num) * phi
   bic <- bic_p1 + bic_p2
   
