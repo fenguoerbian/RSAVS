@@ -12,7 +12,8 @@ RSAVS_Compute_BIC(
   loss_type,
   loss_param,
   phi,
-  a
+  a,
+  double_log_lik = TRUE
 )
 }
 \arguments{
