@@ -194,6 +194,14 @@
       <th>phi</th>
       <td><p>a positive constant.</p></td>
     </tr>
+    <tr>
+      <th>a</th>
+      <td><p>a scalar controlling the regression part of mBIC. If not provided, then the number of observation(<code>n</code>) is used.</p></td>
+    </tr>
+    <tr>
+      <th>double_log_lik</th>
+      <td><p>boolen, whether to use log logLik(double log likelihood) in the regression part of mBIC. Defaults to <code>TRUE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -201,7 +209,7 @@
     <p>the mBIC value.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>$$BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi ,$$
+    <p>$$BIC = log(1 / a * sum(loss(y - mu - x * beta)) + |S| * Phi ,$$
 where</p><ul>
 <li><p>mu is the intercept term of each observation. And the number of subgroups is
       <code>K = length(unique(mu_vec))</code>.</p></li>
@@ -210,8 +218,7 @@ where</p><ul>
 <li><p>the loss function is determined by <code>loss_type</code> and <code>loss_param</code>.</p></li>
 <li><p>|S| is the complexity of the model and \(|S| = K + Q\).</p></li>
 <li><p>Phi is a constant and <code>Phi = phi * log(log(n + p)) * log(n) / n</code>.</p></li>
-</ul>
-
+</ul><p>Note that in most cases, <code><a href='https://rdrr.io/r/base/sum.html'>sum(loss_fun)</a></code> corresponds to log likelihood.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
