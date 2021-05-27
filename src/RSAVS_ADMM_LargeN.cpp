@@ -1406,7 +1406,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         }
         
         // update z
-        z_vec = y_vec - mu_vec - x_mat * beta_vec+ q1_old / const_r1;
+        z_vec = y_vec - mu_vec - x_mat * beta_vec + q1_old / const_r1;
         Update_Z(z_vec, l_param, const_r1, const_a);
         
         // update s

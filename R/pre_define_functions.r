@@ -245,9 +245,11 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 #'       is the parameter needed by huber loss. A popular choice is \code{c = 1.345}.
 #'   }
 #' @param phi a positive constant. 
+#' @param a a scalar controlling the regression part of mBIC. If not provided, then the number of observation(\code{n}) is used.
+#' @param double_log_lik boolen, whether to use log logLik(double log likelihood) in the regression part of mBIC. Defaults to \code{TRUE}.
 #' @return the mBIC value.
 #' @details 
-#' \deqn{BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi ,}
+#' \deqn{BIC = log(1 / a * sum(loss(y - mu - x * beta)) + |S| * Phi ,}
 #' where
 #'   \itemize{
 #'     \item mu is the intercept term of each observation. And the number of subgroups is
@@ -258,6 +260,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
 #'     \item |S| is the complexity of the model and \eqn{|S| = K + Q}.
 #'     \item Phi is a constant and \code{Phi = phi * log(log(n + p)) * log(n) / n}.
 #'   }
+#' Note that in most cases, \code{sum(loss_fun)} corresponds to log likelihood. 
 RSAVS_Compute_BIC <- function(y_vec, x_mat, beta_vec, mu_vec, loss_type, loss_param, phi, a, double_log_lik = TRUE){
   # This function computes the BIC, given a specific solution.
   # BIC = log(1 / n * sum(loss(y - mu - x * beta)) + |S| * Phi
