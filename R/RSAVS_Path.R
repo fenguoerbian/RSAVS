@@ -563,27 +563,4 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
               const_abc = const_abc)
   
   return(res)
-  
-  # if(l_type == "L2"){
-  #     # beta_left_inv <- solve(t(x_mat) %*% x_mat / n + r3 / 2 * diag(nrow = p))
-  #     # d_mat <- RSAVS_Generate_D_Matrix(n)
-  #     # mu_left_inv <- solve(diag(nrow = n) / n + r2 / 2 * as.matrix(t(d_mat) %*% d_mat))
-  #     res <- RSAVS_LargeN_L2_Rcpp(x_mat, y_vec, n, p, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r2, r3, phi, tol, max_iter)
-  # } else{
-  #     res <- RSAVS_LargeN_Rcpp(x_mat, y_vec, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r1, r2, r3, phi, tol, max_iter)
-  # }
-  
-  # Idealy, the result of c(lam1[1], lam2[1]) should be mu being median and beta being 0
-  # So the result is directly set to this, without actually computing using ADMM
-  # But in actuality, our derivation of lam1[1] and lam2[1] is not that accurate, 
-  # Hence this direct setting is not that accurate
-  # Given this situation, when best_ind being 1
-  # We re-choose the best result
-  # if(res$best_ind == 1){
-  #     min_bic_id <- which.min(res$bic_mat[-1])
-  #     res$best_ind <- min_bic_id + 1
-  #     res$best_i <- (min_bic_id + 1 - 1) %% length(lam1_vec) + 1
-  #     res$best_j <- (min_bic_id + 1 - 1) %/% length(lam1_vec) + 1
-  #     res$repick <- TRUE
-  # }
 }
