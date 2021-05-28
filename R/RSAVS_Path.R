@@ -408,7 +408,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                            mu_init = mu_init, 
                            z_init = y_vec - mu_init, 
                            # s_init = rep(0, n * (n - 1) / 2), 
-                           s_init = as.vector(d_mat %*% mu_init)
+                           s_init = as.vector(d_mat %*% mu_init), 
                            w_init = rep(0, p), 
                            q1_init = rep(0, n), 
                            q2_init = rep(0, n * (n - 1) / 2), 
