@@ -1,4 +1,4 @@
-Draw_Mu_Path <- function(result, lam2_id, lam1_id, idx_vec = NULL, visual = TRUE){
+Draw_Mu_Path <- function(result, lam2_id, lam1_id, idx_vec = NULL, visual = TRUE, useS = TRUE){
   n <- ncol(result$mu_mat)
   lam1_len <- length(result$lam1_vec)
   lam2_len <- length(result$lam2_vec)
@@ -25,11 +25,15 @@ Draw_Mu_Path <- function(result, lam2_id, lam1_id, idx_vec = NULL, visual = TRUE
   
   for(i in 1 : length(idx_vec)){
     idx <- idx_vec[i]
-    groups <- RSAVS_S_to_Groups(result$s_mat[idx, ], n)
-    message("There are ", length(groups), " group(s).")
-    for(j in 1 : length(groups)){
-      group_idx <- groups[[j]]
-      muplot[i, group_idx] <- mean(result$mu_mat[idx, group_idx])
+    if(useS){
+      groups <- RSAVS_S_to_Groups(result$s_mat[idx, ], n)
+      message("There are ", length(groups), " group(s).")
+      for(j in 1 : length(groups)){
+        group_idx <- groups[[j]]
+        muplot[i, group_idx] <- mean(result$mu_mat[idx, group_idx])
+      }
+    }else{
+      muplot[i, ] <- RSAVS_Determine_Mu(result$mu_mat[idx, ])
     }
   }
   
