@@ -7,6 +7,7 @@ articles:
     This section contains articles for data analysis using the RSAVS package.
   contents: 
   - Analyize_student_performance
+  - Play_with_iris_dataset
 - title: Additional resources
   desc: >
     This section contains additional rescources for the RSAVS package.
