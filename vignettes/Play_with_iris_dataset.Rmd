@@ -1,0 +1,152 @@
+---
+title: "Play with iris dataset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Play with iris dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+remotes::install_github("fenguoerbian/RSAVS", force = TRUE)    # get the latest version of RSAVS
+library(RSAVS)
+library(ggplot2)
+library(skimr)
+```
+
+In this vignette, we try to apply our RSAVS method onto the classical `iris` dataset.
+
+```{r}
+data(iris)
+skimr::skim(iris)
+table(iris$Species)
+```
+
+There are 150 observations in this dataset containg 3 different species of iris flowers. 
+We can visualize the relationship between `Sepal.Width` and `Sepal.Length`. 
+
+```{r}
+ggplot(data = iris, aes(Sepal.Width, Sepal.Length, color = Species, shape = Species)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+As we can see, these three species seem to share the slope term (although in this 
+figure, the slope terms are different), only differs at intercept terms, which 
+seems to be suitable for our proposed model. We can conduct an subgroup analysis 
+model on the overall dataset: 
+
+```{r rsavs}
+y_vec <- iris$Sepal.Length
+x_mat <- iris$Sepal.Width
+res <- RSAVS_Path(y_vec, x_mat, l_type = "L2", 
+                  lam1_len = 50, min_lam1_ratio = 0.1, lam2_vec = c(0), 
+                  max_iter = 1000, cd_max_iter = 0, tol = 10 ^(-5) , 
+                  const_abc = rep(1, 3))
+```
+
+Here we choose linear regression (`l_type = "L2"`) coupled with the default SCAD penalty
+for subgroup analysis. The variable selection in our model is omitted since the penalty
+vector is set to 0 (`lam2_vec = c(0)`). We can visualize the estimated subgroups 
+along the solution path.
+
+__NOTE:__ This figure is different from the solution path later, because here we use the augmented
+`s_vec` in the ADMM algorithm to determine the subgroup structure while later `pamk` is applied
+to further determine the group structure.
+
+```{r}
+mu_path <- RSAVS:::Draw_Mu_Path(result = res, lam2_id = 1, useS = T)
+matplot(1 : 50, mu_path, xlab = "lambda index", ylab = "mu_est", type = "l", col = "black", lty = 1)
+```
+
+We can use the identified subgroups to do post-selection estimation and then choose
+the model that minimize the mBIC criteria as our final model.
+
+```{r}
+bic_res <- sapply(1 : nrow(res$mu_mat), FUN = function(id, rsavs_res, useS, y_vec, x_mat, l_type, l_param, phi, const_a, double_log_lik){
+  beta_vec <- rsavs_res$w_mat[id, ]
+  mu_vec <- rsavs_res$mu_mat[id, ]
+  n <- length(mu_vec)
+  
+  # determine the grouped mu_vec
+  if(useS){
+    group_res <- RSAVS:::RSAVS_S_to_Groups(rsavs_res$s_mat[id, ], n)
+    mu_improved <- RSAVS:::RSAVS_Determine_Mu(mu_vec, group_res)
+  }else{
+    mu_improved <- RSAVS:::RSAVS_Determine_Mu(mu_vec)
+  }
+  # message(length(table(mu_improved)))
+  
+  # post-selection estimation
+  post_est <- try(RSAVS:::RSAVS_Further_Improve(y_vec, x_mat, l_type, l_param, mu_improved, beta_vec))
+  if(!inherits(post_est, "try-error")){
+    beta_vec <- post_est$beta_vec
+    mu_improved <- post_est$mu_vec
+  }else{
+    message("further improve error at id = ", id)
+  }
+  
+  bic <- RSAVS:::RSAVS_Compute_BIC(y_vec, x_mat, beta_vec, mu_improved, l_type, l_param, phi, const_a, double_log_lik)
+  active_num <- sum(beta_vec != 0)
+  group_num <- length(unique(mu_improved))
+  
+  res <- c(bic, group_num, active_num)
+  names(res) <- c("bic", "group_num", "active_num")
+  
+  return(res)
+}, 
+rsavs_res = res, useS = FALSE, y_vec = y_vec, x_mat = x_mat, 
+l_type = "L2", l_param = 0, phi = 5, const_a = 1, double_log_lik = TRUE)
+```
+
+We select the model that minimized the modified BIC
+
+```{r}
+idx <- which.min(bic_res[1, ])
+(bic_res[, idx])
+```
+
+This chosen model can be visualized in the solution path as
+
+```{r}
+mu_path <- RSAVS:::Draw_Mu_Path(result = res, lam2_id = 1, useS = FALSE)
+abline(v = res$lam1_vec[idx], lty = 2, col = "red")
+matplot(1 : 50, mu_path, xlab = "lambda index", ylab = "mu_est", type = "l", col = "black", lty = 1)
+abline(v = idx, lty = 2, col = "red")
+```
+
+The selected model identifies three subgroups from the population. We can do post selection estimation, without any penalty, given the chosen model struture.
+
+```{r}
+post_est <- RSAVS:::RSAVS_Further_Improve(y_vec, x_mat, l_type = "L2", l_param = 0, 
+                                          mu_vec = mu_path[idx, ], 
+                                          beta_vec = res$w_mat[idx, ])
+mu_post <- post_est$mu_vec
+beta_post <- post_est$beta_vec
+```
+
+When comparing the estimated subgroup structure with the `Species` variable, we can see that 
+the estimated subgroup structure mainly focuses on the values of `Sepal.Length`. The Rand Index
+between the estimated subgroup structure and the `Species` is only `r RSAVS_RI(as.factor(mu_post), iris$Species)`.
+Also, after accounting for the difference in `Sepal.Length` into subgroups, the effect of 
+`Sepal.Width` becomes near to none.
+
+```{r}
+iris$new_group_id <- as.factor(as.numeric(as.factor(mu_post)))
+iris$intercept_est <- mu_post
+iris$slope_est <- beta_post
+ggplot(data = iris, aes(Sepal.Width, Sepal.Length, color = new_group_id, shape = Species)) + 
+  geom_point(size = 3) + 
+  geom_abline(aes(slope = slope_est, intercept = intercept_est, color = new_group_id))
+```
+
+The unsupervised nature of the proposed method(subgroup identification) is demonstrated in this example. 
+The algorithm will classify subjects into small groups based on the value of response(residuals after accounting for 
+the covariate effects). The grouping results are not guaranteed to be aligned with any given observed attributes.
