@@ -63,7 +63,7 @@ res2 <- RSAVS_Further_Improve(y_vec = y_vec, x_mat = x_mat,
 ```
 This function carries out ordinary low dimensional estimation(without any penalties) given the parameter structure indicated by `mu_vec` and `beta_vec`.
 
-Besides `RSAVS_LargeN`, there are also `RSAVS_Path` and `RSAVS_Path_PureR` which can perform the same task. The use the progress bar framework provided by package `progressr`.
+Besides `RSAVS_LargeN`, there are also `RSAVS_Path` and `RSAVS_Path_PureR` which can perform the same task. Furthermore, these two functions use the progress bar framework provided by package `progressr`.
 
 ```r
 library(progressr)
