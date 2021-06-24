@@ -1,3 +1,64 @@
+RSI_Fit <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
+                    p1_type = "S", p1_param = c(2, 3.7), 
+                    const_abc = rep(1, 3), initial_values, 
+                    tol = 10 ^ {-3}, max_iter = 100, use_pamk = FALSE){
+  ### preparation ###
+  # preparation for x and y #
+  y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
+  n <- length(y_vec)
+  x_mat <- matrix(x_mat, nrow = n)    # make sure x_mat is a matrix, even if it has only one column
+  p <- ncol(x_mat)
+  
+  # preparation for loss function #
+  if(l_type != "L1"){
+    warning("Currently, only `L1` is supported for `l_type`!")
+    l_type <- "L1"
+    l_param <- NULL
+  }
+  
+  # preparation for penalties #
+  if(penalty == 'L'){
+    p1_fun <- penalty_lasso
+  } else{
+    if(penalty == 'S'){
+      p1_fun <- penalty_scad
+    } else {
+      if(penalty == 'M'){
+        p1_fun <- penalty_mcp
+      }
+    }
+  }
+  
+  # prepare initial values
+  if(missing(initial_values)){
+    message("`initial_values` is missing. Use default settings!")
+    initial_values <- list(beta_init = rep(0, p), 
+                           mu_init = as.vector(y_vec))
+  }
+  
+  # ------ main algorithm ------
+  # --- initial values ---
+  beta_old <- initial_values$beta_init
+  mu_old <- initial_values$mu_init
+  d_mat <- RSAVS_Generate_D_Matrix(n)
+  
+  # augment the part of x and y, which will not be changed during the iteration
+  y_aug <- rbind(y, matrix(0, nrow = n * (n - 1) / 2, ncol = 1))
+  x_aug <- as.matrix.csr(0, nrow = n + n * (n - 1) / 2, ncol = n + p)
+  x_aug[1 : n, 1 : n] <- diag(x = 1, nrow = n)
+  x_aug[1 : n, (n + 1) : (n + p)] <- x
+  
+  # --- algorithm status ---
+  current_step <- 1
+  diff <- tol + 1
+  converge_status <- FALSE
+  
+  while((current_step <= max_iter) & (diff > tol)){
+    
+  }
+}
+
+
 RSI_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, p1_type = "S", p1_param = c(2, 3.7), 
                      lam1_vec, min_lam1_ratio = 0.03, lam1_len, 
                      initial_values, 
@@ -70,4 +131,51 @@ RSI_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, p1_type = "S",
     lam1_vec <- sort(abs(lam1_vec), decreasing = FALSE)
   }
   
+  # prepare initial values
+  if(missing(initial_values)){
+    message("`initial_values` is missing, use default settings!")
+    initial_values <- list(beta_init = rep(0, p), 
+                           mu_init = as.vector(y_vec))
+  }
+  
+  # prepare variables to store the results
+  beta_mat <- matrix(0, nrow = lam1_len, ncol = p)
+  mu_mat <- matrix(0, nrow = lam1_len, ncol = n)
+  step_vec <- rep(1, lam1_len)
+  diff_vec <- rep(tol + 1, lam1_len)
+  converge_vec <- rep(FALSE, lam1_len)
+  loss_mat <- matrix(0, nrow = lam1_len, ncol = max_iter + 1)
+  
+  # main algorithm
+  pb <- progressr::progressor(steps = lam1_len)
+  for(i in 1 : lam1_len){
+    # index for current solution
+    ind <- i
+    
+    # prepare lambda 
+    p1_param[1] <- lam1_vec[i]
+    
+    # carry out the algorithm
+    res <- RSI_Fit(y_vec, x_mat, l_type = l_type, l_param = l_param, 
+                   p1_type = p1_type, p1_param = p1_param, 
+                   const_abc = const_abc, initial_values = initial_values, 
+                   tol = tol, max_iter = max_iter, use_pamk = use_pamk)
+    
+    # store the results
+    
+    # prepare initial values for the next run
+    
+    # progress information
+    pb(message = paste("lam1: ", i, "/", lam1_len, sep = ""))
+  }
+  
+  res <- list(beta_mat = beta_mat, 
+              mu_mat = mu_mat, 
+              step_vec = step_vec, 
+              diff_vec = diff_vec, 
+              converge_vec = converge_vec, 
+              loss_mat = loss_mat, 
+              lam1_vec = lam1_vec, 
+              const_abc = const_abc)
+  return(res)
 }
