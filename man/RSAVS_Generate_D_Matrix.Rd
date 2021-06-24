@@ -4,12 +4,17 @@
 \alias{RSAVS_Generate_D_Matrix}
 \title{Generate the pair-wise different matrix}
 \usage{
-RSAVS_Generate_D_Matrix(n, dense = FALSE)
+RSAVS_Generate_D_Matrix(n, dense = FALSE, w_vec = 1)
 }
 \arguments{
 \item{n}{number of observations.}
 
 \item{dense}{logical, whether the return type should be in dense matrix or not}
+
+\item{w_vec}{a scalar value of a length \eqn{n * (n - 1) / 2} vector representing
+the weights for left part in each pair(e.g. \eqn{\mu_i} in \eqn{\mu_i - \mu_j}). 
+If \code{w_vec} is a scalar, it will be recycled for every pair. 
+Defaults to 1.}
 }
 \value{
 a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
@@ -18,7 +23,17 @@ a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
 This function generate the pairwise difference matrix(D matrix in the paper).
 By default it returns a sparse matrix(matrix.csr) from the package SparseM.
 }
+\details{
+In Original RSAVS via ADMM algorithm. This functions generates the pairwise
+  difference matrix with \code{w_vec = 1}.
+  
+In RSI, the original objective function is converted to a sparse median regression
+  via LLA. The pairwise difference matrix is coupled with weights extracted from
+  the penalty functions. This is supplied into this function through \code{w_vec}.
+}
 \examples{
 RSAVS:::RSAVS_Generate_D_Matrix(5)
 RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE)
+RSAVS:::RSAVS_Generate_D_Matrix(3, w_vec = 2)
+RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE, w_vec = c(1, -2, 3, -4, 5, -6))
 }

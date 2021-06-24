@@ -5,13 +5,26 @@
 #' This function generate the pairwise difference matrix(D matrix in the paper).
 #' By default it returns a sparse matrix(matrix.csr) from the package SparseM.
 #'
+#' In Original RSAVS via ADMM algorithm. This functions generates the pairwise
+#'   difference matrix with \code{w_vec = 1}.
+#'   
+#' In RSI, the original objective function is converted to a sparse median regression
+#'   via LLA. The pairwise difference matrix is coupled with weights extracted from
+#'   the penalty functions. This is supplied into this function through \code{w_vec}.
+#'   
 #' @param n number of observations.
 #' @param dense logical, whether the return type should be in dense matrix or not
+#' @param w_vec a scalar value of a length \eqn{n * (n - 1) / 2} vector representing
+#'   the weights for left part in each pair(e.g. \eqn{\mu_i} in \eqn{\mu_i - \mu_j}). 
+#'   If \code{w_vec} is a scalar, it will be recycled for every pair. 
+#'   Defaults to 1.
 #' @return a difference matrix with size \eqn{(n * (n - 1) / 2) \times n}
 #' @examples 
 #' RSAVS:::RSAVS_Generate_D_Matrix(5)
 #' RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE)
-RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
+#' RSAVS:::RSAVS_Generate_D_Matrix(3, w_vec = 2)
+#' RSAVS:::RSAVS_Generate_D_Matrix(4, dense = TRUE, w_vec = c(1, -2, 3, -4, 5, -6))
+RSAVS_Generate_D_Matrix <- function(n, dense = FALSE, w_vec = 1){
   # This function generate the pairwise difference matrix(D matrix in the paper)
   # By default it returns a sparse matrix(matrix.csr) from the package SparseM
   # Args: n: number of observations. 
@@ -22,15 +35,32 @@ RSAVS_Generate_D_Matrix <- function(n, dense = FALSE){
   res <- as.matrix.csr(0, nrow = n * (n - 1) / 2, ncol = n)
   # compute the elements
   # Refer to the pdf manual of SparseM for detailed definitions of ra, ia and ja
+  
   # ra: the non-zero elements, in row-major pattern
-  ra <- rep(c(1, -1), times = n * (n - 1) / 2)
+  # ra <- rep(c(1, -1), times = n * (n - 1) / 2)    # original design
+  if(length(w_vec) == 1){
+    w <- w_vec
+    ra <- rep(c(w, -w), times = n * (n - 1) / 2)
+  }else{
+    if(length(w_vec) == (n * (n - 1) / 2)){
+      tmp <- - w_vec
+      ra <- rbind(w_vec, tmp)
+      ra <- as.vector(ra)
+    } else{
+      stop("w_vec must be a scalar or a n * (n - 1) / 2 length vector!")
+    }
+  }
+  
   # ia: starting point of each row in ra and ja
   ia <- (1 : (n * (n - 1) / 2 + 1)) * 2 - 1
+  
   # ja: column index, according to ra
   positive_column_indicator <- rep(1 : (n - 1), times = (n - 1) : 1)
   negative_column_indicator <- unlist(lapply(2 : n, function(x) x : n))
   ja_matrix <- t(cbind(positive_column_indicator, negative_column_indicator))
   ja <- as.vector(ja_matrix)
+  
+  # construct the resulting matrix
   res@ra <- ra
   res@ja <- ja
   res@ia <- as.integer(ia)
