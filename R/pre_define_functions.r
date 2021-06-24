@@ -213,6 +213,9 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' @param group_res a list, containing the grouping results.
 #'   Each element of group_res is a list containing the indecs from the same subgroup.
 #'   See \code{\link{RSAVS_S_to_Groups}} for the output structure.
+#' @param round_digits a positive integer digits. If \code{group_res} is missing and \code{round_digits}
+#'   is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
+#'   to provide the final grouping results.
 #' @return a length-n vector of subgroup effects. Observations belonging to the same
 #'   subgroup should have the same effects.
 #' @details 
@@ -221,7 +224,30 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #'   
 #'   If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
 #'   to get the estimated grouping result.
-RSAVS_Determine_Mu <- function(mu_vec, group_res){
+#' @examples 
+#' # basic settings
+#' set.seed(1024)
+#' n <- 100    # number of observations
+#' group_center <- c(-1, 0, 1)    # three group centers
+#' # subgroup effect vector    
+#' alpha_true <- sample(group_center, size = n, replace = TRUE)
+#' alpha_est <- alpha_true + rnorm(n, sd = 0.25)    # add noise to group effect
+#' table(alpha_true)
+#' 
+#' # Use `group_res` to determine estimated group effect from `alpha_est`
+#' d_mat <- RSAVS:::RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
+#' # Normally, s_vec should come from the algorithm
+#' #   Here we just use a simple estimate, which might lead to not so satisfing results
+#' s_vec <- round(d_mat %*% alpha_est, 0)    
+#' group_res <- RSAVS:::RSAVS_S_to_Groups(s_vec, n)
+#' table(RSAVS_Determine_Mu(alpha_est, group_res = group_res))
+#' 
+#' # Use `pamk` to determine estiamted group effect
+#' table(RSAVS_Determine_Mu(alpha_est))
+#' 
+#' # Use directly rounding to determine estimated group effect
+#' table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
+RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result
   #       group_res: A list, containing the grouping results. 
@@ -231,21 +257,59 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res){
   #               Current strategy is taking average value of mu_vec for those belong to the same subgroup in group_res
 
   if(missing(group_res)){    # new version, use cluster method
-    n <- length(mu_vec)
-    pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : 7, usepam = (n <= 2000)), silent = T)
-    if(!inherits(pamk_res, "try-error")){
-      group_num <- pamk_res$nc
+    if(missing(round_digits)){
+      # no `round_digits` provided, use `pamk`
+      n <- length(mu_vec)
+      pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : 7, usepam = (n <= 2000)), silent = T)
+      if(!inherits(pamk_res, "try-error")){
+        # ------ original design ------
+        # group_num <- pamk_res$nc
+        
+        # ------ newer design ------
+        # try to determine k = 1 (only one cluster) is suitable for this data
+        p_vec <- rep(0, 6)
+        for(k in 2 : 7){
+          tmp2 <- cluster::pam(mu_vec, k = k)
+          # print(paste("------ k = ", k, " ------", sep = ""))
+          for(i in 1 : (k - 1)){
+            for(j in (i + 1) : k){
+              idx <- union(which(tmp2$clustering == i), 
+                           which(tmp2$clustering == j))
+              current_p <- dudahart2(mu_vec[idx], tmp2$clustering[idx])$p.value
+              if(current_p > p_vec[k - 1]){
+                p_vec[k - 1] <- current_p
+              }
+            }
+          }
+        }
+        double_check1 <- any(p_vec < 0.001)
+        if(!double_check1){
+          group_num <- 1
+        }else(
+          pamk_res <- try(fpc::pamk(mu_vec, krange = 2 : 7, usepam = (n <= 2000)), silent = T))
+          if(!inherits(pamk_res, "try_error")){
+            group_num <- pamk_res$nc
+          }else{
+            print("inner pamk fail!")
+            group_num <- 1
+          }
+      }else{
+        print("pamk fail!")
+        group_num <- 1
+      }
+      
+      if(group_num == 1){
+        res <- rep(mean(mu_vec), n)
+      }else{
+        res <- pamk_res$pamobject$medoids[pamk_res$pamobject$clustering]
+      }
+      return(res)
     }else{
-      print("pamk fail!")
-      group_num <- 1
+      # simply round `mu_vec` based on `round_digits`
+      res <- round(mu_vec, digits = round_digits)
+      return(res)
     }
-    
-    if(group_num == 1){
-      res <- rep(mean(mu_vec), n)
-    }else{
-      res <- pamk_res$pamobject$medoids[pamk_res$pamobject$clustering]
-    }
-    return(res)
+
   }else{    # old version, use my result from RSAVS_S_to_Groups
     # The result is not very good because it tends to merge all observation into one big group
     n <- length(mu_vec)

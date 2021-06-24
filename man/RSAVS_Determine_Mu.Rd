@@ -4,7 +4,7 @@
 \alias{RSAVS_Determine_Mu}
 \title{Determine the subgroup effects}
 \usage{
-RSAVS_Determine_Mu(mu_vec, group_res)
+RSAVS_Determine_Mu(mu_vec, group_res, round_digits)
 }
 \arguments{
 \item{mu_vec}{numerical vector. \code{n = length(mu_vec)} is the number of observations.
@@ -13,6 +13,10 @@ Presumably it comes from the ADMM algorithm and is not a very good grouping resu
 \item{group_res}{a list, containing the grouping results.
 Each element of group_res is a list containing the indecs from the same subgroup.
 See \code{\link{RSAVS_S_to_Groups}} for the output structure.}
+
+\item{round_digits}{a positive integer digits. If \code{group_res} is missing and \code{round_digits}
+is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
+to provide the final grouping results.}
 }
 \value{
 a length-n vector of subgroup effects. Observations belonging to the same
@@ -27,4 +31,28 @@ Currently, the resulting subgroup effects are the average value of \code{mu_vec}
   
   If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
   to get the estimated grouping result.
+}
+\examples{
+# basic settings
+set.seed(1024)
+n <- 100    # number of observations
+group_center <- c(-1, 0, 1)    # three group centers
+# subgroup effect vector    
+alpha_true <- sample(group_center, size = n, replace = TRUE)
+alpha_est <- alpha_true + rnorm(n, sd = 0.25)    # add noise to group effect
+table(alpha_true)
+
+# Use `group_res` to determine estimated group effect from `alpha_est`
+d_mat <- RSAVS:::RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
+# Normally, s_vec should come from the algorithm
+#   Here we just use a simple estimate, which might lead to not so satisfing results
+s_vec <- round(d_mat \%*\% alpha_est, 0)    
+group_res <- RSAVS:::RSAVS_S_to_Groups(s_vec, n)
+table(RSAVS_Determine_Mu(alpha_est, group_res = group_res))
+
+# Use `pamk` to determine estiamted group effect
+table(RSAVS_Determine_Mu(alpha_est))
+
+# Use directly rounding to determine estimated group effect
+table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
 }
