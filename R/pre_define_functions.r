@@ -247,7 +247,7 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' 
 #' # Use directly rounding to determine estimated group effect
 #' table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
-RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits){
+RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result
   #       group_res: A list, containing the grouping results. 
@@ -257,18 +257,27 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits){
   #               Current strategy is taking average value of mu_vec for those belong to the same subgroup in group_res
 
   if(missing(group_res)){    # new version, use cluster method
-    if(missing(round_digits)){
+    if(is.null(round_digits)){
       # no `round_digits` provided, use `pamk`
       n <- length(mu_vec)
-      pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : 7, usepam = (n <= 2000)), silent = T)
+      if(n < 2){
+        stop("There are only 2 observations, not meaning for clustering.")
+      }
+      if(n < 10){
+        warning("number of observations(n) to small, pamk might be unstable.")
+        
+      }
+      kmax <- min(n, 10)
+      
+      pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : kmax, usepam = (n <= 2000)), silent = T)
       if(!inherits(pamk_res, "try-error")){
         # ------ original design ------
         # group_num <- pamk_res$nc
         
         # ------ newer design ------
         # try to determine k = 1 (only one cluster) is suitable for this data
-        p_vec <- rep(0, 6)
-        for(k in 2 : 7){
+        p_vec <- rep(0, kmax - 1)
+        for(k in 2 : kmax){
           tmp2 <- cluster::pam(mu_vec, k = k)
           # print(paste("------ k = ", k, " ------", sep = ""))
           for(i in 1 : (k - 1)){
@@ -286,7 +295,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits){
         if(!double_check1){
           group_num <- 1
         }else(
-          pamk_res <- try(fpc::pamk(mu_vec, krange = 2 : 7, usepam = (n <= 2000)), silent = T))
+          pamk_res <- try(fpc::pamk(mu_vec, krange = 2 : kmax, usepam = (n <= 2000)), silent = T))
           if(!inherits(pamk_res, "try_error")){
             group_num <- pamk_res$nc
           }else{
