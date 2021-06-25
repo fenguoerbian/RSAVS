@@ -460,16 +460,21 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   if(missing(lam1_vec)){
     # newer version
     message("lam1_vec is missing, use default values...")
-    lam1_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, l_type = l_type, l_param = l_param, 
-                                  lam_ind = 1, 
-                                  const_abc = const_abc, eps = 10^(-6))
-    lam1_min <- lam1_max * min_lam1_ratio
-    if(p1_type != "L"){
-      lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
-    }
     
-    # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
-    lam1_vec <- exp(seq(from = log(lam1_min), to = log(lam1_max), length.out = lam1_len))
+    if(missing(lam1_len) | missing(min_lam1_ratio)){
+      stop("Both `lam1_len` and `min_lam1_ratio` must be provided in order to generate default lambda vector!")
+    }else{
+      lam1_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, l_type = l_type, l_param = l_param, 
+                                    lam_ind = 1, 
+                                    const_abc = const_abc, eps = 10^(-6))
+      lam1_min <- lam1_max * min_lam1_ratio
+      if(p1_type != "L"){
+        lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
+      }
+      
+      # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
+      lam1_vec <- exp(seq(from = log(lam1_min), to = log(lam1_max), length.out = lam1_len))
+    }
   }else{
     # lam1_vec <- sort(abs(lam1_vec), decreasing = T)
     # lam1_length = length(lam1_vec)
@@ -480,12 +485,16 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   if(missing(lam2_vec)){
     # newer version
     message("lam2_vec is missing, use default values...")
-    lam2_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, x_mat = x_mat, 
-                                  l_type = l_type, l_param = l_param, 
-                                  lam_ind = 2, 
-                                  const_abc = const_abc, eps = 10^(-6))
-    lam2_min <- lam2_max * min_lam2_ratio
-    lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_len))
+    if(missing(lam2_len) | missing(min_lam2_ratio)){
+      stop("Both `lam2_len` and `min_lam2_ratio` must be provided in order to generate default lambda vector!")
+    }else{
+      lam2_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, x_mat = x_mat, 
+                                    l_type = l_type, l_param = l_param, 
+                                    lam_ind = 2, 
+                                    const_abc = const_abc, eps = 10^(-6))
+      lam2_min <- lam2_max * min_lam2_ratio
+      lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_len))
+    }
   }else{
     lam2_vec <- sort(abs(lam2_vec), decreasing = TRUE)
     lam2_len <- length(lam2_vec)
