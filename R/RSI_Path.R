@@ -247,7 +247,9 @@ RSI_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, p1_type = "S",
     
     # prepare initial values for the next run
     initial_values <- list(beta_init = res$beta_vec, 
-                           mu_init = res$mu_vec)
+                           mu_init = res$mu_updated    # use updated mu vector as initial values
+                                                       # it seems to provide better results than original mu_vec
+                           )
     
     # progress information
     pb(message = paste("lam1: ", i, "/", lam1_len, sep = ""))
