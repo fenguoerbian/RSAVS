@@ -80,7 +80,9 @@ RSI_Fit <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     x_aug[(n + 1) : (n + n * (n - 1) / 2), 1 : n] <- const_abc[1] * const_abc[2] * w_mat
     
     # 2. fit the model
-    tmp <- quantreg::rq.fit.sfn(a = x_aug, y = y_aug, tau = 0.5)
+    tmpmax <- floor(1e5 + exp(-12.1) * (x_aug@ia[n + p + 1] - 1) ^ 2.35)
+    tmp <- quantreg::rq.fit.sfn(a = x_aug, y = y_aug, tau = 0.5, 
+                                control = list(tmpmax = tmpmax))
     mu_vec <- tmp$coefficients[1 : n]
     beta_vec <- tmp$coefficients[(n + 1) : (n + p)]
     
