@@ -222,7 +222,8 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #'   Currently, the resulting subgroup effects are the average value of \code{mu_vec}
 #'   for those belonging to the same subgroup according to \code{group_res}.
 #'   
-#'   If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
+#'   If \code{group_res} is missing and \code{round_digits} is \code{NULL}, 
+#'   then a simple K-means is performed on \code{mu_vec}
 #'   to get the estimated grouping result.
 #' @examples 
 #' # basic settings

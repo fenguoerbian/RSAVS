@@ -4,7 +4,7 @@
 \alias{RSAVS_Determine_Mu}
 \title{Determine the subgroup effects}
 \usage{
-RSAVS_Determine_Mu(mu_vec, group_res, round_digits)
+RSAVS_Determine_Mu(mu_vec, group_res, round_digits = NULL)
 }
 \arguments{
 \item{mu_vec}{numerical vector. \code{n = length(mu_vec)} is the number of observations.
@@ -29,7 +29,8 @@ This function determines the final mu vector given the grouping results.
 Currently, the resulting subgroup effects are the average value of \code{mu_vec}
   for those belonging to the same subgroup according to \code{group_res}.
   
-  If \code{group_res} is missing, then a simple K-means is performed on \code{mu_vec}
+  If \code{group_res} is missing and \code{round_digits} is \code{NULL}, 
+  then a simple K-means is performed on \code{mu_vec}
   to get the estimated grouping result.
 }
 \examples{
