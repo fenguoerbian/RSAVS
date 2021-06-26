@@ -116,6 +116,9 @@ to the subgrouping result." />
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-header">Releases</li>
     <li>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3">RSAVS 0.1.3</a>
+    </li>
+    <li>
       <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2">RSAVS 0.1.2</a>
     </li>
     <li class="divider"></li>
@@ -202,13 +205,13 @@ to the subgrouping result.</p>
 <span class='va'>s_vec</span> <span class='op'>&lt;-</span> <span class='va'>d_mat</span> <span class='op'>%*%</span> <span class='va'>alpha_true</span>
 <span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'>RSAVS_S_to_Groups</span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [[1]]
-#&gt; [1] 1 3 5 7
+#&gt; [1]  1  8 10
 #&gt; 
 #&gt; [[2]]
-#&gt; [1]  2  6  8  9 10
+#&gt; [1] 2 5 7
 #&gt; 
 #&gt; [[3]]
-#&gt; [1] 4
+#&gt; [1] 3 4 6 9
 #&gt; </div><div class='input'>
 <span class='co'># if there's contradiction in s_vec</span>
 <span class='va'>s_vec</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>    <span class='co'># s_{12} = 0</span>
@@ -217,10 +220,7 @@ to the subgrouping result.</p>
 <span class='co'># 1, 2, 3 will still be in the same subgroup</span>
 <span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'>RSAVS_S_to_Groups</span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [[1]]
-#&gt; [1]  1  2  3  5  6  7  8  9 10
-#&gt; 
-#&gt; [[2]]
-#&gt; [1] 4
+#&gt;  [1]  1  2  3  4  5  6  7  8  9 10
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

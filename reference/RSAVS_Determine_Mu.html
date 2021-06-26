@@ -115,6 +115,9 @@
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-header">Releases</li>
     <li>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3">RSAVS 0.1.3</a>
+    </li>
+    <li>
       <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2">RSAVS 0.1.2</a>
     </li>
     <li class="divider"></li>
@@ -153,7 +156,7 @@
     <p>This function determines the final mu vector given the grouping results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>mu_vec</span>, <span class='va'>group_res</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>mu_vec</span>, <span class='va'>group_res</span>, round_digits <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,6 +172,12 @@ Presumably it comes from the ADMM algorithm and is not a very good grouping resu
 Each element of group_res is a list containing the indecs from the same subgroup.
 See <code><a href='RSAVS_S_to_Groups.html'>RSAVS_S_to_Groups</a></code> for the output structure.</p></td>
     </tr>
+    <tr>
+      <th>round_digits</th>
+      <td><p>a positive integer digits. If <code>group_res</code> is missing and <code>round_digits</code>
+is provided, then the function will directly round the <code>mu_vec</code> to <code>round_digits</code>
+to provide the final grouping results.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -179,9 +188,36 @@ See <code><a href='RSAVS_S_to_Groups.html'>RSAVS_S_to_Groups</a></code> for the 
 
     <p>Currently, the resulting subgroup effects are the average value of <code>mu_vec</code>
   for those belonging to the same subgroup according to <code>group_res</code>.</p>  
-<p>If <code>group_res</code> is missing, then a simple K-means is performed on <code>mu_vec</code>
+<p>If <code>group_res</code> is missing and <code>round_digits</code> is <code>NULL</code>, 
+  then a simple K-means is performed on <code>mu_vec</code>
   to get the estimated grouping result.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># basic settings</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1024</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>    <span class='co'># number of observations</span>
+<span class='va'>group_center</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>    <span class='co'># three group centers</span>
+<span class='co'># subgroup effect vector    </span>
+<span class='va'>alpha_true</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>group_center</span>, size <span class='op'>=</span> <span class='va'>n</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>alpha_est</span> <span class='op'>&lt;-</span> <span class='va'>alpha_true</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, sd <span class='op'>=</span> <span class='fl'>0.25</span><span class='op'>)</span>    <span class='co'># add noise to group effect</span>
+<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>alpha_true</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; alpha_true
+#&gt; -1  0  1 
+#&gt; 36 29 35 </div><div class='input'>
+<span class='co'># Use `group_res` to determine estimated group effect from `alpha_est`</span>
+<span class='va'>d_mat</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'><a href='RSAVS_Generate_D_Matrix.html'>RSAVS_Generate_D_Matrix</a></span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span>    <span class='co'># pair-wise difference matrix</span>
+<span class='co'># Normally, s_vec should come from the algorithm</span>
+<span class='co'>#   Here we just use a simple estimate, which might lead to not so satisfing results</span>
+<span class='va'>s_vec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='va'>d_mat</span> <span class='op'>%*%</span> <span class='va'>alpha_est</span>, <span class='fl'>0</span><span class='op'>)</span>    
+<span class='va'>group_res</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS</span><span class='fu'>:::</span><span class='fu'><a href='RSAVS_S_to_Groups.html'>RSAVS_S_to_Groups</a></span><span class='op'>(</span><span class='va'>s_vec</span>, <span class='va'>n</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>alpha_est</span>, group_res <span class='op'>=</span> <span class='va'>group_res</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in RSAVS_Determine_Mu(alpha_est, group_res = group_res): could not find function "RSAVS_Determine_Mu"</span></div><div class='input'>
+<span class='co'># Use `pamk` to determine estiamted group effect</span>
+<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>alpha_est</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in RSAVS_Determine_Mu(alpha_est): could not find function "RSAVS_Determine_Mu"</span></div><div class='input'>
+<span class='co'># Use directly rounding to determine estimated group effect</span>
+<span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>alpha_est</span>, round_digits <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in RSAVS_Determine_Mu(alpha_est, round_digits = 1): could not find function "RSAVS_Determine_Mu"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
