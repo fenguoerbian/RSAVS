@@ -281,17 +281,22 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
         for(k in 2 : kmax){
           tmp2 <- cluster::pam(mu_vec, k = k)
           # print(paste("------ k = ", k, " ------", sep = ""))
+          all_p_na <- TRUE
           for(i in 1 : (k - 1)){
             for(j in (i + 1) : k){
               idx <- union(which(tmp2$clustering == i), 
                            which(tmp2$clustering == j))
               current_p <- dudahart2(mu_vec[idx], tmp2$clustering[idx])$p.value
-              if(is.na(current_p)){
+              all_p_na <- all_p_na & is.na(current_p)
+              if(!is.na(current_p)){
                 if(current_p > p_vec[k - 1]){
                   p_vec[k - 1] <- current_p
                 }
               }
             }
+          }
+          if(all_p_na){
+            p_vec[k - 1] <- 1
           }
         }
         double_check1 <- any(p_vec < 0.001)
