@@ -285,8 +285,10 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
               idx <- union(which(tmp2$clustering == i), 
                            which(tmp2$clustering == j))
               current_p <- dudahart2(mu_vec[idx], tmp2$clustering[idx])$p.value
-              if(current_p > p_vec[k - 1]){
-                p_vec[k - 1] <- current_p
+              if(is.na(current_p)){
+                if(current_p > p_vec[k - 1]){
+                  p_vec[k - 1] <- current_p
+                }
               }
             }
           }
