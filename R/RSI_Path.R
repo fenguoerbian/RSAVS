@@ -133,7 +133,7 @@ RSI_Fit <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 RSI_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, p1_type = "S", p1_param = c(2, 3.7), 
                      lam1_vec, min_lam1_ratio = 0.03, lam1_len, 
                      initial_values, 
-                     const_abc = rep(1, 3), use_pamk = FALSE, max_iter = 100, tol = 10 ^{-3}){
+                     const_abc = rep(1, 3), use_pamk = TRUE, round_digits = NULL, max_iter = 100, tol = 10 ^{-3}){
   # This function finds the solution path of Robust Subgroup Identification
   # Args: x: covariate matrix, NO intercept term
   #       y: response vector
@@ -236,7 +236,8 @@ RSI_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, p1_type = "S",
     res <- RSI_Fit(y_vec, x_mat, l_type = l_type, l_param = l_param, 
                    p1_type = p1_type, p1_param = p1_param, 
                    const_abc = const_abc, initial_values = initial_values, 
-                   tol = tol, max_iter = max_iter, use_pamk = use_pamk)
+                   tol = tol, max_iter = max_iter, 
+                   use_pamk = use_pamk, round_digits = round_digits)
     
     # store the results
     beta_mat[ind, ] <- res$beta_vec

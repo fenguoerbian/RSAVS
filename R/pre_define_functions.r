@@ -213,7 +213,7 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' @param group_res a list, containing the grouping results.
 #'   Each element of group_res is a list containing the indecs from the same subgroup.
 #'   See \code{\link{RSAVS_S_to_Groups}} for the output structure.
-#' @param round_digits a positive integer digits. If \code{group_res} is missing and \code{round_digits}
+#' @param round_digits a positive integer digit. If \code{group_res} is missing and \code{round_digits}
 #'   is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
 #'   to provide the final grouping results.
 #' @return a length-n vector of subgroup effects. Observations belonging to the same

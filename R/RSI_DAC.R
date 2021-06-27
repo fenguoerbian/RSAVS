@@ -149,8 +149,8 @@ RSI_DAC <- function(y_vec, x_mat, sub_sample_size = 200,
                     p1_type = "S", p1_param = c(1, 3.7), 
                     initial_values, 
                     const_abc = rep(1, 3), 
-                    divide_pamk = FALSE, divide_digit = 1, 
-                    conquer_pamk = FALSE, conquer_digit = 1, conquer_use_updated_mu = TRUE, 
+                    divide_pamk = FALSE, divide_digits = 1, 
+                    conquer_pamk = FALSE, conquer_digits = 1, conquer_use_updated_mu = TRUE, 
                     max_iter = 100, tol = 10^(-3)){
   # ------ preparation ------
   # preparation for x and y #
@@ -196,7 +196,7 @@ RSI_DAC <- function(y_vec, x_mat, sub_sample_size = 200,
                              p1_type = p1_type, p1_param = p1_param, 
                              const_abc = const_abc, initial_values = initial_subsample, 
                              tol = tol, max_iter = max_iter, 
-                             use_pamk = divide_pamk, round_digits = divide_digit)
+                             use_pamk = divide_pamk, round_digits = divide_digits)
     
     # save the results
     beta_mat[sample_id, ] <- res_subsample$beta_vec
@@ -226,7 +226,7 @@ RSI_DAC <- function(y_vec, x_mat, sub_sample_size = 200,
   message("Start conquering algorithm")
   mu_unique <- RSI_Conqure(mu_response = mu_unique, p1_type = p1_type, p1_param = p1_param, 
                            const_abc = c(length(mu_unique), 1, 1), tol = tol, max_iter = max_iter, 
-                           use_pamk = conquer_pamk, round_digits = conquer_digit)
+                           use_pamk = conquer_pamk, round_digits = conquer_digits)
   
   # 4th, update the mu vector and its id form
   mu_conquered <- mu_unique[mu_ids]
@@ -248,8 +248,8 @@ RSI_DAC_Path <- function(y_vec, x_mat, sub_sample_size,
                          lam1_vec, min_lam1_ratio = 0.03, lam1_len, 
                          initial_values, 
                          const_abc = rep(1, 3), 
-                         divide_pamk = FALSE, divide_digit = 1, 
-                         conquer_pamk = FALSE, conquer_digit = 1, conquer_use_updated_mu = TRUE, 
+                         divide_pamk = FALSE, divide_digits = 1, 
+                         conquer_pamk = FALSE, conquer_digits = 1, conquer_use_updated_mu = TRUE, 
                          max_iter = 100, tol = 10^(-3)){
   ### preparation ###
   # preparation for x and y #
@@ -335,8 +335,8 @@ RSI_DAC_Path <- function(y_vec, x_mat, sub_sample_size,
     res <- RSI_DAC(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
                    p1_type = p1_type, p1_param = p1_param, 
                    initial_values = initial_values, const_abc = const_abc, 
-                   divide_pamk = divide_pamk, divide_digit = divide_digit, 
-                   conquer_pamk = conquer_pamk, conquer_digit = conquer_digit, conquer_use_updated_mu = conquer_use_updated_mu, 
+                   divide_pamk = divide_pamk, divide_digits = divide_digits, 
+                   conquer_pamk = conquer_pamk, conquer_digits = conquer_digits, conquer_use_updated_mu = conquer_use_updated_mu, 
                    tol = tol, max_iter = max_iter)
     
     # store the results
