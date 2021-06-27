@@ -1,7 +1,7 @@
 RSI_Fit <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                     p1_type = "S", p1_param = c(2, 3.7), 
                     const_abc = rep(1, 3), initial_values, 
-                    tol = 10 ^ {-3}, max_iter = 100, use_pamk = FALSE){
+                    tol = 10 ^ {-3}, max_iter = 100, use_pamk = FALSE, round_digits = 2){
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -116,7 +116,7 @@ RSI_Fit <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   if(use_pamk){
     mu_updated <- RSAVS_Determine_Mu(mu_vec)
   }else{
-    mu_updated <- RSAVS_Determine_Mu(mu_vec, round_digits = 2)
+    mu_updated <- RSAVS_Determine_Mu(mu_vec, round_digits = round_digits)
   }
   
   res <- list(beta_vec = beta_vec, 
