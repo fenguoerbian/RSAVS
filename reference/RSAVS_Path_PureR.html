@@ -183,7 +183,8 @@
   max_iter <span class='op'>=</span> <span class='fl'>10</span>,
   cd_max_iter <span class='op'>=</span> <span class='fl'>1</span>,
   cd_tol <span class='op'>=</span> <span class='fl'>0.001</span>,
-  subgroup_benchmark <span class='op'>=</span> <span class='cn'>FALSE</span>
+  subgroup_benchmark <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  update_mu <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -276,6 +277,15 @@ when updating <code>mu</code> and <code>beta</code>.</p></td>
       <th>subgroup_benchmark</th>
       <td><p>bool. Whether this call should be taken as a benchmark of subgroup identification. 
 If <code>TRUE</code>, then the penalty for variable selection will be surpressed to a minimal value.</p></td>
+    </tr>
+    <tr>
+      <th>update_mu</th>
+      <td><p>list of parameters for updating <code>mu_vec</code> in the algorithm into meaningful subgroup structure.
+Defaults to <code>NULL</code>, which means there is no update performed. The update of <code>mu_vec</code> is carried out through
+<code>RSAVS_Determine_Mu</code> and the necessary parameters in <code>update_mu</code> are:</p><ul>
+<li><p><code>UseS</code>: bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
+<li><p><code>round_digits</code>: non-negative integer digits, indicating the rounding digits when merging <code>mu_vec</code></p></li>
+</ul><p>Please refer to <code>RSAVS_Determine_Mu</code> to find out more details about how the algorithm works</p></td>
     </tr>
     <tr>
       <th>min_lam_ratio</th>
