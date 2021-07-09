@@ -14,7 +14,7 @@ Presumably it comes from the ADMM algorithm and is not a very good grouping resu
 Each element of group_res is a list containing the indecs from the same subgroup.
 See \code{\link{RSAVS_S_to_Groups}} for the output structure.}
 
-\item{round_digits}{a positive integer digits. If \code{group_res} is missing and \code{round_digits}
+\item{round_digits}{a positive integer digit. If \code{group_res} is missing and \code{round_digits}
 is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
 to provide the final grouping results.}
 }

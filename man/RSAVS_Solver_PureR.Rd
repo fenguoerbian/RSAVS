@@ -22,7 +22,8 @@ RSAVS_Solver_PureR(
   cd_max_iter = 1,
   cd_tol = 0.001,
   phi = 1,
-  subgroup_benchmark = FALSE
+  subgroup_benchmark = FALSE,
+  update_mu = NULL
 )
 }
 \arguments{
@@ -86,6 +87,15 @@ when updating \code{mu} and \code{beta}.}
 
 \item{subgroup_benchmark}{bool. Whether this call should be taken as a benchmark of subgroup identification. 
 If \code{TRUE}, then the penalty for variable selection will be surpressed to a minimal value.}
+
+\item{update_mu}{list of parameters for updating \code{mu_vec} in the algorithm into meaningful subgroup structure.
+Defaults to \code{NULL}, which means there is no update performed. The update of \code{mu_vec} is carried out through
+\code{RSAVS_Determine_Mu} and the necessary parameters in \code{update_mu} are:
+\itemize{
+  \item \code{UseS}: bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+  \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
+}
+Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works}
 
 \item{lam1_vec, lam2_vec}{numerical vectors of customized lambda vectors. 
 For \code{lam1_vec}, it's preferred to be in the order from small to big.}
