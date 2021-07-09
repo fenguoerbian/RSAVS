@@ -59,7 +59,7 @@ RSAVS_Solver_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
                                const_r123, const_abc = rep(1, 3), 
                                initial_values, additional, tol = 0.001, max_iter = 10, cd_max_iter = 1, cd_tol = 0.001, 
-                               phi = 1.0, subgroup_benchmark = FALSE){
+                               phi = 1.0, subgroup_benchmark = FALSE, update_mu = NULL){
   # Core solver for small n situation
   
   # check the dataset
@@ -254,6 +254,24 @@ RSAVS_Solver_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
               current_step = current_step - 1,
               diff = diff, 
               loss_vec = loss_record)
+  
+  # update the resulting mu vector into meaningfull subgroup results
+  if(is.null(update_mu)){
+    res$mu_updated_vec <- res$mu_vec
+  }else{
+    d_mat <- RSAVS_Generate_D_Matrix(n)
+    useS <- update_mu$useS
+    round_digits <- update_mu$round_digits
+    if(useS){
+      group_res <- RSAVS_S_to_Groups(res$s_vec, n)
+      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, group_res)
+    }else{
+      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, round_digits = round_digits)
+    }
+    res$mu_updated_vec <- mu_updated_vec
+    res$s_vec <- as.vector(d_mat %*% mu_updated_vec)
+  }
+  
   return(res)
 }
 
@@ -344,7 +362,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                              const_r123, const_abc = rep(1, 3), 
                              initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
                              cd_max_iter = 1, cd_tol = 0.001, 
-                             subgroup_benchmark = FALSE){
+                             subgroup_benchmark = FALSE, update_mu = NULL){
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -571,6 +589,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   # --- variables storing the results ---
   beta_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = p)
   mu_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = n)
+  mu_updated_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = n)
   z_mat <- matrix(0, nrow = lam1_len *  lam2_len, ncol = n)
   s_mat <- matrix(0, nrow = lam1_len *  lam2_len, ncol = n * (n - 1) / 2)
   w_mat <- matrix(0, nrow = lam1_len *  lam2_len, ncol = p)
@@ -628,6 +647,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       #       Otherwise it causes the initial values to be all 0 when lam2_len = 1.
       beta_mat[ind, ] <- res$beta_vec
       mu_mat[ind, ] <- res$mu_vec
+      mu_updated_mat[ind, ] <- res$mu_updated_vec
       z_mat[ind, ] <- res$z_vec
       s_mat[ind, ] <- res$s_vec
       w_mat[ind, ] <- res$w_vec
@@ -642,7 +662,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       if(j == lam2_len){
         ind_old <- i
         initial_values <- list(beta_init = beta_mat[ind_old, ], 
-                               mu_init = mu_mat[ind_old, ], 
+                               mu_init = mu_updated_mat[ind_old, ], 
                                z_init = z_mat[ind_old, ], 
                                s_init = s_mat[ind_old, ], 
                                w_init = w_mat[ind_old, ], 
@@ -651,7 +671,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                q3_init = q3_mat[ind_old, ])
       }else{
         initial_values <- list(beta_init = res$beta_vec, 
-                               mu_init = res$mu_vec, 
+                               mu_init = res$mu_updated_vec, 
                                z_init = res$z_vec, 
                                s_init = res$s_vec, 
                                w_init = res$w_vec, 
@@ -668,6 +688,7 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   res <- list(beta_mat = beta_mat, 
               mu_mat = mu_mat, 
+              mu_updated_mat = mu_updated_mat, 
               z_mat = z_mat, 
               s_mat = s_mat, 
               w_mat = w_mat, 
