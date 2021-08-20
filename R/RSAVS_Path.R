@@ -210,7 +210,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #' @param min_lam_ratio the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
 #'   The default value is 0.03.
 #' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
-#' @param initial_vec list of vector, providing initial values for the algorithm. 
+#' @param initial_values list of vector, providing initial values for the algorithm. 
 #' @param phi numerical variable. A parameter needed for mBIC.
 #' @param const_r123 a length-3 numerical vector, providing the scalars needed in the 
 #'   augmented lagrangian part of the ADMM algorithm

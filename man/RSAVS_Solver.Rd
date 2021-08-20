@@ -23,7 +23,8 @@ RSAVS_Solver(
   cd_tol = 0.001,
   phi = 1,
   subgroup_benchmark = FALSE,
-  update_mu = NULL
+  update_mu = NULL,
+  omp_zsw = rep(1, 3)
 )
 }
 \arguments{

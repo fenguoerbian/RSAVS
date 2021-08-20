@@ -28,7 +28,8 @@ RSAVS_Path(
   cd_max_iter = 1,
   cd_tol = 0.001,
   subgroup_benchmark = FALSE,
-  update_mu = NULL
+  update_mu = NULL,
+  omp_zsw = rep(1, 3)
 )
 }
 \arguments{
@@ -78,6 +79,8 @@ augmented lagrangian part of the ADMM algorithm}
 of regression function, penalty for subgroup identification and penalty for 
 variable selection in the overall objective function. Defaults to \code{c(1, 1, 1)}.}
 
+\item{initial_values}{list of vector, providing initial values for the algorithm.}
+
 \item{phi}{numerical variable. A parameter needed for mBIC.}
 
 \item{tol}{numerical, convergence tolerance for the algorithm.}
@@ -105,8 +108,6 @@ Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the
 
 \item{min_lam_ratio}{the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
 The default value is 0.03.}
-
-\item{initial_vec}{list of vector, providing initial values for the algorithm.}
 }
 \description{
 This function carries out robust subgroup analysis and variable selection 
