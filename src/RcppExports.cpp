@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // RSAVS_LargeN_Rcpp
 Rcpp::List RSAVS_LargeN_Rcpp(const Eigen::MatrixXd x_mat, const Eigen::VectorXd y_vec, const int n, const int p, const std::string& loss_type, const Eigen::VectorXd loss_param, const char p1_type, Eigen::VectorXd p1_param, const char p2_type, Eigen::VectorXd p2_param, const Eigen::VectorXd lam1_vec, const Eigen::VectorXd lam2_vec, const double r1, const double r2, const double r3, const double phi, const double tol, const double max_iter);
 RcppExport SEXP _RSAVS_RSAVS_LargeN_Rcpp(SEXP x_matSEXP, SEXP y_vecSEXP, SEXP nSEXP, SEXP pSEXP, SEXP loss_typeSEXP, SEXP loss_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP lam1_vecSEXP, SEXP lam2_vecSEXP, SEXP r1SEXP, SEXP r2SEXP, SEXP r3SEXP, SEXP phiSEXP, SEXP tolSEXP, SEXP max_iterSEXP) {
@@ -60,8 +65,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // RSAVS_Solver_Cpp
-Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, const std::string& l_type, const Eigen::VectorXd& l_param, const char& p1_type, const Eigen::VectorXd p1_param, const char& p2_type, const Eigen::VectorXd p2_param, const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, const double& tol, const int& max_iter, const double& cd_tol, const int& cd_max_iter, const Rcpp::List& initial_values, const Rcpp::List& additional_values, const double& phi);
-RcppExport SEXP _RSAVS_RSAVS_Solver_Cpp(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP nSEXP, SEXP pSEXP, SEXP l_typeSEXP, SEXP l_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP const_r123SEXP, SEXP const_abcSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP cd_tolSEXP, SEXP cd_max_iterSEXP, SEXP initial_valuesSEXP, SEXP additional_valuesSEXP, SEXP phiSEXP) {
+Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, const std::string& l_type, const Eigen::VectorXd& l_param, const char& p1_type, const Eigen::VectorXd p1_param, const char& p2_type, const Eigen::VectorXd p2_param, const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, const double& tol, const int& max_iter, const double& cd_tol, const int& cd_max_iter, const Rcpp::List& initial_values, const Rcpp::List& additional_values, const double& phi, const Eigen::VectorXd& omp_zsw);
+RcppExport SEXP _RSAVS_RSAVS_Solver_Cpp(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP nSEXP, SEXP pSEXP, SEXP l_typeSEXP, SEXP l_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP const_r123SEXP, SEXP const_abcSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP cd_tolSEXP, SEXP cd_max_iterSEXP, SEXP initial_valuesSEXP, SEXP additional_valuesSEXP, SEXP phiSEXP, SEXP omp_zswSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,7 +89,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type additional_values(additional_valuesSEXP);
     Rcpp::traits::input_parameter< const double& >::type phi(phiSEXP);
-    rcpp_result_gen = Rcpp::wrap(RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi));
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type omp_zsw(omp_zswSEXP);
+    rcpp_result_gen = Rcpp::wrap(RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, omp_zsw));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -135,7 +141,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_RSAVS_RSAVS_LargeN_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_Rcpp, 18},
     {"_RSAVS_RSAVS_LargeN_L2_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_L2_Rcpp, 15},
-    {"_RSAVS_RSAVS_Solver_Cpp", (DL_FUNC) &_RSAVS_RSAVS_Solver_Cpp, 19},
+    {"_RSAVS_RSAVS_Solver_Cpp", (DL_FUNC) &_RSAVS_RSAVS_Solver_Cpp, 20},
     {"_RSAVS_rcppeigen_hello_world", (DL_FUNC) &_RSAVS_rcppeigen_hello_world, 0},
     {"_RSAVS_rcppeigen_outerproduct", (DL_FUNC) &_RSAVS_rcppeigen_outerproduct, 1},
     {"_RSAVS_rcppeigen_innerproduct", (DL_FUNC) &_RSAVS_rcppeigen_innerproduct, 1},
