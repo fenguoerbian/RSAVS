@@ -207,8 +207,8 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #'   and will be ignored and overwritten in the actual computation.
 #' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
 #'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
-#' @param min_lam_ratio the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
-#'   The default value is 0.03.
+#' @param min_lam1_ratio,min_lam2_ratio the ratio between the minimal and maximal 
+#'   lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.
 #' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
 #' @param initial_values list of vector, providing initial values for the algorithm. 
 #' @param phi numerical variable. A parameter needed for mBIC.

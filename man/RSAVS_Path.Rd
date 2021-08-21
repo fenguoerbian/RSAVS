@@ -70,6 +70,9 @@ and will be ignored and overwritten in the actual computation.}
 \item{lam1_vec, lam2_vec}{numerical vectors of customized lambda vectors. 
 For \code{lam1_vec}, it's preferred to be in the order from small to big.}
 
+\item{min_lam1_ratio, min_lam2_ratio}{the ratio between the minimal and maximal 
+lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.}
+
 \item{lam1_len, lam2_len}{integers, lengths of the auto-generated lambda vectors.}
 
 \item{const_r123}{a length-3 numerical vector, providing the scalars needed in the 
@@ -105,9 +108,6 @@ Defaults to \code{NULL}, which means there is no update performed. The update of
   \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 }
 Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works}
-
-\item{min_lam_ratio}{the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
-The default value is 0.03.}
 }
 \description{
 This function carries out robust subgroup analysis and variable selection 
