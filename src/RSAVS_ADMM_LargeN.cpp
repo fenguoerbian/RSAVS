@@ -429,12 +429,14 @@ void UpdateW_MCP(Eigen::VectorXd &w_invec, const Eigen::VectorXd &penalty_param,
 */
 void UpdateZ_L1_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param, const double &const_r1, const double &const_a, const int &omp_num){
     const int n = z_invec.size();
+  const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd
         for(int i = 0; i < n; i++){
             z_invec[i] = SoftThresholding(z_invec[i], 1.0 / const_a / const_r1);
-        }        
+        }      
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < n; i++){
             z_invec[i] = SoftThresholding(z_invec[i], 1.0 / const_a / const_r1);
@@ -444,12 +446,14 @@ void UpdateZ_L1_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param,
 
 void UpdateZ_L2_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_param, const double &const_r1, const double &const_a, const int &omp_num){
     const int n = z_invec.size();
+  const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd      
         for(int i = 0; i < n; i++){
             z_invec[i] = z_invec[i] / (1.0 + 2.0 / const_r1 / const_a);
-        }    
+        }  
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < n; i++){
             z_invec[i] = z_invec[i] / (1.0 + 2.0 / const_r1 / const_a);
@@ -461,6 +465,7 @@ void UpdateZ_Huber_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_par
     const int n = z_invec.size();
     const double thresh = loss_param[0] / const_r1 / const_a;
     double tmp;
+    const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd private(tmp)
@@ -475,7 +480,8 @@ void UpdateZ_Huber_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_par
                     z_invec[i] = tmp / (1.0 + 1.0 / const_r1 / const_a);
                 }
             }
-        }        
+        }
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < n; i++){
             tmp = z_invec[i];
@@ -508,12 +514,14 @@ void UpdateSW_Identity_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &pen
 
 void UpdateSW_Lasso_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     const double lam = penalty_param[0];
+  const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd
         for(int i = 0; i < sw_invec.size(); i++){
             sw_invec[i] = SoftThresholding(sw_invec[i], lam * const_bc / const_r);
         } 
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < sw_invec.size(); i++){
             sw_invec[i] = SoftThresholding(sw_invec[i], lam * const_bc / const_r);
@@ -525,6 +533,7 @@ void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty
     const double lambda = penalty_param[0];
     const double gamma = penalty_param[1];
     double tmp;
+    const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd private(tmp)
@@ -537,7 +546,8 @@ void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty
                     sw_invec[i] = SoftThresholding(sw_invec[i], const_bc * gamma * lambda / const_r / (gamma - 1)) / (1.0 - const_bc / const_r / (gamma - 1));
                 }
             }
-        }   
+        } 
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < sw_invec.size(); i++){
             tmp = fabs(sw_invec[i]);
@@ -556,6 +566,7 @@ void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_
     const double lambda = penalty_param[0];
     const double gamma = penalty_param[1];
     double tmp;
+    const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd private(tmp)
@@ -564,7 +575,8 @@ void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_
             if(tmp <= lambda * gamma){
                 sw_invec[i] = SoftThresholding(sw_invec[i], const_bc * lambda / const_r) / (1.0 - const_bc / const_r / gamma);
             }
-        }        
+        }    
+        omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < sw_invec.size(); i++){
             tmp = fabs(sw_invec[i]);
