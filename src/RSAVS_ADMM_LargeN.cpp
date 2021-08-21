@@ -1441,7 +1441,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     
     // main algorithm
 
-    while((current_step <= max_iter) && (diff > tol)){
+    while((current_step <= max_iter) && (diff >= tol)){
         // update beta and mu 
         if(cd_max_iter < 1){    // update beta and mu together
             // construct mu_beta_rhs
@@ -1460,7 +1460,6 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
             mu_vec = mu_beta.segment(0, n);
             beta_vec = mu_beta.segment(n, p);
             
-            
         }else{    // update beta and mu via coordinate descent
             current_cd_step = 1;
             cd_diff = cd_tol + 1;
@@ -1472,7 +1471,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                 }
                 
                 mu_rhs = const_r1 * (y_vec - x_mat * beta_old - z_old) + q1_old;
-                if(p1_param[0] != 0){
+                if(p1_param[0] != 0){    // ------ This part triggers Eigen's parallel most ------
                     mu_rhs += d_mat.transpose() * (const_r2 * s_old - q2_old);
                 }
                 
