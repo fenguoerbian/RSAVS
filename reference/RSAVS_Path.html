@@ -237,6 +237,11 @@ and will be ignored and overwritten in the actual computation.</p></td>
 For <code>lam1_vec</code>, it's preferred to be in the order from small to big.</p></td>
     </tr>
     <tr>
+      <th>min_lam1_ratio, min_lam2_ratio</th>
+      <td><p>the ratio between the minimal and maximal 
+lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.</p></td>
+    </tr>
+    <tr>
       <th>lam1_len, lam2_len</th>
       <td><p>integers, lengths of the auto-generated lambda vectors.</p></td>
     </tr>
@@ -291,11 +296,6 @@ Defaults to <code>NULL</code>, which means there is no update performed. The upd
 <li><p><code>UseS</code>: bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
 <li><p><code>round_digits</code>: non-negative integer digits, indicating the rounding digits when merging <code>mu_vec</code></p></li>
 </ul><p>Please refer to <code>RSAVS_Determine_Mu</code> to find out more details about how the algorithm works</p></td>
-    </tr>
-    <tr>
-      <th>min_lam_ratio</th>
-      <td><p>the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
-The default value is 0.03.</p></td>
     </tr>
     </table>
 
