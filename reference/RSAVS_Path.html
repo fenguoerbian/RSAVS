@@ -184,7 +184,8 @@ simultaneously. It utilizes the cpp core solver and supports different
   cd_max_iter <span class='op'>=</span> <span class='fl'>1</span>,
   cd_tol <span class='op'>=</span> <span class='fl'>0.001</span>,
   subgroup_benchmark <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  update_mu <span class='op'>=</span> <span class='cn'>NULL</span>
+  update_mu <span class='op'>=</span> <span class='cn'>NULL</span>,
+  omp_zsw <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -251,6 +252,10 @@ of regression function, penalty for subgroup identification and penalty for
 variable selection in the overall objective function. Defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(1, 1, 1)</a></code>.</p></td>
     </tr>
     <tr>
+      <th>initial_values</th>
+      <td><p>list of vector, providing initial values for the algorithm.</p></td>
+    </tr>
+    <tr>
       <th>phi</th>
       <td><p>numerical variable. A parameter needed for mBIC.</p></td>
     </tr>
@@ -291,10 +296,6 @@ Defaults to <code>NULL</code>, which means there is no update performed. The upd
       <th>min_lam_ratio</th>
       <td><p>the ratio between the minimal and maximal lambda, equals to (minimal lambda) / (maximal lambda).
 The default value is 0.03.</p></td>
-    </tr>
-    <tr>
-      <th>initial_vec</th>
-      <td><p>list of vector, providing initial values for the algorithm.</p></td>
     </tr>
     </table>
 
