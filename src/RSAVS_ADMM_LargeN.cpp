@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <omp.h>
+#include <Rcpp/Benchmark/Timer.h>
 #define NUM_THREADS 4
 // [[Rcpp::plugins(openmp)]]
 // [[Rcpp::depends(RcppEigen)]]
@@ -1347,6 +1348,8 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     const int omp_z = omp_zsw[0];
     const int omp_s = omp_zsw[1];
     const int omp_w = omp_zsw[2];
+    
+    Rcpp::Timer timer;
 
     // Update functions for z, s and w
     // Rcpp::Rcout << "Setup Updates" << std::endl;
@@ -1443,6 +1446,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
 
     while((current_step <= max_iter) && (diff >= tol)){
         // update beta and mu 
+        timer.step("Start");
         if(cd_max_iter < 1){    // update beta and mu together
             // construct mu_beta_rhs
             mu_beta_rhs = Eigen::MatrixXd::Zero(n + p, 1);
@@ -1465,6 +1469,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
             cd_diff = cd_tol + 1;
             while((current_cd_step <= cd_max_iter) && (cd_diff > cd_tol)){
                 // construct beta_rhs and mu_rhs
+                
                 beta_rhs = const_r1 * x_mat.transpose() * (y_vec - mu_old - z_old) + x_mat.transpose() * q1_old;
                 if(p2_param[0] != 0){
                     beta_rhs += const_r3 * w_old - q3_old;
@@ -1486,6 +1491,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                 mu_old = mu_vec;
             }
         }
+        timer.step("Mu beta");
         
         // update z
         z_vec = y_vec - mu_vec - x_mat * beta_vec + q1_old / const_r1;
@@ -1505,6 +1511,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         q2_vec = q2_old + const_r2 * (d_mat * mu_vec - s_vec);
         q3_vec = q3_old + const_r3 * (beta_vec - w_vec);
         
+        timer.step("Update");
         // should we do post-selection estimation here?
         
         // update status
@@ -1523,7 +1530,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         q3_old = q3_vec;
         
         current_step += 1;
-        
+        /*
         loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
                                                    mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
         loss = loss_detail[0];
@@ -1531,8 +1538,15 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         loss_old = loss;    // should we check for loss drop?
 
         loss_vec[current_step - 1] = loss_old;
+        */
+        timer.step("Finish");
     }
 
+    Rcpp::NumericVector res_time(timer);
+    for (int i=0; i<res_time.size(); i++) {
+res_time[i] = res_time[i] / 10000000;
+}
+    Rcpp::Rcout << res_time << std::endl;
     
     // create and return the results
     // Rcpp::List res = Rcpp::List::create(Rcpp::Named("test", 0.0));

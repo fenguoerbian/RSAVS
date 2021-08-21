@@ -267,7 +267,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                        initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
                        cd_max_iter = 1, cd_tol = 0.001, 
                        subgroup_benchmark = FALSE, update_mu = NULL, 
-                       omp_zsw = rep(1, 3)){
+                       omp_zsw = rep(1, 3), dry_run = FALSE){
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -484,6 +484,17 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                      mu_beta_lhs = mu_beta_lhs)
   message("additional variables prepared!")
   
+  if(dry_run){
+    res <- list(
+      lam1_vec = lam1_vec, 
+      lam2_vec = lam2_vec, 
+      const_r123 = const_r123, 
+      const_abc = const_abc, 
+      additional = additional
+    )
+    
+    return(res)
+  }
   
   # --- variables storing the results ---
   beta_mat <- matrix(0, nrow = lam1_len * lam2_len, ncol = p)
