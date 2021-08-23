@@ -68,7 +68,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                          const_r123, const_abc = rep(1, 3), 
                          initial_values, additional, tol = 0.001, max_iter = 10, cd_max_iter = 1, cd_tol = 0.001, 
                          phi = 1.0, subgroup_benchmark = FALSE, update_mu = NULL, 
-                         omp_zsw = rep(1, 3)){
+                         omp_zsw = rep(1, 3), eigen_pnum = 1){
   # Core solver for small n situation
   
   # check the dataset
@@ -149,7 +149,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   res <- RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, 
                           p1_type, p1_param, p2_type, p2_param, 
                           const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, 
-                          initial_values, additional, phi, omp_zsw)
+                          initial_values, additional, phi, omp_zsw, eigen_pnum)
   # update the resulting mu vector into meaningfull subgroup results
   if(is.null(update_mu)){
     res$mu_updated_vec <- res$mu_vec

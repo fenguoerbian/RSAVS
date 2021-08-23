@@ -1,3 +1,5 @@
+// #define EIGEN_USE_BLAS    // external OpenBLAS does not offer much speed boost
+// #define EIGEN_USE_LAPACKE
 #include <RcppEigen.h>
 #include <cmath>
 #include <iostream>
@@ -515,7 +517,7 @@ void UpdateSW_Identity_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &pen
 
 void UpdateSW_Lasso_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     const double lam = penalty_param[0];
-  const int omp_max = omp_get_max_threads();
+    const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd
@@ -563,6 +565,44 @@ void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty
     }
 }
 
+void UpdateS_SCAD_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+                       const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
+    const double lambda = penalty_param[0];
+    const double gamma = penalty_param[1];
+    double tmp, tmp_abs;
+    const int omp_max = omp_get_max_threads();
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp, tmp_abs)
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = tmp;
+            if(tmp_abs <= (1.0 + const_bc / const_r) * lambda){
+                s_invec[i] = SoftThresholding(tmp, const_bc * lambda / const_r);
+            }else{
+                if(tmp_abs <= lambda * gamma){
+                    s_invec[i] = SoftThresholding(tmp, const_bc * gamma * lambda / const_r / (gamma - 1)) / (1.0 - const_bc / const_r / (gamma - 1));
+                }
+            }
+        } 
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = tmp;
+            if(tmp_abs <= (1.0 + const_bc / const_r) * lambda){
+                s_invec[i] = SoftThresholding(tmp, const_bc * lambda / const_r);
+            }else{
+                if(tmp_abs <= lambda * gamma){
+                    s_invec[i] = SoftThresholding(tmp, const_bc * gamma * lambda / const_r / (gamma - 1)) / (1.0 - const_bc / const_r / (gamma - 1));
+                }
+            }
+        }   
+    }
+                        }
+
 void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     const double lambda = penalty_param[0];
     const double gamma = penalty_param[1];
@@ -589,6 +629,25 @@ void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_
     
 }
 
+Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const double &const_r, const Eigen::MatrixXd &idx_table, const int &omp_num){
+    const int omp_max = omp_get_max_threads();
+    double tmp;
+    Eigen::VectorXd res = Eigen::MatrixXd::Zero(q2_vec.size(), 1);
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp)
+        for(int i = 0; i < q2_vec.size(); i++){
+            res(i) = q2_vec(i) + const_r * (mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) - s_vec(i));
+        }
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < q2_vec.size(); i++){
+            res(i) = q2_vec(i) + const_r * (mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) - s_vec(i));
+            
+        }
+    }
+    return(res);
+}
 
 Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, 
                                              const std::string& l_type, const Eigen::VectorXd& l_param,
@@ -1336,8 +1395,11 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                             const double& tol, const int& max_iter, 
                             const double& cd_tol, const int& cd_max_iter, 
                             const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
-                            const double& phi, const Eigen::VectorXd& omp_zsw){
+                            const double& phi, const Eigen::VectorXd& omp_zsw, const int& eigen_pnum){
+    Eigen::setNbThreads(eigen_pnum);
+    Rcpp::Timer timer;
     
+    timer.step("Start_algorithm");
     // Rcpp::Rcout << "Starting!" << std::endl;
     const double const_r1 = const_r123[0];
     const double const_r2 = const_r123[1];
@@ -1348,8 +1410,6 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     const int omp_z = omp_zsw[0];
     const int omp_s = omp_zsw[1];
     const int omp_w = omp_zsw[2];
-    
-    Rcpp::Timer timer;
 
     // Update functions for z, s and w
     // Rcpp::Rcout << "Setup Updates" << std::endl;
@@ -1423,6 +1483,8 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     Eigen::MatrixXd mu_beta_lhs = Rcpp::as<Eigen::MatrixXd>(additional_values["mu_beta_lhs"]);
     Eigen::VectorXd beta_rhs, mu_rhs, mu_beta_rhs, mu_beta;
     
+    timer.step("initial_values");
+    
     int current_step, current_cd_step;
     double diff, cd_diff;
     double loss, loss_old;
@@ -1442,7 +1504,18 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
     // Rcpp::Rcout << "loss_detail = " << loss_detail << std::endl;
     
+    Eigen::MatrixXd idx_table = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 2);
+    int idx = 0;
+    for(int i = 0; i < n - 1; i++){
+        for(int j = i + 1; j < n; j++){
+            idx_table(idx, 0) = i;
+            idx_table(idx, 1) = j;
+            idx++;
+        }
+    }
+    
     // main algorithm
+    timer.step("Initialization_finished");
 
     while((current_step <= max_iter) && (diff >= tol)){
         // update beta and mu 
@@ -1491,34 +1564,51 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                 mu_old = mu_vec;
             }
         }
-        timer.step("Mu beta");
+        timer.step("Mu_beta");
         
         // update z
         z_vec = y_vec - mu_vec - x_mat * beta_vec + q1_old / const_r1;
         Update_Z(z_vec, l_param, const_r1, const_a, omp_z);
+        timer.step("Update_Z");
         
         // update s
-        s_vec = q2_old / const_r2;
-        s_vec += d_mat * mu_vec;
-        Update_S(s_vec, p1_param, const_r2, const_b, omp_s);
+        if(eigen_pnum <= 1){
+            s_vec = q2_old / const_r2;
+            s_vec += d_mat * mu_vec;
+            timer.step("Compute_S");
+            Update_S(s_vec, p1_param, const_r2, const_b, omp_s);
+        }else{
+            UpdateS_SCAD_New2(s_vec, mu_vec, q2_old, idx_table, p1_param, const_r2, const_b, omp_s);
+        }
+        timer.step("Update_S");
         
         // update w
         w_vec = beta_vec + q3_old / const_r3;
         Update_W(w_vec, p2_param, const_r3, const_c, omp_w);
+        timer.step("Update_W");
         
         // update q1, q2 and q3
         q1_vec = q1_old + const_r1 * (y_vec - mu_vec - x_mat * beta_vec - z_vec);
-        q2_vec = q2_old + const_r2 * (d_mat * mu_vec - s_vec);
+        timer.step("Update_q1");
+        if(eigen_pnum <= 1){
+            q2_vec = q2_old + const_r2 * (d_mat * mu_vec - s_vec);
+        }else{
+            q2_vec = UpdateQ2_New(q2_old, s_vec, mu_vec, const_r2, idx_table, omp_s);
+        }
+        timer.step("Update_q2");
         q3_vec = q3_old + const_r3 * (beta_vec - w_vec);
-        
-        timer.step("Update");
+        timer.step("Update_q3");
+
         // should we do post-selection estimation here?
         
         // update status
-        diff_detail[0] = (y_vec - mu_vec - x_mat * beta_vec - z_vec).norm();
-        diff_detail[1] = (d_mat * mu_vec - s_vec).norm();
-        diff_detail[2] = (beta_vec - w_vec).norm();
+        // mean absolute values are faster to compute than norm of a vector.
+        /* Unnecessary when benchmark the speed
+        diff_detail[0] = (y_vec - mu_vec - x_mat * beta_vec - z_vec).cwiseAbs().mean();
+        diff_detail[1] = (d_mat * mu_vec - s_vec).cwiseAbs().mean();
+        diff_detail[2] = (beta_vec - w_vec).cwiseAbs().mean();
         diff = diff_detail.maxCoeff();
+        */
         
         beta_old = beta_vec;
         mu_old = mu_vec;
@@ -1530,7 +1620,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         q3_old = q3_vec;
         
         current_step += 1;
-        /*
+        /* Unnecessary when benchmark the speed
         loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
                                                    mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
         loss = loss_detail[0];
@@ -1541,12 +1631,14 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         */
         timer.step("Finish");
     }
-
+    
+    timer.step("Algorithm_Finish");
     Rcpp::NumericVector res_time(timer);
+    
     for (int i=0; i<res_time.size(); i++) {
-res_time[i] = res_time[i] / 10000000;
-}
-    Rcpp::Rcout << res_time << std::endl;
+        res_time[i] = res_time[i] / 1000000;
+    }
+    // Rcpp::Rcout << res_time << std::endl;
     
     // create and return the results
     // Rcpp::List res = Rcpp::List::create(Rcpp::Named("test", 0.0));
@@ -1562,7 +1654,8 @@ res_time[i] = res_time[i] / 10000000;
         Rcpp::Named("q3_vec", q3_vec),
         Rcpp::Named("current_step", current_step),
         Rcpp::Named("diff", diff),
-        Rcpp::Named("loss_vec", loss_vec)
+        Rcpp::Named("loss_vec", loss_vec),
+        Rcpp::Named("timer", res_time)
     );
 
     return res;
