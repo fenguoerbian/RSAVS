@@ -45,6 +45,7 @@ Eigen::SparseMatrix<double> Generate_D_Matrix(int n){
     If you want to return the result back to R, you will probably need package 'Matrix'.
     Args: n: number of observations.
     Returns: res: a (n * (n - 1) / 2) \times n matirx in sparse form.
+    Note: This function is relatively slow
 */
     Eigen::SparseMatrix<double> res(n * (n - 1) / 2, n);
     std::vector<Eigen::Triplet<double> > d_triplet;
@@ -656,12 +657,14 @@ Eigen::VectorXd RSAVS_Compute_Loss_Value_Cpp(const Eigen::VectorXd& y_vec, const
                                              const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, 
                                              const Eigen::VectorXd& mu_vec, const Eigen::VectorXd& beta_vec, 
                                              const Eigen::VectorXd& z_vec, const Eigen::VectorXd& s_vec, const Eigen::VectorXd& w_vec, 
-                                             const Eigen::VectorXd& q1_vec, const Eigen::VectorXd& q2_vec, const Eigen::VectorXd& q3_vec){
+                                             const Eigen::VectorXd& q1_vec, const Eigen::VectorXd& q2_vec, const Eigen::VectorXd& q3_vec, 
+                                             const Eigen::SparseMatrix<double> &d_mat
+                                            ){
     
     Eigen::VectorXd loss_vec = Eigen::MatrixXd::Zero(7, 1);
     double loss, loss_p1, loss_p2, loss_p3, loss_aug1, loss_aug2, loss_aug3;
     Eigen::VectorXd tmp;
-    Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
+    // Eigen::SparseMatrix<double> d_mat = Generate_D_Matrix(n);
     
     // ------ setup loss function ------
     Eigen::VectorXd (*Loss_Function)(const Eigen::VectorXd &, const Eigen::VectorXd &);
@@ -1499,7 +1502,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     cd_diff = cd_tol + 1;
 
     loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
-                                            mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
+                                            mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old, d_mat);
     loss_old = loss_detail[0];
     loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
     // Rcpp::Rcout << "loss_detail = " << loss_detail << std::endl;
@@ -1622,7 +1625,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         current_step += 1;
         /* Unnecessary when benchmark the speed
         loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
-                                                   mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old);
+                                                   mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old, d_mat);
         loss = loss_detail[0];
         
         loss_old = loss;    // should we check for loss drop?
