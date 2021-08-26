@@ -68,7 +68,8 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                          const_r123, const_abc = rep(1, 3), 
                          initial_values, additional, tol = 0.001, max_iter = 10, cd_max_iter = 1, cd_tol = 0.001, 
                          phi = 1.0, subgroup_benchmark = FALSE, update_mu = NULL, 
-                         omp_zsw = rep(1, 3), eigen_pnum = 1){
+                         loss_track = FALSE, diff_update = TRUE, 
+                         omp_zsw = c(1, 4, 1), eigen_pnum = 1, s_v2 = TRUE){
   # Core solver for small n situation
   
   # check the dataset
@@ -149,7 +150,8 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   res <- RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, 
                           p1_type, p1_param, p2_type, p2_param, 
                           const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, 
-                          initial_values, additional, phi, omp_zsw, eigen_pnum)
+                          initial_values, additional, phi, loss_track, diff_update, 
+                          omp_zsw, eigen_pnum, s_v2)
   # update the resulting mu vector into meaningfull subgroup results
   if(is.null(update_mu)){
     res$mu_updated_vec <- res$mu_vec
@@ -266,8 +268,8 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                        const_r123, const_abc = rep(1, 3), 
                        initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
                        cd_max_iter = 1, cd_tol = 0.001, 
-                       subgroup_benchmark = FALSE, update_mu = NULL, 
-                       omp_zsw = rep(1, 3), dry_run = FALSE){
+                       subgroup_benchmark = FALSE, update_mu = NULL, loss_track = FALSE, diff_update = TRUE, 
+                       omp_zsw = c(1, 4, 1), eigen_pnum = 4, s_v2 = TRUE, dry_run = FALSE){
   ### preparation ###
   # preparation for x and y #
   y_vec <- matrix(y_vec, ncol = 1)    # make sure y_vec is column vector
@@ -549,7 +551,9 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                           const_r123 = const_r123, const_abc = const_abc, 
                           initial_values = initial_values, additional = additional, 
                           tol = tol, max_iter = max_iter, cd_max_iter = cd_max_iter, cd_tol = cd_tol, 
-                          phi = phi, subgroup_benchmark = subgroup_benchmark, update_mu = update_mu, omp_zsw = omp_zsw)
+                          phi = phi, subgroup_benchmark = subgroup_benchmark, update_mu = update_mu, 
+                          loss_track = loss_track, diff_update = diff_update, 
+                          omp_zsw = omp_zsw, eigen_pnum = eigen_pnum, s_v2 = s_v2)
       
       
       # store the results
@@ -611,8 +615,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
               loss_mat = loss_mat, 
               const_r123 = const_r123, 
               const_abc = const_abc, 
-              additional = additional
-              )
+  )
   
   return(res)
 }

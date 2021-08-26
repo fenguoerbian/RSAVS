@@ -1,5 +1,4 @@
 // #define EIGEN_USE_BLAS    // external OpenBLAS does not offer much speed boost
-// #define EIGEN_USE_LAPACKE
 #include <RcppEigen.h>
 #include <cmath>
 #include <iostream>
@@ -503,35 +502,94 @@ void UpdateZ_Huber_New(Eigen::VectorXd &z_invec, const Eigen::VectorXd &loss_par
 }
 
 void UpdateSW_Identity_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
-/*
-    Update the w vector for the identity penalty
-    Args:w_invec: the inputting w vector.
-                  During the algorithm its value is \beta + q3 / r3
-         penalty_param: the parameters for the penalty
-                        For Lasso, lambda = penlaty_param[0].
-         r: the quadratic term in the algorithm
-    Return: no return values, but the w_invec is updated
-    NOTE: for the identity penalty, nothing is changed
-*/   
+    /*
+     *    Update the w vector for the identity penalty
+     *    Args:w_invec: the inputting w vector.
+     *                  During the algorithm its value is \beta + q3 / r3
+     *         penalty_param: the parameters for the penalty
+     *                        For Lasso, lambda = penlaty_param[0].
+     *         r: the quadratic term in the algorithm
+     *    Return: no return values, but the w_invec is updated
+     *    NOTE: for the identity penalty, nothing is changed
+     */   
     // const int n = 1;
 }
 
+void UpdateS_Identity_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+                           const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
+    /*
+     *    Update the w vector for the identity penalty
+     *    Args:w_invec: the inputting w vector.
+     *                  During the algorithm its value is \beta + q3 / r3
+     *         penalty_param: the parameters for the penalty
+     *                        For Lasso, lambda = penlaty_param[0].
+     *         r: the quadratic term in the algorithm
+     *    Return: no return values, but the w_invec is updated
+     *    NOTE: for the identity penalty, nothing is changed
+     */   
+    // const int n = 1;
+    const double lambda = penalty_param[0];
+    double tmp, tmp_abs;
+    const int omp_max = omp_get_max_threads();
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp, tmp_abs)
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            s_invec[i] = tmp;
+        } 
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            s_invec[i] = tmp;
+        }   
+    }
+}
+
 void UpdateSW_Lasso_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
-    const double lam = penalty_param[0];
+    const double lambda = penalty_param[0];
     const int omp_max = omp_get_max_threads();
     if(omp_num > 1){
         omp_set_num_threads(omp_num);
         #pragma omp parallel for simd
         for(int i = 0; i < sw_invec.size(); i++){
-            sw_invec[i] = SoftThresholding(sw_invec[i], lam * const_bc / const_r);
+            sw_invec[i] = SoftThresholding(sw_invec[i], lambda * const_bc / const_r);
         } 
         omp_set_num_threads(omp_max);    // restore omp state
     }else{
         for(int i = 0; i < sw_invec.size(); i++){
-            sw_invec[i] = SoftThresholding(sw_invec[i], lam * const_bc / const_r);
+            sw_invec[i] = SoftThresholding(sw_invec[i], lambda * const_bc / const_r);
         }         
     } 
 }
+
+void UpdateS_Lasso_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+                        const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
+    /*
+     * This function is specifically designed for updating \bm{s} in the algorithm coupled with the Lasso penalty
+     * It offers much more speed boost in parallel than the original parallel version.
+     */ 
+    const double lambda = penalty_param[0];
+    double tmp, tmp_abs;
+    const int omp_max = omp_get_max_threads();
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp, tmp_abs)
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = SoftThresholding(tmp, lambda * const_bc / const_r);
+        } 
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = SoftThresholding(tmp, lambda * const_bc / const_r);
+        }   
+    }
+                        }
 
 void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     const double lambda = penalty_param[0];
@@ -568,6 +626,10 @@ void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty
 
 void UpdateS_SCAD_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
                        const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
+    /*
+     * This function is specifically designed for updating \bm{s} in the algorithm coupled with the SCAD penalty
+     * It offers much more speed boost in parallel than the original parallel version.
+     */ 
     const double lambda = penalty_param[0];
     const double gamma = penalty_param[1];
     double tmp, tmp_abs;
@@ -602,7 +664,7 @@ void UpdateS_SCAD_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, 
             }
         }   
     }
-                        }
+}
 
 void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     const double lambda = penalty_param[0];
@@ -630,6 +692,40 @@ void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_
     
 }
 
+void UpdateS_MCP_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+                      const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
+    /*
+     * This function is specifically designed for updating \bm{s} in the algorithm coupled with the MCP penalty
+     * It offers much more speed boost in parallel than the original parallel version.
+     */ 
+    const double lambda = penalty_param[0];
+    const double gamma = penalty_param[1];
+    double tmp, tmp_abs;
+    const int omp_max = omp_get_max_threads();
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp, tmp_abs)
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = tmp;
+            if(tmp_abs <= lambda * gamma){
+                s_invec[i] = SoftThresholding(tmp, const_bc * lambda / const_r) / (1.0 - const_bc / const_r / gamma);
+            }
+        } 
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < s_invec.size(); i++){
+            tmp = mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) + q_vec(i) / const_r;
+            tmp_abs = fabs(tmp);
+            s_invec[i] = tmp;
+            if(tmp_abs <= lambda * gamma){
+                s_invec[i] = SoftThresholding(tmp, const_bc * lambda / const_r) / (1.0 - const_bc / const_r / gamma);
+            }
+        }   
+    }
+}
+
 Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const double &const_r, const Eigen::MatrixXd &idx_table, const int &omp_num){
     const int omp_max = omp_get_max_threads();
     double tmp;
@@ -647,6 +743,28 @@ Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_v
             
         }
     }
+    return(res);
+}
+
+double UpdateDiff1_New(const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const Eigen::MatrixXd &idx_table, const int &omp_num){
+    const int omp_max = omp_get_max_threads();
+    double tmp;
+    double res = 0.0;
+    // Eigen::VectorXd res = Eigen::MatrixXd::Zero(q2_vec.size(), 1);
+    if(omp_num > 1){
+        omp_set_num_threads(omp_num);
+        #pragma omp parallel for simd private(tmp) reduction(+:res)
+        for(int i = 0; i < s_vec.size(); i++){
+            res += fabs(mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) - s_vec(i));
+        }
+        omp_set_num_threads(omp_max);    // restore omp state
+    }else{
+        for(int i = 0; i < s_vec.size(); i++){
+            res += fabs(mu_vec(idx_table(i, 0)) - mu_vec(idx_table(i, 1)) - s_vec(i));
+            
+        }
+    }
+    res = res / s_vec.size();
     return(res);
 }
 
@@ -1398,7 +1516,9 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                             const double& tol, const int& max_iter, 
                             const double& cd_tol, const int& cd_max_iter, 
                             const Rcpp::List& initial_values, const Rcpp::List& additional_values, 
-                            const double& phi, const Eigen::VectorXd& omp_zsw, const int& eigen_pnum){
+                            const double& phi, const bool& loss_track, const bool& diff_update,
+                            const Eigen::VectorXd& omp_zsw, const int& eigen_pnum, const bool& s_v2){
+    
     Eigen::setNbThreads(eigen_pnum);
     Rcpp::Timer timer;
     
@@ -1419,6 +1539,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
 
     void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
     void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
+    void (*Update_S_V2)(Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::MatrixXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
     void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
     
     Update_Z = UpdateZ_L1_New;
@@ -1432,15 +1553,20 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
 
     if(p1_param[0] != 0){
         Update_S = UpdateSW_Lasso_New;
+        Update_S_V2 = UpdateS_Lasso_New2;
+        
         if(p1_type == 'S'){
             Update_S = UpdateSW_SCAD_New;
+            Update_S_V2 = UpdateS_SCAD_New2;
         }
         if(p1_type == 'M'){
             Update_S = UpdateSW_MCP_New;
+            Update_S_V2 = UpdateS_MCP_New2;
         } 
     }else{
         Rcpp::Rcout << "Warning, no penalty for mu!" << std::endl;
         Update_S = UpdateSW_Identity_New;
+        Update_S_V2 = UpdateS_Identity_New2;
     }
     
     if(p2_param[0] != 0){
@@ -1539,26 +1665,27 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
             mu_beta = mu_beta_lhs * mu_beta_rhs;
             mu_vec = mu_beta.segment(0, n);
             beta_vec = mu_beta.segment(n, p);
+            timer.step("Update_Mubeta");
             
         }else{    // update beta and mu via coordinate descent
             current_cd_step = 1;
             cd_diff = cd_tol + 1;
             while((current_cd_step <= cd_max_iter) && (cd_diff > cd_tol)){
-                // construct beta_rhs and mu_rhs
-                
+                // Update beta
                 beta_rhs = const_r1 * x_mat.transpose() * (y_vec - mu_old - z_old) + x_mat.transpose() * q1_old;
                 if(p2_param[0] != 0){
                     beta_rhs += const_r3 * w_old - q3_old;
                 }
+                beta_vec = beta_lhs * beta_rhs;
+                timer.step("Update_Beta");
                 
+                // Update mu
                 mu_rhs = const_r1 * (y_vec - x_mat * beta_old - z_old) + q1_old;
                 if(p1_param[0] != 0){    // ------ This part triggers Eigen's parallel most ------
                     mu_rhs += d_mat.transpose() * (const_r2 * s_old - q2_old);
                 }
-                
-                // update beta_vec and mu_vec
-                beta_vec = beta_lhs * beta_rhs;
                 mu_vec = mu_lhs * mu_rhs;
+                timer.step("Update_Mu");
                 
                 // update cd status
                 cd_diff = std::max((beta_vec - beta_old).norm(), (mu_vec - mu_old).norm());
@@ -1567,7 +1694,6 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
                 mu_old = mu_vec;
             }
         }
-        timer.step("Mu_beta");
         
         // update z
         z_vec = y_vec - mu_vec - x_mat * beta_vec + q1_old / const_r1;
@@ -1575,13 +1701,13 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         timer.step("Update_Z");
         
         // update s
-        if(eigen_pnum <= 1){
+        if(!s_v2){
             s_vec = q2_old / const_r2;
             s_vec += d_mat * mu_vec;
             timer.step("Compute_S");
             Update_S(s_vec, p1_param, const_r2, const_b, omp_s);
         }else{
-            UpdateS_SCAD_New2(s_vec, mu_vec, q2_old, idx_table, p1_param, const_r2, const_b, omp_s);
+            Update_S_V2(s_vec, mu_vec, q2_old, idx_table, p1_param, const_r2, const_b, omp_s);
         }
         timer.step("Update_S");
         
@@ -1593,7 +1719,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         // update q1, q2 and q3
         q1_vec = q1_old + const_r1 * (y_vec - mu_vec - x_mat * beta_vec - z_vec);
         timer.step("Update_q1");
-        if(eigen_pnum <= 1){
+        if(!s_v2){
             q2_vec = q2_old + const_r2 * (d_mat * mu_vec - s_vec);
         }else{
             q2_vec = UpdateQ2_New(q2_old, s_vec, mu_vec, const_r2, idx_table, omp_s);
@@ -1606,12 +1732,18 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         
         // update status
         // mean absolute values are faster to compute than norm of a vector.
-        /* Unnecessary when benchmark the speed
-        diff_detail[0] = (y_vec - mu_vec - x_mat * beta_vec - z_vec).cwiseAbs().mean();
-        diff_detail[1] = (d_mat * mu_vec - s_vec).cwiseAbs().mean();
-        diff_detail[2] = (beta_vec - w_vec).cwiseAbs().mean();
-        diff = diff_detail.maxCoeff();
-        */
+        // This is UNNECESSARY when benchmark the speed
+        if(diff_update){
+            diff_detail[0] = (y_vec - mu_vec - x_mat * beta_vec - z_vec).cwiseAbs().mean();
+            if(!s_v2){
+                diff_detail[1] = (d_mat * mu_vec - s_vec).cwiseAbs().mean();
+            }else{
+                diff_detail[1] = UpdateDiff1_New(s_vec, mu_vec, idx_table, omp_s);
+            }
+            diff_detail[2] = (beta_vec - w_vec).cwiseAbs().mean();
+            diff = diff_detail.maxCoeff();
+            timer.step("Update_diff"); 
+        }
         
         beta_old = beta_vec;
         mu_old = mu_vec;
@@ -1623,15 +1755,18 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
         q3_old = q3_vec;
         
         current_step += 1;
-        /* Unnecessary when benchmark the speed
-        loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
-                                                   mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old, d_mat);
-        loss = loss_detail[0];
+        /* 
+         * UNNECESSARY when benchmark the speed
+         * Also it takes VERY LONG TIME when n is large
+         */
+        if(loss_track){
+            loss_detail = RSAVS_Compute_Loss_Value_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, 
+                                                       mu_old, beta_old, z_old, s_old, w_old, q1_old, q2_old, q3_old, d_mat);
+            loss = loss_detail[0];
+            loss_old = loss;    // should we check for loss drop?
+            loss_vec[current_step - 1] = loss_old;
+        }
         
-        loss_old = loss;    // should we check for loss drop?
-
-        loss_vec[current_step - 1] = loss_old;
-        */
         timer.step("Finish");
     }
     
