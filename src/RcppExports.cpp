@@ -65,8 +65,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // RSAVS_Solver_Cpp
-Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, const std::string& l_type, const Eigen::VectorXd& l_param, const char& p1_type, const Eigen::VectorXd p1_param, const char& p2_type, const Eigen::VectorXd p2_param, const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, const double& tol, const int& max_iter, const double& cd_tol, const int& cd_max_iter, const Rcpp::List& initial_values, const Rcpp::List& additional_values, const double& phi, const Eigen::VectorXd& omp_zsw);
-RcppExport SEXP _RSAVS_RSAVS_Solver_Cpp(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP nSEXP, SEXP pSEXP, SEXP l_typeSEXP, SEXP l_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP const_r123SEXP, SEXP const_abcSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP cd_tolSEXP, SEXP cd_max_iterSEXP, SEXP initial_valuesSEXP, SEXP additional_valuesSEXP, SEXP phiSEXP, SEXP omp_zswSEXP) {
+Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd& x_mat, const int& n, const int& p, const std::string& l_type, const Eigen::VectorXd& l_param, const char& p1_type, const Eigen::VectorXd p1_param, const char& p2_type, const Eigen::VectorXd p2_param, const Eigen::VectorXd& const_r123, const Eigen::VectorXd& const_abc, const double& tol, const int& max_iter, const double& cd_tol, const int& cd_max_iter, const Rcpp::List& initial_values, const Rcpp::List& additional_values, const double& phi, const bool& loss_track, const bool& diff_update, const Eigen::VectorXd& omp_zsw, const int& eigen_pnum, const bool& s_v2);
+RcppExport SEXP _RSAVS_RSAVS_Solver_Cpp(SEXP y_vecSEXP, SEXP x_matSEXP, SEXP nSEXP, SEXP pSEXP, SEXP l_typeSEXP, SEXP l_paramSEXP, SEXP p1_typeSEXP, SEXP p1_paramSEXP, SEXP p2_typeSEXP, SEXP p2_paramSEXP, SEXP const_r123SEXP, SEXP const_abcSEXP, SEXP tolSEXP, SEXP max_iterSEXP, SEXP cd_tolSEXP, SEXP cd_max_iterSEXP, SEXP initial_valuesSEXP, SEXP additional_valuesSEXP, SEXP phiSEXP, SEXP loss_trackSEXP, SEXP diff_updateSEXP, SEXP omp_zswSEXP, SEXP eigen_pnumSEXP, SEXP s_v2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -89,8 +89,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::List& >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List& >::type additional_values(additional_valuesSEXP);
     Rcpp::traits::input_parameter< const double& >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type loss_track(loss_trackSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type diff_update(diff_updateSEXP);
     Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type omp_zsw(omp_zswSEXP);
-    rcpp_result_gen = Rcpp::wrap(RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, omp_zsw));
+    Rcpp::traits::input_parameter< const int& >::type eigen_pnum(eigen_pnumSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type s_v2(s_v2SEXP);
+    rcpp_result_gen = Rcpp::wrap(RSAVS_Solver_Cpp(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, loss_track, diff_update, omp_zsw, eigen_pnum, s_v2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -141,7 +145,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_RSAVS_RSAVS_LargeN_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_Rcpp, 18},
     {"_RSAVS_RSAVS_LargeN_L2_Rcpp", (DL_FUNC) &_RSAVS_RSAVS_LargeN_L2_Rcpp, 15},
-    {"_RSAVS_RSAVS_Solver_Cpp", (DL_FUNC) &_RSAVS_RSAVS_Solver_Cpp, 20},
+    {"_RSAVS_RSAVS_Solver_Cpp", (DL_FUNC) &_RSAVS_RSAVS_Solver_Cpp, 24},
     {"_RSAVS_rcppeigen_hello_world", (DL_FUNC) &_RSAVS_rcppeigen_hello_world, 0},
     {"_RSAVS_rcppeigen_outerproduct", (DL_FUNC) &_RSAVS_rcppeigen_outerproduct, 1},
     {"_RSAVS_rcppeigen_innerproduct", (DL_FUNC) &_RSAVS_rcppeigen_innerproduct, 1},

@@ -9,8 +9,8 @@ RSAVS_LargeN_L2_Rcpp <- function(x_mat, y_vec, n, p, p1_type, p1_param, p2_type,
     .Call(`_RSAVS_RSAVS_LargeN_L2_Rcpp`, x_mat, y_vec, n, p, p1_type, p1_param, p2_type, p2_param, lam1_vec, lam2_vec, r2, r3, phi, tol, max_iter)
 }
 
-RSAVS_Solver_Cpp <- function(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, omp_zsw) {
-    .Call(`_RSAVS_RSAVS_Solver_Cpp`, y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, omp_zsw)
+RSAVS_Solver_Cpp <- function(y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, loss_track, diff_update, omp_zsw, eigen_pnum, s_v2) {
+    .Call(`_RSAVS_RSAVS_Solver_Cpp`, y_vec, x_mat, n, p, l_type, l_param, p1_type, p1_param, p2_type, p2_param, const_r123, const_abc, tol, max_iter, cd_tol, cd_max_iter, initial_values, additional_values, phi, loss_track, diff_update, omp_zsw, eigen_pnum, s_v2)
 }
 
 rcppeigen_hello_world <- function() {
