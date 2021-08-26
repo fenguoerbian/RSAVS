@@ -29,7 +29,12 @@ RSAVS_Path(
   cd_tol = 0.001,
   subgroup_benchmark = FALSE,
   update_mu = NULL,
-  omp_zsw = rep(1, 3)
+  loss_track = FALSE,
+  diff_update = TRUE,
+  omp_zsw = c(1, 4, 1),
+  eigen_pnum = 4,
+  s_v2 = TRUE,
+  dry_run = FALSE
 )
 }
 \arguments{

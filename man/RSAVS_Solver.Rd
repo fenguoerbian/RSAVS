@@ -24,7 +24,11 @@ RSAVS_Solver(
   phi = 1,
   subgroup_benchmark = FALSE,
   update_mu = NULL,
-  omp_zsw = rep(1, 3)
+  loss_track = FALSE,
+  diff_update = TRUE,
+  omp_zsw = c(1, 4, 1),
+  eigen_pnum = 1,
+  s_v2 = TRUE
 )
 }
 \arguments{
