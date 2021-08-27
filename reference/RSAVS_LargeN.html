@@ -304,8 +304,7 @@ Hence this parameter is ignored.</p></td>
 #&gt; D started.
 #&gt; D finished.
 #&gt; beta left finished.
-#&gt; mu left finished.
-#&gt; [1] "pamk fail!"</div><div class='input'>
+#&gt; mu left finished.</div><div class='input'>
 <span class='co'># you can choose different loss and penalties</span>
 <span class='va'>res_huber</span> <span class='op'>&lt;-</span> <span class='fu'>RSAVS_LargeN</span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
                           l_type <span class='op'>=</span> <span class='st'>"Huber"</span>, l_param <span class='op'>=</span> <span class='fl'>1.345</span>,
@@ -324,8 +323,7 @@ Hence this parameter is ignored.</p></td>
 #&gt; D started.
 #&gt; D finished.
 #&gt; beta left finished.
-#&gt; mu left finished.
-#&gt; [1] "pamk fail!"</div><div class='input'><span class='co'># you can do post-selection estimation by</span>
+#&gt; mu left finished.</div><div class='input'><span class='co'># you can do post-selection estimation by</span>
 <span class='va'>ind</span> <span class='op'>&lt;-</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>best_ind</span>    <span class='co'># pick an id of the solution</span>
 <span class='va'>res2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='RSAVS_Further_Improve.html'>RSAVS_Further_Improve</a></span><span class='op'>(</span>y_vec <span class='op'>=</span> <span class='va'>y_vec</span>, x_mat <span class='op'>=</span> <span class='va'>x_mat</span>, 
                               mu_vec <span class='op'>=</span> <span class='va'>res</span><span class='op'>$</span><span class='va'>mu_improve_mat</span><span class='op'>[</span><span class='va'>ind</span>, <span class='op'>]</span>, 

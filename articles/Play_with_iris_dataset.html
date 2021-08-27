@@ -121,7 +121,7 @@
 <span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span>
 <span class="co">#&gt; Downloading GitHub repo fenguoerbian/RSAVS@HEAD</span>
 <span class="co">#&gt; Running `R CMD build`...</span>
-<span class="co">#&gt; * checking for file ‘/tmp/Rtmp9Au1Nc/remotes48af89cedcb/fenguoerbian-RSAVS-5613e41/DESCRIPTION’ ... OK</span>
+<span class="co">#&gt; * checking for file ‘/tmp/RtmpXe5DoK/remotes438c7806b40/fenguoerbian-RSAVS-278c51d/DESCRIPTION’ ... OK</span>
 <span class="co">#&gt; * preparing ‘RSAVS’:</span>
 <span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span>
 <span class="co">#&gt; * cleaning src</span>
@@ -445,7 +445,7 @@ l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span cla
 <code class="sourceCode R"><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bic_res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>
 <span class="op">(</span><span class="va">bic_res</span><span class="op">[</span>, <span class="va">idx</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;        bic  group_num active_num </span>
-<span class="co">#&gt;   3.472367   6.000000   1.000000</span></code></pre></div>
+<span class="co">#&gt;   3.214346   6.000000   1.000000</span></code></pre></div>
 <p>This chosen model can be visualized in the solution path as</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu_path</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">Draw_Mu_Path</span><span class="op">(</span>result <span class="op">=</span> <span class="va">res</span>, lam2_id <span class="op">=</span> <span class="fl">1</span>, useS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -462,7 +462,7 @@ l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span cla
                                           beta_vec <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span>
 <span class="va">mu_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">mu_vec</span>
 <span class="va">beta_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">beta_vec</span></code></pre></div>
-<p>When comparing the estimated subgroup structure with the <code>Species</code> variable, we can see that the estimated subgroup structure mainly focuses on the values of <code>Sepal.Length</code>. The Rand Index between the estimated subgroup structure and the <code>Species</code> is only 0.7114094. Also, after accounting for the difference in <code>Sepal.Length</code> into subgroups, the effect of <code>Sepal.Width</code> becomes near to none.</p>
+<p>When comparing the estimated subgroup structure with the <code>Species</code> variable, we can see that the estimated subgroup structure mainly focuses on the values of <code>Sepal.Length</code>. The Rand Index between the estimated subgroup structure and the <code>Species</code> is only 0.6899329. Also, after accounting for the difference in <code>Sepal.Length</code> into subgroups, the effect of <code>Sepal.Width</code> becomes near to none.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span><span class="op">$</span><span class="va">new_group_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mu_post</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">iris</span><span class="op">$</span><span class="va">intercept_est</span> <span class="op">&lt;-</span> <span class="va">mu_post</span>
