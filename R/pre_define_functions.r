@@ -248,7 +248,7 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' 
 #' # Use directly rounding to determine estimated group effect
 #' table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
-RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
+RSAVS_Determine_Mu <- function(mu_vec, group_res, klim = c(2, 7, 4), round_digits = NULL){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result
   #       group_res: A list, containing the grouping results. 
@@ -268,17 +268,21 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
         warning("number of observations(n) to small, pamk might be unstable.")
         
       }
-      kmax <- min(n, 10)
-      
-      pamk_res <- try(fpc::pamk(mu_vec, krange = 1 : kmax, usepam = (n <= 2000)), silent = T)
-      if(!inherits(pamk_res, "try-error")){
-        # ------ original design ------
-        # group_num <- pamk_res$nc
-        
-        # ------ newer design ------
+      kmax <- min(klim[2], 10)
+      kmin <- klim[1]
+      dudahart_kmax <- klim[3]
+      if(kmin > 1){
+        pamk_res <- try(fpc::pamk(mu_vec, krange = kmin : kmax, usepam = (n <= 2000)), silent = T)
+        if(!inherits(pamk_res, "try_error")){
+          group_num <- pamk_res$nc
+        }else{
+          print("inner pamk fail!")
+          group_num <- 1
+        }
+      }else{
         # try to determine k = 1 (only one cluster) is suitable for this data
-        p_vec <- rep(0, kmax - 1)
-        for(k in 2 : kmax){
+        p_vec <- rep(0, dudahart_kmax - 1)
+        for(k in 2 : dudahart_kmax){
           tmp2 <- cluster::pam(mu_vec, k = k)
           # print(paste("------ k = ", k, " ------", sep = ""))
           all_p_na <- TRUE
@@ -286,7 +290,7 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
             for(j in (i + 1) : k){
               idx <- union(which(tmp2$clustering == i), 
                            which(tmp2$clustering == j))
-              current_p <- dudahart2(mu_vec[idx], tmp2$clustering[idx])$p.value
+              current_p <- fpc::dudahart2(mu_vec[idx], tmp2$clustering[idx])$p.value
               all_p_na <- all_p_na & is.na(current_p)
               if(!is.na(current_p)){
                 if(current_p > p_vec[k - 1]){
@@ -299,20 +303,19 @@ RSAVS_Determine_Mu <- function(mu_vec, group_res, round_digits = NULL){
             p_vec[k - 1] <- 1
           }
         }
-        double_check1 <- any(p_vec < 0.001)
+        # print(p_vec)
+        double_check1 <- any(p_vec < 0.0001)
         if(!double_check1){
           group_num <- 1
-        }else(
-          pamk_res <- try(fpc::pamk(mu_vec, krange = 2 : kmax, usepam = (n <= 2000)), silent = T))
+        }else{
+          pamk_res <- try(fpc::pamk(mu_vec, krange = 2 : kmax, usepam = (n <= 2000)), silent = T)
           if(!inherits(pamk_res, "try_error")){
             group_num <- pamk_res$nc
           }else{
             print("inner pamk fail!")
             group_num <- 1
           }
-      }else{
-        print("pamk fail!")
-        group_num <- 1
+        }
       }
       
       if(group_num == 1){
