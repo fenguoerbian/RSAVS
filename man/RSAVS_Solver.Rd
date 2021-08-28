@@ -102,6 +102,20 @@ Defaults to \code{NULL}, which means there is no update performed. The update of
 }
 Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works}
 
+\item{loss_track}{boolen, whether to track the value of objective function(loss value) during each iteration.}
+
+\item{diff_update}{boolen, whether to update the difference between each iteration. If set to \code{FALSE},
+the algorithm will still stop when it reaches \code{max_iter}.}
+
+\item{omp_zsw}{a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.}
+
+\item{eigen_pnum}{integer number, representing the number of Eigen threads for matrix computation, 
+defaults to 4.}
+
+\item{s_v2}{boolen, whether to use the updated and faster version during the computation of 
+\code{s} and \code{q2}}
+
 \item{lam1_vec, lam2_vec}{numerical vectors of customized lambda vectors. 
 For \code{lam1_vec}, it's preferred to be in the order from small to big.}
 

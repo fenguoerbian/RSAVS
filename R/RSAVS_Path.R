@@ -62,6 +62,15 @@
 #'     \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 #'   }
 #'   Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works
+#' @param loss_track boolen, whether to track the value of objective function(loss value) during each iteration.
+#' @param diff_update boolen, whether to update the difference between each iteration. If set to \code{FALSE},
+#'   the algorithm will still stop when it reaches \code{max_iter}.
+#' @param omp_zsw a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+#'   parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.
+#' @param eigen_pnum integer number, representing the number of Eigen threads for matrix computation, 
+#'   defaults to 4. 
+#' @param s_v2 boolen, whether to use the updated and faster version during the computation of 
+#'   \code{s} and \code{q2}
 #' @seealso \code{\link{RSAVS_Path}}, \code{\link{RSAVS_Path_PureR}}, \code{\link{RSAVS_LargeN}}
 RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                          p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
@@ -236,6 +245,18 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #'     \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 #'   }
 #'   Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works
+#' @param loss_track boolen, whether to track the value of objective function(loss value) during each iteration.
+#' @param diff_update boolen, whether to update the difference between each iteration. If set to \code{FALSE},
+#'   the algorithm will still stop when it reaches \code{max_iter}.
+#' @param omp_zsw a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+#'   parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.
+#' @param eigen_pnum integer number, representing the number of Eigen threads for matrix computation, 
+#'   defaults to 4. 
+#' @param s_v2 boolen, whether to use the updated and faster version during the computation of 
+#'   \code{s} and \code{q2}
+#' @param dry_run boolen, whether this is a so-called 'dry-run'. A dry-run will not carry out the real
+#'   core solver, but only prepares and return the necessary initial values, additional values and 
+#'   solution plane for the core solver.
 #' @seealso \code{\link{RSAVS_Solver}}, \code{\link{RSAVS_Path_PureR}}, \code{\link{RSAVS_LargeN}}
 #' @examples
 #' # a toy example

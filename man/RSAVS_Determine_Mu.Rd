@@ -4,7 +4,13 @@
 \alias{RSAVS_Determine_Mu}
 \title{Determine the subgroup effects}
 \usage{
-RSAVS_Determine_Mu(mu_vec, group_res, round_digits = NULL)
+RSAVS_Determine_Mu(
+  mu_vec,
+  group_res,
+  klim = c(2, 7, 4),
+  usepam = (length(mu_vec) < 2000),
+  round_digits = NULL
+)
 }
 \arguments{
 \item{mu_vec}{numerical vector. \code{n = length(mu_vec)} is the number of observations.
