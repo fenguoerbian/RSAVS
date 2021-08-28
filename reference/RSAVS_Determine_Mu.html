@@ -156,7 +156,13 @@
     <p>This function determines the final mu vector given the grouping results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span><span class='va'>mu_vec</span>, <span class='va'>group_res</span>, round_digits <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RSAVS_Determine_Mu</span><span class='op'>(</span>
+  <span class='va'>mu_vec</span>,
+  <span class='va'>group_res</span>,
+  klim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>7</span>, <span class='fl'>4</span><span class='op'>)</span>,
+  usepam <span class='op'>=</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>mu_vec</span><span class='op'>)</span> <span class='op'>&lt;</span> <span class='fl'>2000</span><span class='op'>)</span>,
+  round_digits <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
