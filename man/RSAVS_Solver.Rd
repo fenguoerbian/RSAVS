@@ -97,7 +97,9 @@ If \code{TRUE}, then the penalty for variable selection will be surpressed to a 
 Defaults to \code{NULL}, which means there is no update performed. The update of \code{mu_vec} is carried out through
 \code{RSAVS_Determine_Mu} and the necessary parameters in \code{update_mu} are:
 \itemize{
-  \item \code{UseS}: bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+  \item \code{UseS}: a bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+  \item \code{klim}: a length-3 integer vector, given the range of number of cluster for considering.
+  \item \code{usepam}: a bool variable, whether to use \code{pam} for clustering.
   \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 }
 Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works}

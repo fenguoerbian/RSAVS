@@ -15,8 +15,11 @@ RSAVS_Path(
   p2_param = c(2, 3.7),
   lam1_vec,
   lam2_vec,
+  lam1_sort = TRUE,
+  lam2_sort = TRUE,
   min_lam1_ratio = 0.03,
   min_lam2_ratio = 0.03,
+  lam1_max_ncvguard = 100,
   lam1_len,
   lam2_len,
   const_r123,
@@ -75,8 +78,13 @@ and will be ignored and overwritten in the actual computation.}
 \item{lam1_vec, lam2_vec}{numerical vectors of customized lambda vectors. 
 For \code{lam1_vec}, it's preferred to be in the order from small to big.}
 
+\item{lam1_sort, lam2_sort}{boolen, whether to force sorting the provided \code{lam1_vec} and \code{lam2_vec}.
+By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in descreasing order.}
+
 \item{min_lam1_ratio, min_lam2_ratio}{the ratio between the minimal and maximal 
 lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.}
+
+\item{lam1_max_ncvguard}{a safe guard constant for \code{lam1_max} when the penalty is nonconvex such as SCAD and MCP.}
 
 \item{lam1_len, lam2_len}{integers, lengths of the auto-generated lambda vectors.}
 
@@ -109,7 +117,9 @@ If \code{TRUE}, then the penalty for variable selection will be surpressed to a 
 Defaults to \code{NULL}, which means there is no update performed. The update of \code{mu_vec} is carried out through
 \code{RSAVS_Determine_Mu} and the necessary parameters in \code{update_mu} are:
 \itemize{
-  \item \code{UseS}: bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+  \item \code{UseS}: a bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+  \item \code{klim}: a length-3 integer vector, given the range of number of cluster for considering.
+  \item \code{usepam}: a bool variable, whether to use \code{pam} for clustering.
   \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 }
 Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works}

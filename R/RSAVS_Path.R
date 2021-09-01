@@ -58,7 +58,9 @@
 #'   Defaults to \code{NULL}, which means there is no update performed. The update of \code{mu_vec} is carried out through
 #'   \code{RSAVS_Determine_Mu} and the necessary parameters in \code{update_mu} are:
 #'   \itemize{
-#'     \item \code{UseS}: bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+#'     \item \code{UseS}: a bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+#'     \item \code{klim}: a length-3 integer vector, given the range of number of cluster for considering.
+#'     \item \code{usepam}: a bool variable, whether to use \code{pam} for clustering.
 #'     \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 #'   }
 #'   Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works
@@ -167,12 +169,24 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   }else{
     d_mat <- RSAVS_Generate_D_Matrix(n)
     useS <- update_mu$useS
+    
+    if(is.null(update_mu$klim)){
+      klim <- c(2, 7, 4)
+    }else{
+      klim <- update_mu$klim
+    }
+    
+    if(is.null(update_mu$usepam)){
+      usepam <- length(res$mu_vec < 2000)
+    }else{
+      usepam <- update_mu$usepam
+      }
     round_digits <- update_mu$round_digits
     if(useS){
       group_res <- RSAVS_S_to_Groups(res$s_vec, n)
-      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, group_res)
+      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, group_res, klim = klim, usepam = usepam)
     }else{
-      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, round_digits = round_digits)
+      mu_updated_vec <- RSAVS_Determine_Mu(res$mu_vec, klim = klim, usepam = usepam, round_digits = round_digits)
     }
     res$mu_updated_vec <- mu_updated_vec
     res$s_vec <- SparseM::as.matrix(d_mat %*% mu_updated_vec)
@@ -218,8 +232,11 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #'   and will be ignored and overwritten in the actual computation.
 #' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
 #'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
+#' @param lam1_sort,lam2_sort boolen, whether to force sorting the provided \code{lam1_vec} and \code{lam2_vec}.
+#'   By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in descreasing order.
 #' @param min_lam1_ratio,min_lam2_ratio the ratio between the minimal and maximal 
 #'   lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.
+#' @param lam1_max_ncvguard a safe guard constant for \code{lam1_max} when the penalty is nonconvex such as SCAD and MCP.
 #' @param lam1_len,lam2_len integers, lengths of the auto-generated lambda vectors.
 #' @param initial_values list of vector, providing initial values for the algorithm. 
 #' @param phi numerical variable. A parameter needed for mBIC.
@@ -241,7 +258,9 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #'   Defaults to \code{NULL}, which means there is no update performed. The update of \code{mu_vec} is carried out through
 #'   \code{RSAVS_Determine_Mu} and the necessary parameters in \code{update_mu} are:
 #'   \itemize{
-#'     \item \code{UseS}: bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+#'     \item \code{UseS}: a bool variable, whether the \code{s_vec} should be used to provide subgroup structure information.
+#'     \item \code{klim}: a length-3 integer vector, given the range of number of cluster for considering.
+#'     \item \code{usepam}: a bool variable, whether to use \code{pam} for clustering.
 #'     \item \code{round_digits}: non-negative integer digits, indicating the rounding digits when merging \code{mu_vec}
 #'   }
 #'   Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the algorithm works
@@ -283,8 +302,8 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #' @export
 RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                        p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
-                       lam1_vec, lam2_vec, 
-                       min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, 
+                       lam1_vec, lam2_vec, lam1_sort = TRUE, lam2_sort = TRUE, 
+                       min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, lam1_max_ncvguard = 100,
                        lam1_len, lam2_len, 
                        const_r123, const_abc = rep(1, 3), 
                        initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
@@ -350,20 +369,20 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       r2 <- 2
     }
     if(p1_type == "S"){
-      r2 <- max(1.3 * 1 / (p1_gamma - 1), 1 / (p1_gamma - 1) + 1)
+      r2 <- max(1.3 * 1 / (p1_gamma - 1), 1 / (p1_gamma - 1) + 1, 2)
     }
     if(p1_type == "M"){
-      r2 <- max(1.3 * 1 / p1_gamma, 1 / p1_gamma + 1)
+      r2 <- max(1.3 * 1 / p1_gamma, 1 / p1_gamma + 1, 2)
     }
     
     if(p2_type == "L"){
       r3 <- 2
     }
     if(p2_type == "S"){
-      r3 <- max(1.3 * 1 / (p2_gamma - 1), 1 / (p2_gamma - 1) + 1)
+      r3 <- max(1.3 * 1 / (p2_gamma - 1), 1 / (p2_gamma - 1) + 1, 2)
     }
     if(p2_type == "M"){
-      r3 <- max(1.3 * 1 / p2_gamma, 1 / p2_gamma + 1)
+      r3 <- max(1.3 * 1 / p2_gamma, 1 / p2_gamma + 1, 2)
     }
     const_r123 <- c(r1, r2, r3)
   }else{
@@ -373,11 +392,12 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     r3 <- const_r123[3]
     
     # check for r2
+    r2min <- 2
     if(p1_type == "S"){
-      r2min <- max(1.3 * 1 / (p1_param[2] - 1), 1 / (p1_param[2] - 1) + 1)
+      r2min <- max(1.3 * 1 / (p1_param[2] - 1), 1 / (p1_param[2] - 1) + 1, 2)
     }
     if(p1_type == "M"){ 
-      r2min <- max(1.3 * 1 / p1_param[2], 1 / p1_param[2] + 1)
+      r2min <- max(1.3 * 1 / p1_param[2], 1 / p1_param[2] + 1, 2)
     }
     
     if(r2 < r2min){
@@ -386,11 +406,12 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       const_r123[2] <- r2
     }
     # check for r3
+    r3min <- 2
     if(p2_type == "S"){
-      r3min <- max(1.3 * 1 / (p2_param[2] - 1), 1 / (p2_param[2] - 1) + 1)
+      r3min <- max(1.3 * 1 / (p2_param[2] - 1), 1 / (p2_param[2] - 1) + 1, 2)
     }
     if(p2_type == "M"){
-      r3min <- max(1.3 * 1 / p2_param[2], 1 / p2_param[2] + 1)
+      r3min <- max(1.3 * 1 / p2_param[2], 1 / p2_param[2] + 1, 2)
     }
     if(r3 < r3min){
       message("r3 = ", r3, "< r3min = ", r3min, ". Modify value of r3!")
@@ -411,7 +432,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                   const_abc = const_abc, eps = 10^(-6))
     lam1_min <- lam1_max * min_lam1_ratio
     if(p1_type != "L"){
-      lam1_max <- lam1_max * 100    # safe guard for non-convex penalties
+      lam1_max <- lam1_max * lam1_max_ncvguard    # safe guard for non-convex penalties
     }
     
     # lam1_vec <- exp(seq(from = log(lam1_max), to = log(lam1_min), length.out = lam1_len))
@@ -420,7 +441,12 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     # lam1_vec <- sort(abs(lam1_vec), decreasing = T)
     # lam1_length = length(lam1_vec)
     lam1_len <- length(lam1_vec)
-    lam1_vec <- sort(abs(lam1_vec), decreasing = FALSE)
+    if(lam1_sort){
+      lam1_vec <- sort(abs(lam1_vec), decreasing = FALSE)
+    }else{
+      lam1_vec <- abs(lam1_vec)
+    }
+    
   }
   
   if(missing(lam2_vec)){
@@ -433,8 +459,14 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     lam2_min <- lam2_max * min_lam2_ratio
     lam2_vec <- exp(seq(from = log(lam2_max), to = log(lam2_min), length.out = lam2_len))
   }else{
-    lam2_vec <- sort(abs(lam2_vec), decreasing = TRUE)
     lam2_len <- length(lam2_vec)
+    if(lam2_sort){
+      lam2_vec <- sort(abs(lam2_vec), decreasing = TRUE)
+    }else{
+      lam2_vec <- abs(lam2_vec)
+    }
+    
+    
   }
   
   if(subgroup_benchmark){
