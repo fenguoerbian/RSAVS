@@ -171,8 +171,11 @@ simultaneously. It utilizes the cpp core solver and supports different
   p2_param <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>3.7</span><span class='op'>)</span>,
   <span class='va'>lam1_vec</span>,
   <span class='va'>lam2_vec</span>,
+  lam1_sort <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  lam2_sort <span class='op'>=</span> <span class='cn'>TRUE</span>,
   min_lam1_ratio <span class='op'>=</span> <span class='fl'>0.03</span>,
   min_lam2_ratio <span class='op'>=</span> <span class='fl'>0.03</span>,
+  lam1_max_ncvguard <span class='op'>=</span> <span class='fl'>100</span>,
   <span class='va'>lam1_len</span>,
   <span class='va'>lam2_len</span>,
   <span class='va'>const_r123</span>,
@@ -242,9 +245,18 @@ and will be ignored and overwritten in the actual computation.</p></td>
 For <code>lam1_vec</code>, it's preferred to be in the order from small to big.</p></td>
     </tr>
     <tr>
+      <th>lam1_sort, lam2_sort</th>
+      <td><p>boolen, whether to force sorting the provided <code>lam1_vec</code> and <code>lam2_vec</code>.
+By default, <code>lam1_vec</code> will sort in increasing order while <code>lam2_vec</code> in descreasing order.</p></td>
+    </tr>
+    <tr>
       <th>min_lam1_ratio, min_lam2_ratio</th>
       <td><p>the ratio between the minimal and maximal 
 lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.</p></td>
+    </tr>
+    <tr>
+      <th>lam1_max_ncvguard</th>
+      <td><p>a safe guard constant for <code>lam1_max</code> when the penalty is nonconvex such as SCAD and MCP.</p></td>
     </tr>
     <tr>
       <th>lam1_len, lam2_len</th>
@@ -298,7 +310,9 @@ If <code>TRUE</code>, then the penalty for variable selection will be surpressed
       <td><p>list of parameters for updating <code>mu_vec</code> in the algorithm into meaningful subgroup structure.
 Defaults to <code>NULL</code>, which means there is no update performed. The update of <code>mu_vec</code> is carried out through
 <code>RSAVS_Determine_Mu</code> and the necessary parameters in <code>update_mu</code> are:</p><ul>
-<li><p><code>UseS</code>: bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
+<li><p><code>UseS</code>: a bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
+<li><p><code>klim</code>: a length-3 integer vector, given the range of number of cluster for considering.</p></li>
+<li><p><code>usepam</code>: a bool variable, whether to use <code>pam</code> for clustering.</p></li>
 <li><p><code>round_digits</code>: non-negative integer digits, indicating the rounding digits when merging <code>mu_vec</code></p></li>
 </ul><p>Please refer to <code>RSAVS_Determine_Mu</code> to find out more details about how the algorithm works</p></td>
     </tr>

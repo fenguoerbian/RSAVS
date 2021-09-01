@@ -282,7 +282,9 @@ If <code>TRUE</code>, then the penalty for variable selection will be surpressed
       <td><p>list of parameters for updating <code>mu_vec</code> in the algorithm into meaningful subgroup structure.
 Defaults to <code>NULL</code>, which means there is no update performed. The update of <code>mu_vec</code> is carried out through
 <code>RSAVS_Determine_Mu</code> and the necessary parameters in <code>update_mu</code> are:</p><ul>
-<li><p><code>UseS</code>: bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
+<li><p><code>UseS</code>: a bool variable, whether the <code>s_vec</code> should be used to provide subgroup structure information.</p></li>
+<li><p><code>klim</code>: a length-3 integer vector, given the range of number of cluster for considering.</p></li>
+<li><p><code>usepam</code>: a bool variable, whether to use <code>pam</code> for clustering.</p></li>
 <li><p><code>round_digits</code>: non-negative integer digits, indicating the rounding digits when merging <code>mu_vec</code></p></li>
 </ul><p>Please refer to <code>RSAVS_Determine_Mu</code> to find out more details about how the algorithm works</p></td>
     </tr>
