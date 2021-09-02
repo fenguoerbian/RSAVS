@@ -129,7 +129,7 @@ Please refer to \code{RSAVS_Determine_Mu} to find out more details about how the
 \item{diff_update}{boolen, whether to update the difference between each iteration. If set to \code{FALSE},
 the algorithm will still stop when it reaches \code{max_iter}.}
 
-\item{omp_zsw}{a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+\item{omp_zsw}{a length-three integer vector, defaults to \code{c(1, 4, 1)}. It represents how many
 parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.}
 
 \item{eigen_pnum}{integer number, representing the number of Eigen threads for matrix computation, 

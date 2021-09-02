@@ -67,7 +67,7 @@
 #' @param loss_track boolen, whether to track the value of objective function(loss value) during each iteration.
 #' @param diff_update boolen, whether to update the difference between each iteration. If set to \code{FALSE},
 #'   the algorithm will still stop when it reaches \code{max_iter}.
-#' @param omp_zsw a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+#' @param omp_zsw a length-three integer vector, defaults to \code{c(1, 4, 1)}. It represents how many
 #'   parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.
 #' @param eigen_pnum integer number, representing the number of Eigen threads for matrix computation, 
 #'   defaults to 4. 
@@ -267,7 +267,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #' @param loss_track boolen, whether to track the value of objective function(loss value) during each iteration.
 #' @param diff_update boolen, whether to update the difference between each iteration. If set to \code{FALSE},
 #'   the algorithm will still stop when it reaches \code{max_iter}.
-#' @param omp_zsw a length-three integer vector, defaults to \code(c(1, 4, 1)). It represents how many
+#' @param omp_zsw a length-three integer vector, defaults to \code{c(1, 4, 1)}. It represents how many
 #'   parallel threads to be used during the update of \code{z}, \code{s} and \code{w} respectively.
 #' @param eigen_pnum integer number, representing the number of Eigen threads for matrix computation, 
 #'   defaults to 4. 
