@@ -299,13 +299,17 @@ the algorithm will still stop when it reaches <code>max_iter</code>.</p></td>
     </tr>
     <tr>
       <th>omp_zsw</th>
-      <td><p>a length-three integer vector, defaults to (c(1, 4, 1)). It represents how many
-parallel threads to be used during the update of <code>z</code>, <code>s</code> and <code>w</code> respectively.}
-
-{eigen_pnum}{integer number, representing the number of Eigen threads for matrix computation, 
-defaults to 4.}
-
-{s_v2}{boolen, whether to use the updated and faster version during the computation of 
+      <td><p>a length-three integer vector, defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(1, 4, 1)</a></code>. It represents how many
+parallel threads to be used during the update of <code>z</code>, <code>s</code> and <code>w</code> respectively.</p></td>
+    </tr>
+    <tr>
+      <th>eigen_pnum</th>
+      <td><p>integer number, representing the number of Eigen threads for matrix computation, 
+defaults to 4.</p></td>
+    </tr>
+    <tr>
+      <th>s_v2</th>
+      <td><p>boolen, whether to use the updated and faster version during the computation of 
 <code>s</code> and <code>q2</code></p></td>
     </tr>
     <tr>
