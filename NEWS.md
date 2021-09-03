@@ -5,8 +5,9 @@
   - Make API about specifing loss function's type more consistent. See the changes of `RSAVS_Further_Improve` for more details.
   - Internally, add functions `Draw_Mu_Path` and `Draw_Beta_Path` to visualize the solution path regarding to subgroup identification and variable selection namely.
   - Add support to choose whether to use `double log likelihood` when computing the modified BIC.
-  - Add parameter `update_mu` to `RSAVS_Path` and `RSAVS_Path_PureR` so one can choose whether to update the mu vector into meaningful subgroup structure during the computation of solution plain.
-  - Add parameter `omp_zsw` to `RSAVS_Path` which controls number of threads during the update of `z`, `s` and `w` via OpenMP.
+  - Add a parameter `update_mu` to `RSAVS_Path` and `RSAVS_Path_PureR` so one can choose whether to update the mu vector into meaningful subgroup structure during the computation of solution plain.
+  - Add a parameter `omp_zsw` to `RSAVS_Path` and `RSAVS_Solver` which controls number of threads during the update of `z`, `s` and `w` via OpenMP.
+  - Add a parameter `s_v2` to `RSAVS_Path` and `RSAVS_Solver` which indicates whether to use the faster implementation to update `s_vec` and `q2_vec`.
 
 ## General changes
   - Tidy up some scirpt.
