@@ -302,11 +302,11 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #' @export
 RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
                        p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
-                       lam1_vec, lam2_vec, lam1_sort = TRUE, lam2_sort = TRUE, 
+                       lam1_vec = NULL, lam2_vec = NULL, lam1_sort = TRUE, lam2_sort = TRUE, 
                        min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, lam1_max_ncvguard = 100,
-                       lam1_len, lam2_len, 
-                       const_r123, const_abc = rep(1, 3), 
-                       initial_values, phi = 1.0, tol = 0.001, max_iter = 10, 
+                       lam1_len = 50, lam2_len = 40, 
+                       const_r123 = NULL, const_abc = rep(1, 3), 
+                       initial_values = NULL, phi = 1.0, tol = 0.001, max_iter = 10, 
                        cd_max_iter = 1, cd_tol = 0.001, 
                        subgroup_benchmark = FALSE, update_mu = NULL, loss_track = FALSE, diff_update = TRUE, 
                        omp_zsw = c(1, 4, 1), eigen_pnum = 4, s_v2 = TRUE, dry_run = FALSE){
@@ -361,7 +361,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   
   # preparation for r1, r2 and r3
-  if(missing(const_r123)){
+  if(is.null(const_r123)){
     message("`const_r123` is missing. Use default settings!")
     r1 <- 2
     
@@ -424,7 +424,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   const_abc <- abs(const_abc)
   
   # preparation for lam_vec
-  if(missing(lam1_vec)){
+  if(is.null(lam1_vec)){
     # newer version
     message("lam1_vec is missing, use default values...")
     lam1_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, l_type = l_type, l_param = l_param, 
@@ -449,7 +449,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     
   }
   
-  if(missing(lam2_vec)){
+  if(is.null(lam2_vec)){
     # newer version
     message("lam2_vec is missing, use default values...")
     lam2_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, x_mat = x_mat, 
@@ -475,7 +475,7 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   }
   
   # --- prepare initial values for the algorithm ---
-  if(missing(initial_values)){
+  if(is.null(initial_values)){
     message("`initial_values` is missing, use default settings!")
     # if(l_type == "L1"){
     #     mu0 <- median(y_vec)
@@ -671,4 +671,241 @@ RSAVS_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   )
   
   return(res)
+}
+
+RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL, 
+                              p1_type = "S", p1_param = c(2, 3.7), p2_type = "S", p2_param = c(2, 3.7), 
+                              lam1_vec = NULL, lam2_vec = NULL, lam1_sort = TRUE, lam2_sort = TRUE, 
+                              min_lam1_ratio = 0.03, min_lam2_ratio = 0.03, lam1_max_ncvguard = 100,
+                              lam1_len = 100, lam2_len = 80, 
+                              const_r123_s1, const_r123_s2, 
+                              const_abc_s1 = rep(1, 3), const_abc_s2 = rep(1, 3), 
+                              bic_const_a_s1 = 1, bic_const_a_s2 = 1, 
+                              bic_double_loglik_s1 = TRUE, bic_double_loglik_s2 = FALSE, 
+                              initial_values_s1, initial_values_s2, 
+                              phi_s1 = 5.0, phi_s2 = 5.0, 
+                              tol_s1 = 0.001, tol_s2 = 0.001, 
+                              max_iter_s1 = 100, max_iter_s2 = 100, 
+                              cd_max_iter_s1 = 1, cd_max_iter_s2 = 1, 
+                              cd_tol_s1 = 0.001, cd_tol_s2 = 0.001, 
+                              subgroup_benchmark_s1 = FALSE, subgroup_benchmark_s2 = TRUE, 
+                              update_mu_s11 = NULL, update_mu_s12 = list(useS = FALSE, round_digits = NULL),
+                              update_mu_s21 = NULL, update_mu_s22 = list(useS = FALSE, round_digits = NULL),
+                              complex_upper_bound = 15, 
+                              loss_track_s1 = FALSE, loss_track_s2 = FALSE, 
+                              diff_update_s1 = TRUE, diff_update_s2 = TRUE, 
+                              omp_zsw = c(1, 4, 1), eigen_pnum = 4, s_v2 = TRUE){
+  
+  message("------ Analysis stage1: search over lam2_vec ------")
+  dry_run_s1 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
+                           p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                           lam1_vec = lam1_vec, lam2_vec = lam2_vec, lam1_sort = lam1_sort, lam2_sort = lam2_sort, 
+                           min_lam1_ratio = min_lam1_ratio, min_lam2_ratio = min_lam2_ratio, 
+                           lam1_max_ncvguard = lam1_max_ncvguard, subgroup_benchmark = FALSE, 
+                           lam1_len = lam1_len, lam2_len = lam2_len, 
+                           const_r123 = const_r123_s1, const_abc = const_abc_s1, 
+                           initial_values = initial_values_s1, 
+                           cd_max_iter = cd_max_iter_s1, 
+                           omp_zsw = omp_zsw, eigen_pnum = eigen_pnum, s_v2 = s_v2, 
+                           dry_run = TRUE
+                           )
+  
+  if(is.null(initial_values_s1)){
+    mu0 <- RSAVS_Get_Mu0(y_vec, l_type, l_param)
+    initial_values_s1 <- list(beta_init = rep(0, p), 
+                              mu_init = rep(mu0, n * (n - 1) / 2), 
+                              z_init = as.vector(y_vec - mu0), 
+                              s_init = rep(0, n * (n - 1) / 2), 
+                              w_init = rep(0, p), 
+                              q1_init = rep(0, n), 
+                              q2_init = rep(0, n * (n - 1) / 2), 
+                              q3_init = rep(0, p))
+  }
+  
+  lam1_chosen <- max(dry_run_s1$lam1_vec)
+  lam2_vec_s1 <- dry_run_s1$lam2_vec
+  res_s1 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
+                       p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                       lam1_vec = lam1_chosen, lam2_vec = lam2_vec_s1, lam2_sort = FALSE, 
+                       # min_lam2_ratio = min_lam2_ratio, lam2_len = lam2_len, 
+                       subgroup_benchmark = subgroup_benchmark_s1, 
+                       const_r123 = const_r123_s1, const_abc = const_abc_s1, 
+                       initial_values = initial_values_s1, phi = phi_s1, 
+                       tol = tol_s1, max_iter = max_iter_s1, 
+                       cd_tol = cd_tol_s1, cd_max_iter = cd_max_iter_s1, 
+                       update_mu = update_mu_s11, 
+                       loss_track = loss_track_s1, diff_update = diff_update_s1, 
+                       omp_zsw = omp_zsw, eigen_pnum = eigen_pnum, s_v2 = s_v2, dry_run = FALSE)
+  
+  message("------ mBIC check on results over lam2_vec ------")
+  lam2_len <- length(res_s1$lam2_vec)
+  mu_further_improve_mat <- matrix(0, nrow = 1 * lam2_len, ncol = n)
+  beta_further_improve_mat <- matrix(0, nrow = 1 * lam2_len, ncol = p)
+  bic_vec_s1 <- rep(0, 1 * lam2_len)
+  group_num_vec_s1 <- rep(1, 1 * lam2_len)
+  active_num_vec_s1 <- rep(0, 1 * lam2_len)
+  max_bic <- Inf
+  
+  bic_res <- future.apply::future_lapply(1 : (1 * lam2_len), 
+                                         FUN = RSAVS_Compute_BIC_V2, 
+                                         rsavs_res = list(w_mat = res_s1$w_mat, 
+                                                          mu_updated_mat = res_s1$mu_updated_mat), 
+                                         y_vec = y_vec, x_mat = x_mat, 
+                                         l_type = "L1", l_param = NULL, 
+                                         phi = phi_s1, const_a = bic_const_a_s1, 
+                                         update_mu = update_mu_s12, 
+                                         double_log_lik = bic_double_loglik_s1, 
+                                         from_rsi = FALSE)
+  gc()
+  
+  for(j in 1 : (1 * lam2_len)){
+    # print(j)
+    tmp <- bic_res[[j]]
+    mu_new <- as.vector(tmp$mu_vec)
+    beta_new <- tmp$beta_vec
+    mu_further_improve_mat[j, ] <- mu_new
+    beta_further_improve_mat[j, ] <- beta_new
+    bic_vec_s1[j] <- tmp$bic_info["bic"]
+    
+    # update bic according to complexsity upper bound
+    current_group_num <- length(unique(mu_new))
+    current_active_num <- sum(beta_new != 0)
+    group_num_vec_s1[j] <- current_group_num
+    active_num_vec_s1[j] <- current_active_num
+    if((current_active_num + current_group_num) >= complex_upper_bound){
+      bic_vec_s1[j] <- max_bic
+    }
+    
+    # update bic according to active number
+    if(current_active_num == 0){
+      bic_vec_s1[j] <- max_bic
+    }
+  }
+  
+  # save the summarized information with the further improved estimation
+  best_id_s1 <- which.min(bic_vec_s1)
+  mu_s1 <- mu_further_improve_mat[best_id_s1, ]
+  beta_s1 <- beta_further_improve_mat[best_id_s1, ]
+  
+  active_idx <- which(beta_s1 != 0)
+  if(length(active_idx) == 0){
+    active_idx <- sample(1 : p, size = 1)
+  }
+  if(length(active_idx) > (n / 2)){
+    active_idx <- active_idx[1 : (n / 2)]
+  }
+  active_chosen_num <- length(active_idx)
+  
+  lam2_chosen <- res_s1$lam2_vec[best_id_s1]
+  
+  
+  message("------ Analysis stage2: search over lam1_vec ------")
+  dry_run_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat[, active_idx, drop = FALSE],  
+                           l_type = l_type, l_param = l_param, 
+                           p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                           lam1_vec = lam1_vec, lam2_vec = lam2_vec, lam1_sort = lam1_sort, lam2_sort = lam2_sort, 
+                           min_lam1_ratio = min_lam1_ratio, min_lam2_ratio = min_lam2_ratio, 
+                           lam1_max_ncvguard = lam1_max_ncvguard, subgroup_benchmark = FALSE, 
+                           lam1_len = lam1_len, lam2_len = lam2_len, 
+                           const_r123 = const_r123_s2, const_abc = const_abc_s2, 
+                           initial_values = initial_values_s2, 
+                           cd_max_iter = cd_max_iter_s2, 
+                           omp_zsw = omp_zsw, eigen_pnum = eigen_pnum, s_v2 = s_v2, 
+                           dry_run = TRUE
+  )
+  
+  if(is.null(initial_values_s2)){
+    mu0 <- RSAVS_Get_Mu0(y_vec, l_type, l_param)
+    initial_values_s2 <- list(beta_init = rep(0, active_chosen_num), 
+                              mu_init = rep(mu0, n * (n - 1) / 2), 
+                              z_init = as.vector(y_vec - mu0), 
+                              s_init = rep(0, n * (n - 1) / 2), 
+                              w_init = rep(0, active_chosen_num), 
+                              q1_init = rep(0, n), 
+                              q2_init = rep(0, n * (n - 1) / 2), 
+                              q3_init = rep(0, active_chosen_num))
+  }
+  
+  lam1_vec <- sort(dry_run_s2$lam1_vec, descreasing = TRUE)
+  
+  res_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
+                       p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                       lam1_vec = lam1_vec, lam2_vec = lam2_chosen, lam1_sort = lam1_sort, 
+                       # min_lam2_ratio = min_lam2_ratio, lam2_len = lam2_len, 
+                       subgroup_benchmark = subgroup_benchmark_s2, 
+                       const_r123 = const_r123_s2, const_abc = const_abc_s2, 
+                       initial_values = initial_values_s2, phi = phi_s2, 
+                       tol = tol_s2, max_iter = max_iter_s2, 
+                       cd_tol = cd_tol_s2, cd_max_iter = cd_max_iter_s2, 
+                       update_mu = update_mu_s21, 
+                       loss_track = loss_track_s2, diff_update = diff_update_s2, 
+                       omp_zsw = omp_zsw, eigen_pnum = eigen_pnum, s_v2 = s_v2, dry_run = FALSE)
+  
+  message("------ mBIC check on results over lam1_vec ------")
+  lam1_len <- length(lam1_vec)
+  mu_further_improve_mat <- matrix(0, nrow = lam1_len * 1, ncol = n)
+  beta_further_improve_mat <- matrix(0, nrow = lam1_len * 1, ncol = active_chosen_num)
+  bic_vec_s2 <- rep(0, lam1_len * 1)
+  group_num_vec_s2 <- rep(1, lam1_len * 1)
+  active_num_vec_s2 <- rep(0, lam1_len * 1)
+  max_bic <- Inf
+  
+  bic_res <- future.apply::future_lapply(1 : (lam1_len * 1), 
+                                         FUN = RSAVS_Compute_BIC_V2, 
+                                         rsavs_res = list(w_mat = res_s2$w_mat, 
+                                                          mu_updated_mat = res_s2$mu_updated_mat), 
+                                         y_vec = y_vec, x_mat = x_mat[, active_idx, drop = FALSE], 
+                                         l_type = l_type, l_param = l_param, 
+                                         phi = phi_s2, const_a = bic_const_a_s2, 
+                                         update_mu = update_mu_s22, 
+                                         double_log_lik = bic_double_loglik_s2, 
+                                         from_rsi = FALSE)
+  gc()
+  
+  for(j in 1 : (lam1_len * 1)){
+    # print(j)
+    tmp <- bic_res[[j]]
+    mu_new <- as.vector(tmp$mu_vec)
+    beta_new <- tmp$beta_vec
+    mu_further_improve_mat[j, ] <- mu_new
+    beta_further_improve_mat[j, ] <- beta_new
+    bic_vec_s2[j] <- tmp$bic_info["bic"]
+    
+    # update bic according to complexsity upper bound
+    current_group_num <- length(unique(mu_new))
+    current_active_num <- sum(beta_new != 0)
+    group_num_vec_s2[j] <- current_group_num
+    active_num_vec_s2[j] <- current_active_num
+    if((current_active_num + current_group_num) >= complex_upper_bound){
+      bic_vec_s2[j] <- max_bic
+    }
+    
+    # update bic according to active number
+    if(current_active_num == 0){
+      bic_vec_s2[j] <- max_bic
+    }
+  }
+  
+  # save the summarized information with the further improved estimation
+  best_id_s2 <- which.min(bic_vec_s2)
+  mu_s2 <- mu_further_improve_mat[best_id_s2, ]
+  beta_s2 <- beta_further_improve_mat[best_id_s2, ]
+  
+  lam1_chosen <- res_s2$lam1_vec[best_id_s2]
+  # combine the final result
+  res_full <- list(res_s1 = res_s1, 
+                   res_s2 = res_s2, 
+                   best_id_s1 = best_id_s1, 
+                   best_id_s2 = best_id_s2, 
+                   bic_vec_s1 = bic_vec_s1, 
+                   bic_vec_s2 = bic_vec_s2, 
+                   group_num_vec_s1 = group_num_vec_s1, 
+                   group_num_vec_s2 = group_num_vec_s2, 
+                   active_num_vec_s1 = active_num_vec_s1, 
+                   active_num_vec_s2 = active_num_vec_s2, 
+                   mu_best = mu_s2, 
+                   beta_best = best_s2
+                   )
+  
+  return(res_full)
 }

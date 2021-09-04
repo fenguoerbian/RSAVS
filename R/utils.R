@@ -1,3 +1,21 @@
+RSAVS_Get_Mu0 <- function(y_vec, l_type = "L1", l_param = NULL){
+  if(l_type == "L1"){
+    mu0 <- median(y_vec)
+  }else{
+    if(l_type == "L2"){
+      mu0 <- mean(y_vec)
+    }else{
+      if(l_type == "Huber"){
+        tmp <- MASS::rlm(y_vec ~ 1, k = l_param[1])
+        mu0 <- tmp$coefficients[1]
+      }else{
+        stop(paste("Unsupported type of loss function!, l_type = ", l_type, sep = ""))
+      }
+    }
+  }
+  return(mu0)
+}
+
 #' Compute psi_vec 
 #' 
 #' This function computes the psi_vec needed by the algorithm.
@@ -44,17 +62,14 @@ RSAVS_Get_Psi <- function(y_vec, l_type = "L1", l_param = NULL){
     #       l_param: parameter vector for the loss function. 
     #                Not needed for "L1" and "L2" type of loss
     
+    mu0 <- RSAVS_Get_Mu0(y_vec, l_type, l_param)
     if(l_type == "L1"){
-        mu0 <- median(y_vec)
         psi_vec <- sign(y_vec - mu0)
     }else{
         if(l_type == "L2"){
-            mu0 <- mean(y_vec)
             psi_vec <- 2 * (y_vec - mu0)
         }else{
             if(l_type == "Huber"){
-                tmp <- MASS::rlm(y_vec ~ 1, k = l_param[1])
-                mu0 <- tmp$coefficients[1]
                 psi_vec <- RSAVS_Huber(y_vec - mu0, param = l_param[1], derivative = T)
             }else{
                 stop(paste("Unsupported type of loss function!, l_type = ", l_type, sep = ""))
@@ -301,4 +316,80 @@ RSAVS_Compute_Loss_Value <- function(y_vec, x_mat, l_type = "L1", l_param = NULL
               diff_s = diff_s, 
               diff_w = diff_w)
   return(res)
+}
+
+
+RSAVS_Compute_BIC_V2 <- function(id, rsavs_res, y_vec, x_mat, l_type, l_param, 
+                                 update_mu = list(useS = FALSE, round_digits = NULL), 
+                                 phi, const_a, doublle_log_lik = TRUE, 
+                                 from_rsi = FALSE, pb = NULL){
+  # report progress info if a progressor is provided
+  if(!is.null(pb)){
+    pb(message = sprintf("ID = %d", id))
+  }
+  
+  # prepare mu_vec and beta_vec
+  if(from_rsi){
+    beta_vec <- rsavs_res$beta_mat[id, ]
+    mu_vec <- rsavs_res$mu_updated_mat[id, ]
+    if(!is.null(update_mu)){
+      update_mu$useS <- FALSE
+    }
+  }else{
+    beta_vec <- rsavs_res$w_mat[id, ]
+    mu_vec <- rsavs_res$mu_updated_mat[id, ]
+  }
+  
+  n <- length(mu_vec)
+  # if mu_vec is already updated, which means it's in a meaningful subgroup strucutre
+  #   then there's no need to perform RSAVS_Determine_Mu
+  if(is.null(update_mu)){
+    mu_improved <- mu_vec
+  }else{
+    useS <- update_mu$useS
+    if(is.null(update_mu$klim)){
+      klim <- c(2, 7, 4)
+    }else{
+      klim <- update_mu$klim
+    }
+    
+    if(is.null(update_mu$usepam)){
+      usepam <- length(res$mu_vec < 2000)
+    }else{
+      usepam <- update_mu$usepam
+    }
+    
+    round_digits <- update_mu$round_digits
+    
+    if(useS){
+      group_res <- RSAVS_S_to_Groups(round(rsavs_res$s_mat[id, ], 3), n)
+      mu_improved <- RSAVS_Determine_Mu(mu_vec, group_res)
+    }else{
+      mu_improved <- RSAVS_Determine_Mu(mu_vec, klim = klim, usepam = usepam, round_digits = round_digits)
+    }
+  }
+  
+  # post-selection estimation
+  post_est <- try(RSAVS_Further_Improve(y_vec, x_mat, l_type, l_param, mu_improved, beta_vec))
+  if(!inherits(post_est, "try-error")){
+    beta_vec <- post_est$beta_vec
+    mu_improved <- post_est$mu_vec
+  }else{
+    message("further improve error at id = ", id)
+  }
+  
+  
+  bic <- RSAVS_Compute_BIC(y_vec, x_mat, beta_vec, mu_improved, l_type, l_param, phi, const_a, double_log_lik)
+  active_num <- sum(beta_vec != 0)
+  group_num <- length(unique(mu_improved))
+  max_group_size <- max(table(mu_improved))
+  
+  res <- c(bic, group_num, active_num, max_group_size)
+  names(res) <- c("bic", "group_num", "active_num", "max_group_size")
+  
+  return(list(
+    id = id, 
+    bic_info = res, 
+    mu_vec = mu_improved, 
+    beta_vec = beta_vec))
 }
