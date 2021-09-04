@@ -321,7 +321,7 @@ RSAVS_Compute_Loss_Value <- function(y_vec, x_mat, l_type = "L1", l_param = NULL
 
 RSAVS_Compute_BIC_V2 <- function(id, rsavs_res, y_vec, x_mat, l_type, l_param, 
                                  update_mu = list(useS = FALSE, round_digits = NULL), 
-                                 phi, const_a, doublle_log_lik = TRUE, 
+                                 phi, const_a, double_log_lik = TRUE, 
                                  from_rsi = FALSE, pb = NULL){
   # report progress info if a progressor is provided
   if(!is.null(pb)){

@@ -697,6 +697,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                               omp_zsw = c(1, 4, 1), eigen_pnum = 4, s_v2 = TRUE){
   
   message("------ Analysis stage1: search over lam2_vec ------")
+  message("--- a dry run to prepare some variables ---")
   dry_run_s1 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
                            p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
                            lam1_vec = lam1_vec, lam2_vec = lam2_vec, lam1_sort = lam1_sort, lam2_sort = lam2_sort, 
@@ -724,6 +725,8 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   lam1_chosen <- max(dry_run_s1$lam1_vec)
   lam2_vec_s1 <- dry_run_s1$lam2_vec
+  
+  message("--- real analysis ---")
   res_s1 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
                        p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
                        lam1_vec = lam1_chosen, lam2_vec = lam2_vec_s1, lam2_sort = FALSE, 
@@ -800,6 +803,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   
   message("------ Analysis stage2: search over lam1_vec ------")
+  message("--- a dry run to prepare some variables ---")
   dry_run_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat[, active_idx, drop = FALSE],  
                            l_type = l_type, l_param = l_param, 
                            p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
@@ -828,6 +832,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   lam1_vec <- sort(dry_run_s2$lam1_vec, descreasing = TRUE)
   
+  message("--- real analysis ---")
   res_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
                        p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
                        lam1_vec = lam1_vec, lam2_vec = lam2_chosen, lam1_sort = lam1_sort, 
