@@ -13,6 +13,7 @@
   - Tidy up some scirpt.
   - Add a vignette about applying the proposed method onto the `iris` dataset. It demonstrates the unsupervised nature of the proposed method.
   - Add `RSI` and `RSI_DAC` internally.
+  - Add `RSAVS_Simple_Path` internally. This is a wrapper function for a simplified search over the solution plane.
   
 # RSAVS 0.1.3
 
