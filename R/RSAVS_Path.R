@@ -233,7 +233,7 @@ RSAVS_Solver <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
 #' @param lam1_vec,lam2_vec numerical vectors of customized lambda vectors. 
 #'   For \code{lam1_vec}, it's preferred to be in the order from small to big.
 #' @param lam1_sort,lam2_sort boolen, whether to force sorting the provided \code{lam1_vec} and \code{lam2_vec}.
-#'   By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in descreasing order.
+#'   By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in decreasing order.
 #' @param min_lam1_ratio,min_lam2_ratio the ratio between the minimal and maximal 
 #'   lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.
 #' @param lam1_max_ncvguard a safe guard constant for \code{lam1_max} when the penalty is nonconvex such as SCAD and MCP.
@@ -830,7 +830,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                               q3_init = rep(0, active_chosen_num))
   }
   
-  lam1_vec <- sort(dry_run_s2$lam1_vec, descreasing = TRUE)
+  lam1_vec <- sort(dry_run_s2$lam1_vec, decreasing = TRUE)
   
   message("--- real analysis ---")
   res_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
