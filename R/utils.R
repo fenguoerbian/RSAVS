@@ -354,7 +354,7 @@ RSAVS_Compute_BIC_V2 <- function(id, rsavs_res, y_vec, x_mat, l_type, l_param,
     }
     
     if(is.null(update_mu$usepam)){
-      usepam <- length(res$mu_vec < 2000)
+      usepam <- length(rsavs_res$mu_vec < 2000)
     }else{
       usepam <- update_mu$usepam
     }
