@@ -900,7 +900,12 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   beta_s2 <- beta_further_improve_mat[best_id_s2, ]
   
   lam1_chosen <- res_s2$lam1_vec[best_id_s2]
+  
   # combine the final result
+  mu_best <- mu_s2
+  beta_best <- rep(0, p)
+  beta_best[active_idx] <- beta_s2
+  
   res_full <- list(res_s1 = res_s1, 
                    res_s2 = res_s2, 
                    best_id_s1 = best_id_s1, 
@@ -911,8 +916,8 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                    group_num_vec_s2 = group_num_vec_s2, 
                    active_num_vec_s1 = active_num_vec_s1, 
                    active_num_vec_s2 = active_num_vec_s2, 
-                   mu_best = mu_s2, 
-                   beta_best = best_s2
+                   mu_best = mu_best, 
+                   beta_best = beta_best
                    )
   
   return(res_full)
