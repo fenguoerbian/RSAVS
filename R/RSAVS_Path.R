@@ -806,7 +806,8 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   message("--- a dry run to prepare some variables ---")
   dry_run_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat[, active_idx, drop = FALSE],  
                            l_type = l_type, l_param = l_param, 
-                           p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+                           p1_type = p1_type, p1_param = p1_param, 
+                           p2_type = p2_type, p2_param = p2_param, 
                            lam1_vec = lam1_vec, lam2_vec = lam2_vec, lam1_sort = lam1_sort, lam2_sort = lam2_sort, 
                            min_lam1_ratio = min_lam1_ratio, min_lam2_ratio = min_lam2_ratio, 
                            lam1_max_ncvguard = lam1_max_ncvguard, subgroup_benchmark = FALSE, 
@@ -833,8 +834,10 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   lam1_vec <- sort(dry_run_s2$lam1_vec, decreasing = TRUE)
   
   message("--- real analysis ---")
-  res_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat, l_type = l_type, l_param = l_param, 
-                       p1_type = p1_type, p1_param = p1_param, p2_type = p2_type, p2_param = p2_param, 
+  res_s2 <- RSAVS_Path(y_vec = y_vec, x_mat = x_mat[, active_idx, drop = FALSE], 
+                       l_type = l_type, l_param = l_param, 
+                       p1_type = p1_type, p1_param = p1_param, 
+                       p2_type = p2_type, p2_param = p2_param, 
                        lam1_vec = lam1_vec, lam2_vec = lam2_chosen, lam1_sort = lam1_sort, 
                        # min_lam2_ratio = min_lam2_ratio, lam2_len = lam2_len, 
                        subgroup_benchmark = subgroup_benchmark_s2, 
