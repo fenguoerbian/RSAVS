@@ -896,7 +896,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       bic_vec_s2[j] <- max_bic
     }
   }
-  
+  print(active_idx)
   # save the summarized information with the further improved estimation
   best_id_s2 <- which.min(bic_vec_s2)
   mu_s2 <- mu_further_improve_mat[best_id_s2, ]
@@ -906,6 +906,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   
   # combine the final result
   message("before best")
+  print(active_idx)
   mu_best <- mu_s2
   beta_best <- rep(0, p)
   beta_best[active_idx] <- beta_s2
