@@ -858,6 +858,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   active_num_vec_s2 <- rep(0, lam1_len * 1)
   max_bic <- Inf
   message("before bic")
+  print(active_idx)
   bic_res <- future.apply::future_lapply(1 : (lam1_len * 1), 
                                          FUN = RSAVS_Compute_BIC_V2, 
                                          rsavs_res = list(w_mat = res_s2$w_mat, 
@@ -868,7 +869,9 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                          update_mu = update_mu_s22, 
                                          double_log_lik = bic_double_loglik_s2, 
                                          from_rsi = FALSE)
+  print(active_idx)
   gc()
+  print(active_idx)
   
   for(j in 1 : (lam1_len * 1)){
     # print(j)
