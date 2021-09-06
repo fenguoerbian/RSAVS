@@ -748,7 +748,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   group_num_vec_s1 <- rep(1, 1 * lam2_len)
   active_num_vec_s1 <- rep(0, 1 * lam2_len)
   max_bic <- Inf
-  
+  message("--- Compute mBIC ---")
   bic_res <- future.apply::future_lapply(1 : (1 * lam2_len), 
                                          FUN = RSAVS_Compute_BIC_V2, 
                                          rsavs_res = list(w_mat = res_s1$w_mat, 
@@ -761,6 +761,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                          from_rsi = FALSE)
   gc()
   
+  message("--- check mBIC results ---")
   for(j in 1 : (1 * lam2_len)){
     # print(j)
     tmp <- bic_res[[j]]
@@ -857,8 +858,8 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   group_num_vec_s2 <- rep(1, lam1_len * 1)
   active_num_vec_s2 <- rep(0, lam1_len * 1)
   max_bic <- Inf
-  message("before bic")
-  print(active_idx)
+  
+  message("--- compute mBIC ---")
   bic_res <- future.apply::future_lapply(1 : (lam1_len * 1), 
                                          FUN = RSAVS_Compute_BIC_V2, 
                                          rsavs_res = list(w_mat = res_s2$w_mat, 
@@ -869,10 +870,9 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                                          update_mu = update_mu_s22, 
                                          double_log_lik = bic_double_loglik_s2, 
                                          from_rsi = FALSE)
-  print(active_idx)
   gc()
-  print(active_idx)
   
+  message("--- check mBIC results ---")
   for(j in 1 : (lam1_len * 1)){
     # print(j)
     tmp <- bic_res[[j]]
@@ -896,7 +896,7 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
       bic_vec_s2[j] <- max_bic
     }
   }
-  print(active_idx)
+
   # save the summarized information with the further improved estimation
   best_id_s2 <- which.min(bic_vec_s2)
   mu_s2 <- mu_further_improve_mat[best_id_s2, ]
@@ -905,8 +905,6 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   lam1_chosen <- res_s2$lam1_vec[best_id_s2]
   
   # combine the final result
-  message("before best")
-  print(active_idx)
   mu_best <- mu_s2
   beta_best <- rep(0, p)
   beta_best[active_idx] <- beta_s2
