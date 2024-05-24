@@ -37,7 +37,11 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.， any::tidyverse, any::skimr
+          extra-packages: |
+            any::pkgdown 
+            any::tidyverse
+            any::skimr
+            local::.
           needs: website
 
       - name: Build site
