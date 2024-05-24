@@ -50,6 +50,9 @@
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-header">Releases</li>
     <li>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.4" class="external-link">RSAVS 0.1.4</a>
+    </li>
+    <li>
       <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3" class="external-link">RSAVS 0.1.3</a>
     </li>
     <li>
@@ -107,6 +110,16 @@ Each element of group_res is a list containing the indecs from the same subgroup
 See <code><a href="RSAVS_S_to_Groups.html">RSAVS_S_to_Groups</a></code> for the output structure.</p></dd>
 
 
+<dt>klim</dt>
+<dd><p>a length-3 integer vector, storing `kmin`, `kmax`, `dudahart_kmax` 
+for specifying settings for clustering algorithm.</p></dd>
+
+
+<dt>usepam</dt>
+<dd><p>boolen, whether to use `cluster::pam()` or instead `cluster::clara()` 
+to estimate center of clusters.</p></dd>
+
+
 <dt>round_digits</dt>
 <dd><p>a positive integer digit. If <code>group_res</code> is missing and <code>round_digits</code>
 is provided, then the function will directly round the <code>mu_vec</code> to <code>round_digits</code>
@@ -149,16 +162,24 @@ to provide the final grouping results.</p></dd>
 <span class="r-in"><span><span class="co">#   Here we just use a simple estimate, which might lead to not so satisfing results</span></span></span>
 <span class="r-in"><span><span class="va">s_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">d_mat</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">alpha_est</span>, <span class="fl">0</span><span class="op">)</span>    </span></span>
 <span class="r-in"><span><span class="va">group_res</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="RSAVS_S_to_Groups.html">RSAVS_S_to_Groups</a></span><span class="op">(</span><span class="va">s_vec</span>, <span class="va">n</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span>, group_res <span class="op">=</span> <span class="va">group_res</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in RSAVS_Determine_Mu(alpha_est, group_res = group_res):</span> could not find function "RSAVS_Determine_Mu"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span>, group_res <span class="op">=</span> <span class="va">group_res</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.031212280735415 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                100 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use `pamk` to determine estiamted group effect</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in RSAVS_Determine_Mu(alpha_est):</span> could not find function "RSAVS_Determine_Mu"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    -0.93070469388076 -0.00378625575910929      1.0149849134033 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   37                   29                   34 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use directly rounding to determine estimated group effect</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span>, round_digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in RSAVS_Determine_Mu(alpha_est, round_digits = 1):</span> could not find function "RSAVS_Determine_Mu"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">RSAVS_Determine_Mu</span><span class="op">(</span><span class="va">alpha_est</span>, round_digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -1.5 -1.4 -1.3 -1.2 -1.1   -1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.3 -0.2 -0.1    0  0.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2    1    4    5    2    3    8    8    1    1    3    1    3    6    8    4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2  0.3  0.4  0.6  0.7  0.8  0.9    1  1.1  1.2  1.3  1.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3    2    1    1    5    3    6    5    6    3    4    1 </span>
 </code></pre></div>
     </div>
   </div>
