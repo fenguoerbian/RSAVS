@@ -1,19 +1,16 @@
-url: https://fenguoerbian.github.io/RSAVS
-
+url: https://fenguoerbian.github.io/RSAVS/
 articles:
 - title: Data analysis
   navbar: ~
-  desc: >
+  desc: |
     This section contains articles for data analysis using the RSAVS package.
-  contents: 
+  contents:
   - Analyize_student_performance
   - Play_with_iris_dataset
 - title: Additional resources
-  desc: >
+  desc: |
     This section contains additional rescources for the RSAVS package.
-  contents:
-  - Algorithm_details
-
+  contents: Algorithm_details
 reference:
 - title: Functions
   desc: Functions in the package
@@ -44,16 +41,16 @@ reference:
   - ends_with("_df")
 - title: Package information
   desc: Basic package informations
-  contents:
-  - RSAVS
+  contents: RSAVS
 - title: Others
   desc: Other Functions
-  contents:
-  - starts_with("rcpp")
-
+  contents: starts_with("rcpp")
 news:
- releases:
- - text: "RSAVS 0.1.3"
-   href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3
- - text: "RSAVS 0.1.2"
-   href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2
+  releases:
+  - text: RSAVS 0.1.4
+    href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.4
+  - text: RSAVS 0.1.3
+    href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3
+  - text: RSAVS 0.1.2
+    href: https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2
+
