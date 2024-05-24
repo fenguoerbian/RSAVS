@@ -216,6 +216,10 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' @param round_digits a positive integer digit. If \code{group_res} is missing and \code{round_digits}
 #'   is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
 #'   to provide the final grouping results.
+#' @param klim a length-3 integer vector, storing `kmin`, `kmax`, `dudahart_kmax` 
+#'   for specifying settings for clustering algorithm.
+#' @param usepam boolen, whether to use `cluster::pam()` or instead `cluster::clara()` 
+#'   to estimate center of clusters.
 #' @return a length-n vector of subgroup effects. Observations belonging to the same
 #'   subgroup should have the same effects.
 #' @details 
@@ -241,13 +245,13 @@ RSAVS_S_to_Groups <- function(s_vec, n){
 #' #   Here we just use a simple estimate, which might lead to not so satisfing results
 #' s_vec <- round(d_mat %*% alpha_est, 0)    
 #' group_res <- RSAVS:::RSAVS_S_to_Groups(s_vec, n)
-#' table(RSAVS_Determine_Mu(alpha_est, group_res = group_res))
+#' table(RSAVS:::RSAVS_Determine_Mu(alpha_est, group_res = group_res))
 #' 
 #' # Use `pamk` to determine estiamted group effect
-#' table(RSAVS_Determine_Mu(alpha_est))
+#' table(RSAVS:::RSAVS_Determine_Mu(alpha_est))
 #' 
 #' # Use directly rounding to determine estimated group effect
-#' table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
+#' table(RSAVS:::RSAVS_Determine_Mu(alpha_est, round_digits = 1))
 RSAVS_Determine_Mu <- function(mu_vec, group_res, klim = c(2, 7, 4), usepam = (length(mu_vec) < 2000), round_digits = NULL){
   # This function determines the final mu vector given the grouping results
   # Args: mu_vec: The given mu vector, length n, probability comes from the ADMM algorithm and not a very good grouping result

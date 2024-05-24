@@ -20,6 +20,12 @@ Presumably it comes from the ADMM algorithm and is not a very good grouping resu
 Each element of group_res is a list containing the indecs from the same subgroup.
 See \code{\link{RSAVS_S_to_Groups}} for the output structure.}
 
+\item{klim}{a length-3 integer vector, storing `kmin`, `kmax`, `dudahart_kmax` 
+for specifying settings for clustering algorithm.}
+
+\item{usepam}{boolen, whether to use `cluster::pam()` or instead `cluster::clara()` 
+to estimate center of clusters.}
+
 \item{round_digits}{a positive integer digit. If \code{group_res} is missing and \code{round_digits}
 is provided, then the function will directly round the \code{mu_vec} to \code{round_digits}
 to provide the final grouping results.}
@@ -55,11 +61,11 @@ d_mat <- RSAVS:::RSAVS_Generate_D_Matrix(n)    # pair-wise difference matrix
 #   Here we just use a simple estimate, which might lead to not so satisfing results
 s_vec <- round(d_mat \%*\% alpha_est, 0)    
 group_res <- RSAVS:::RSAVS_S_to_Groups(s_vec, n)
-table(RSAVS_Determine_Mu(alpha_est, group_res = group_res))
+table(RSAVS:::RSAVS_Determine_Mu(alpha_est, group_res = group_res))
 
 # Use `pamk` to determine estiamted group effect
-table(RSAVS_Determine_Mu(alpha_est))
+table(RSAVS:::RSAVS_Determine_Mu(alpha_est))
 
 # Use directly rounding to determine estimated group effect
-table(RSAVS_Determine_Mu(alpha_est, round_digits = 1))
+table(RSAVS:::RSAVS_Determine_Mu(alpha_est, round_digits = 1))
 }

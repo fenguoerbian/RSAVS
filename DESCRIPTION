@@ -16,8 +16,9 @@ Imports:
     fpc,
     SparseM,
     quantreg,
-    MASS, 
-    progressr
+    MASS,
+    progressr,
+    cluster
 LinkingTo: Rcpp, RcppEigen
 RoxygenNote: 7.3.1
 Depends: 

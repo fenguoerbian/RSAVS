@@ -43,8 +43,8 @@ Draw_Mu_Path <- function(result, lam2_id, lam1_id, idx_vec = NULL, visual = TRUE
     
     plot(lam_vec, lam_vec, type = "n", ylim = c(ymin - 0.1 * (ymax - ymin), ymax + 0.1 * (ymax - ymin)))
     for(i in 1 : n){
-      lines(lam_vec, muplot[, i])
-      points(lam_vec, muplot[, i], cex = 0.5)
+      graphics::lines(lam_vec, muplot[, i])
+      graphics::points(lam_vec, muplot[, i], cex = 0.5)
     }
   }
   return(muplot)
@@ -92,18 +92,18 @@ Draw_Beta_Path <- function(result, lam1_id, lam2_id, idx_vec = NULL, beta_true =
     
     plot(lam_vec, lam_vec, type = "n", ylim = c(ymin - 0.1 * (ymax - ymin), ymax + 0.1 * (ymax - ymin)))
     for(i in 1 : p){
-      lines(lam_vec, betaplot[, i])
-      points(lam_vec, betaplot[, i], cex = 0.5)
+      graphics::lines(lam_vec, betaplot[, i])
+      graphics::points(lam_vec, betaplot[, i], cex = 0.5)
     }
     
     # visualize the true value(`beta_true`)
     if(!is.null(beta_true)){
       idx <- which(beta_true != 0)
       for(i in 1 : length(idx)){
-        lines(lam_vec, betaplot[, idx[i]], col = i + 1)
-        points(lam_vec, betaplot[, idx[i]], col = i + 1, cex = 0.5)
-        points(min(lam_vec), beta_true[idx[i]], col = i + 1, pch = 8)
-        abline(h = beta_true[idx[i]], lty = 2, col = i + 1, lwd = 0.5)
+        graphics::lines(lam_vec, betaplot[, idx[i]], col = i + 1)
+        graphics::points(lam_vec, betaplot[, idx[i]], col = i + 1, cex = 0.5)
+        graphics::points(min(lam_vec), beta_true[idx[i]], col = i + 1, pch = 8)
+        graphics::abline(h = beta_true[idx[i]], lty = 2, col = i + 1, lwd = 0.5)
       }
     }
   }
