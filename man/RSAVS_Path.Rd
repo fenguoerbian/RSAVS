@@ -13,18 +13,18 @@ RSAVS_Path(
   p1_param = c(2, 3.7),
   p2_type = "S",
   p2_param = c(2, 3.7),
-  lam1_vec,
-  lam2_vec,
+  lam1_vec = NULL,
+  lam2_vec = NULL,
   lam1_sort = TRUE,
   lam2_sort = TRUE,
   min_lam1_ratio = 0.03,
   min_lam2_ratio = 0.03,
   lam1_max_ncvguard = 100,
-  lam1_len,
-  lam2_len,
-  const_r123,
+  lam1_len = 50,
+  lam2_len = 40,
+  const_r123 = NULL,
   const_abc = rep(1, 3),
-  initial_values,
+  initial_values = NULL,
   phi = 1,
   tol = 0.001,
   max_iter = 10,
@@ -79,7 +79,7 @@ and will be ignored and overwritten in the actual computation.}
 For \code{lam1_vec}, it's preferred to be in the order from small to big.}
 
 \item{lam1_sort, lam2_sort}{boolen, whether to force sorting the provided \code{lam1_vec} and \code{lam2_vec}.
-By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in descreasing order.}
+By default, \code{lam1_vec} will sort in increasing order while \code{lam2_vec} in decreasing order.}
 
 \item{min_lam1_ratio, min_lam2_ratio}{the ratio between the minimal and maximal 
 lambda, equals to (minimal lambda) / (maximal lambda). The default value is 0.03.}

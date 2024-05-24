@@ -515,7 +515,7 @@ void UpdateSW_Identity_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &pen
     // const int n = 1;
 }
 
-void UpdateS_Identity_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+void UpdateS_Identity_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXi &idx_table,
                            const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     /*
      *    Update the w vector for the identity penalty
@@ -564,7 +564,7 @@ void UpdateSW_Lasso_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalt
     } 
 }
 
-void UpdateS_Lasso_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+void UpdateS_Lasso_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXi &idx_table,
                         const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     /*
      * This function is specifically designed for updating \bm{s} in the algorithm coupled with the Lasso penalty
@@ -624,7 +624,7 @@ void UpdateSW_SCAD_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty
     }
 }
 
-void UpdateS_SCAD_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+void UpdateS_SCAD_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXi &idx_table,
                        const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     /*
      * This function is specifically designed for updating \bm{s} in the algorithm coupled with the SCAD penalty
@@ -692,7 +692,7 @@ void UpdateSW_MCP_New(Eigen::VectorXd &sw_invec, const Eigen::VectorXd &penalty_
     
 }
 
-void UpdateS_MCP_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXd &idx_table,
+void UpdateS_MCP_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, const Eigen::VectorXd &q_vec, const Eigen::MatrixXi &idx_table,
                       const Eigen::VectorXd &penalty_param, const double &const_r, const double &const_bc, const int &omp_num){
     /*
      * This function is specifically designed for updating \bm{s} in the algorithm coupled with the MCP penalty
@@ -726,7 +726,7 @@ void UpdateS_MCP_New2(Eigen::VectorXd &s_invec, const Eigen::VectorXd &mu_vec, c
     }
 }
 
-Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const double &const_r, const Eigen::MatrixXd &idx_table, const int &omp_num){
+Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const double &const_r, const Eigen::MatrixXi &idx_table, const int &omp_num){
     const int omp_max = omp_get_max_threads();
     double tmp;
     Eigen::VectorXd res = Eigen::MatrixXd::Zero(q2_vec.size(), 1);
@@ -746,7 +746,7 @@ Eigen::VectorXd UpdateQ2_New(Eigen::VectorXd &q2_vec, const Eigen::VectorXd &s_v
     return(res);
 }
 
-double UpdateDiff1_New(const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const Eigen::MatrixXd &idx_table, const int &omp_num){
+double UpdateDiff1_New(const Eigen::VectorXd &s_vec, const Eigen::VectorXd &mu_vec, const Eigen::MatrixXi &idx_table, const int &omp_num){
     const int omp_max = omp_get_max_threads();
     double tmp;
     double res = 0.0;
@@ -1539,9 +1539,17 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
 
     void (*Update_Z)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
     void (*Update_S)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
-    void (*Update_S_V2)(Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::MatrixXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
+    void (*Update_S_V2)(Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::VectorXd &, const Eigen::MatrixXi &, const Eigen::VectorXd &, const double &, const double &, const int &);
+    /*
+     Eigen::VectorXd &s_invec, 
+     const Eigen::VectorXd &mu_vec, 
+     const Eigen::VectorXd &q_vec, 
+     const Eigen::MatrixXi &idx_table,
+     const Eigen::VectorXd &penalty_param, 
+     const double &const_r, const double &const_bc, const int &omp_num
+     */
     void (*Update_W)(Eigen::VectorXd &, const Eigen::VectorXd &, const double &, const double &, const int &);
-    
+
     Update_Z = UpdateZ_L1_New;
     if(l_type.compare("L2") == 0){
         Update_Z = UpdateZ_L2_New;
@@ -1633,7 +1641,7 @@ Rcpp::List RSAVS_Solver_Cpp(const Eigen::VectorXd& y_vec, const Eigen::MatrixXd&
     loss_vec = Eigen::MatrixXd::Constant(max_iter + 1, 1, loss_old);
     // Rcpp::Rcout << "loss_detail = " << loss_detail << std::endl;
     
-    Eigen::MatrixXd idx_table = Eigen::MatrixXd::Zero(n * (n - 1) / 2, 2);
+    Eigen::MatrixXi idx_table = Eigen::MatrixXi::Zero(n * (n - 1) / 2, 2);
     int idx = 0;
     for(int i = 0; i < n - 1; i++){
         for(int j = i + 1; j < n; j++){
