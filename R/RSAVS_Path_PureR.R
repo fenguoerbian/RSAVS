@@ -495,7 +495,9 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
     # newer version
     message("lam1_vec is missing, use default values...")
     
-    if(missing(lam1_len) | missing(min_lam1_ratio)){
+    if(missing(lam1_len)){
+      # we now have default value set for `min_lam1_ratio`
+      # checking via `missing(min_lam1_ratio)` results in un-wanted results
       stop("Both `lam1_len` and `min_lam1_ratio` must be provided in order to generate default lambda vector!")
     }else{
       lam1_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, l_type = l_type, l_param = l_param, 
@@ -519,7 +521,9 @@ RSAVS_Path_PureR <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
   if(missing(lam2_vec)){
     # newer version
     message("lam2_vec is missing, use default values...")
-    if(missing(lam2_len) | missing(min_lam2_ratio)){
+    if(missing(lam2_len)){
+      # we now have default value set for `min_lam2_ratio`
+      # checking via `missing(min_lam2_ratio)` results in un-wanted results
       stop("Both `lam2_len` and `min_lam2_ratio` must be provided in order to generate default lambda vector!")
     }else{
       lam2_max <- RSAVS_Get_Lam_Max(y_vec = y_vec, x_mat = x_mat, 
