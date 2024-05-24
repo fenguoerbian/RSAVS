@@ -13,7 +13,7 @@
 #'     \item \code{outvec[i] = 0}: if otherwise
 #'   }
 #' @examples 
-#' RSAVS_Softthresh(seq(-2, 2, by = 0.1), thresh = 1)
+#' RSAVS:::RSAVS_Softthresh(seq(-2, 2, by = 0.1), thresh = 1)
 RSAVS_Softthresh <- function(invec, thresh){
     thresh <- abs(thresh)
     

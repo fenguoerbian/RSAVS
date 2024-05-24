@@ -25,5 +25,5 @@ This function performs the so-called `soft threshholding` on the input
 vector(\code{invec}) based on the given threshholding value(\code{thresh})
 }
 \examples{
-RSAVS_Softthresh(seq(-2, 2, by = 0.1), thresh = 1)
+RSAVS:::RSAVS_Softthresh(seq(-2, 2, by = 0.1), thresh = 1)
 }
