@@ -711,6 +711,9 @@ RSAVS_Simple_Path <- function(y_vec, x_mat, l_type = "L1", l_param = NULL,
                            dry_run = TRUE
                            )
   
+  n <- length(y_vec)
+  p <- ncol(x_mat)
+  
   if(is.null(initial_values_s1)){
     mu0 <- RSAVS_Get_Mu0(y_vec, l_type, l_param)
     initial_values_s1 <- list(beta_init = rep(0, p), 
