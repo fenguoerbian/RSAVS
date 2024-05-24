@@ -41,6 +41,7 @@ jobs:
             any::pkgdown 
             any::tidyverse
             any::skimr
+            any::remotes
             local::.
           needs: website
 
