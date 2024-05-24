@@ -19,7 +19,7 @@ Imports:
     MASS, 
     progressr
 LinkingTo: Rcpp, RcppEigen
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Depends: 
     R (>= 2.10)
 LazyData: true

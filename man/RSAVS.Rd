@@ -2,6 +2,7 @@
 % Please edit documentation in R/RSAVS-package.R
 \docType{package}
 \name{RSAVS}
+\alias{RSAVS-package}
 \alias{RSAVS}
 \title{RSAVS: A package for robust subgroup analysis and variable selection.}
 \description{
@@ -32,3 +33,16 @@ RSAVS_Solver_PureR
 Student performance dataset: full_df, mat_df, por_df
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://fenguoerbian.github.io/RSAVS/}
+  \item \url{https://github.com/fenguoerbian/RSAVS/}
+  \item Report bugs at \url{https://github.com/fenguoerbian/RSAVS/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Chao Cheng \email{413557584@qq.com}
+
+}

@@ -23,9 +23,8 @@
 #' @section RSAVS datesets:
 #' Student performance dataset: full_df, mat_df, por_df
 #' 
-#' @docType  package
 #' @name RSAVS
-NULL
+"_PACKAGE"
 
 ## usethis namespace: start
 #' @useDynLib RSAVS, .registration = TRUE
