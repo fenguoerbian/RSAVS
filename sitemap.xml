@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/404.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/articles/Analyize_student_performance.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/articles/Play_with_iris_dataset.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/authors.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/index.html</loc>
+  </url>
+  <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/news/index.html</loc>
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS.html</loc>
@@ -67,6 +85,9 @@
     <loc>https://fenguoerbian.github.io/RSAVS/reference/Student_performance_dataset.html</loc>
   </url>
   <url>
+    <loc>https://fenguoerbian.github.io/RSAVS/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/loss_function.html</loc>
   </url>
   <url>
@@ -74,14 +95,5 @@
   </url>
   <url>
     <loc>https://fenguoerbian.github.io/RSAVS/reference/rcppeigen_hello_world.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/Algorithm_details.pdf</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/Analyize_student_performance.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/Play_with_iris_dataset.html</loc>
   </url>
 </urlset>

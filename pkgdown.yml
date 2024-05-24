@@ -1,11 +1,11 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 3.1.11
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   Algorithm_details: Algorithm_details.pdf
   Analyize_student_performance: Analyize_student_performance.html
   Play_with_iris_dataset: Play_with_iris_dataset.html
-last_built: 2021-09-06T08:36Z
+last_built: 2024-05-24T03:39Z
 urls:
   reference: https://fenguoerbian.github.io/RSAVS/reference
   article: https://fenguoerbian.github.io/RSAVS/articles

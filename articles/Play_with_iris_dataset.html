@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Play with iris dataset • RSAVS</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RSAVS</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -60,13 +56,14 @@
       <a href="../articles/Play_with_iris_dataset.html">Play with iris dataset</a>
     </li>
     <li class="divider">
-    <li>
-      <a href="../articles/index.html">More...</a>
+    </li>
+<li>
+      <a href="../articles/index.html">More articles...</a>
     </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     News
      
     <span class="caret"></span>
@@ -74,13 +71,14 @@
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-header">Releases</li>
     <li>
-      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3">RSAVS 0.1.3</a>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.3" class="external-link">RSAVS 0.1.3</a>
     </li>
     <li>
-      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2">RSAVS 0.1.2</a>
+      <a href="https://github.com/fenguoerbian/RSAVS/releases/tag/v0.1.2" class="external-link">RSAVS 0.1.2</a>
     </li>
     <li class="divider">
-    <li>
+    </li>
+<li>
       <a href="../news/index.html">Changelog</a>
     </li>
   </ul>
@@ -88,7 +86,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/fenguoerbian/RSAVS/">
+  <a href="https://github.com/fenguoerbian/RSAVS/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -103,13 +101,13 @@
 
       
 
-      </header><script src="Play_with_iris_dataset_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Play with iris dataset</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/master/vignettes/Play_with_iris_dataset.Rmd"><code>vignettes/Play_with_iris_dataset.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/HEAD/vignettes/Play_with_iris_dataset.Rmd" class="external-link"><code>vignettes/Play_with_iris_dataset.Rmd</code></a></small>
       <div class="hidden name"><code>Play_with_iris_dataset.Rmd</code></div>
 
     </div>
@@ -117,26 +115,28 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"fenguoerbian/RSAVS"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>    <span class="co"># get the latest version of RSAVS</span>
-<span class="co">#&gt; Using github PAT from envvar GITHUB_PAT</span>
-<span class="co">#&gt; Downloading GitHub repo fenguoerbian/RSAVS@HEAD</span>
-<span class="co">#&gt; Running `R CMD build`...</span>
-<span class="co">#&gt; * checking for file ‘/tmp/Rtmp4o4bMw/remotes439667db1806/fenguoerbian-RSAVS-8847f9c/DESCRIPTION’ ... OK</span>
-<span class="co">#&gt; * preparing ‘RSAVS’:</span>
-<span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span>
-<span class="co">#&gt; * cleaning src</span>
-<span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span>
-<span class="co">#&gt; * checking for empty or unneeded directories</span>
-<span class="co">#&gt; * building ‘RSAVS_0.1.3.tar.gz’</span>
-<span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span>
-<span class="co">#&gt; (as 'lib' is unspecified)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fenguoerbian.github.io/RSAVS/">RSAVS</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/">skimr</a></span><span class="op">)</span></code></pre></div>
-<p>In this vignette, we try to apply our RSAVS method onto the classical <code>iris</code> dataset.</p>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"fenguoerbian/RSAVS"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>    <span class="co"># get the latest version of RSAVS</span></span>
+<span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT. Use `gitcreds::gitcreds_set()` and unset GITHUB_PAT in .Renviron (or elsewhere) if you want to use the more secure git credential store instead.</span></span>
+<span><span class="co">#&gt; Downloading GitHub repo fenguoerbian/RSAVS@HEAD</span></span>
+<span><span class="co">#&gt; Running `R CMD build`...</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpMi38cE/remotes623f27931686/fenguoerbian-RSAVS-139b1e9/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * preparing ‘RSAVS’:</span></span>
+<span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
+<span><span class="co">#&gt; * cleaning src</span></span>
+<span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
+<span><span class="co">#&gt; * checking for empty or unneeded directories</span></span>
+<span><span class="co">#&gt; * building ‘RSAVS_0.1.4.tar.gz’</span></span>
+<span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>
-<span class="fu">skimr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fenguoerbian.github.io/RSAVS/">RSAVS</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/" class="external-link">skimr</a></span><span class="op">)</span></span></code></pre></div>
+<p>In this vignette, we try to apply our RSAVS method onto the classical
+<code>iris</code> dataset.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span>
+<span><span class="fu">skimr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html" class="external-link">skim</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Data summary</caption>
 <tbody>
@@ -179,7 +179,15 @@
 </tbody>
 </table>
 <p><strong>Variable type: factor</strong></p>
-<table class="table">
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="17%">
+<col width="12%">
+<col width="17%">
+<col width="9%">
+<col width="11%">
+<col width="32%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">skim_variable</th>
 <th align="right">n_missing</th>
@@ -198,7 +206,20 @@
 </tr></tbody>
 </table>
 <p><strong>Variable type: numeric</strong></p>
-<table class="table">
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="18%">
+<col width="13%">
+<col width="18%">
+<col width="6%">
+<col width="6%">
+<col width="5%">
+<col width="5%">
+<col width="6%">
+<col width="5%">
+<col width="6%">
+<col width="7%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">skim_variable</th>
 <th align="right">n_missing</th>
@@ -267,211 +288,239 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     setosa versicolor  virginica </span>
-<span class="co">#&gt;         50         50         50</span></code></pre></div>
-<p>There are 150 observations in this dataset containg 3 different species of iris flowers. We can visualize the relationship between <code>Sepal.Width</code> and <code>Sepal.Length</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">Sepal.Width</span>, <span class="va">Sepal.Length</span>, color <span class="op">=</span> <span class="va">Species</span>, shape <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span>
-<span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></code></pre></div>
-<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<p>As we can see, these three species seem to share the slope term (although in this figure, the slope terms are different), only differs at intercept terms, which seems to be suitable for our proposed model. We can conduct an subgroup analysis model on the overall dataset:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     setosa versicolor  virginica </span></span>
+<span><span class="co">#&gt;         50         50         50</span></span></code></pre></div>
+<p>There are 150 observations in this dataset containg 3 different
+species of iris flowers. We can visualize the relationship between
+<code>Sepal.Width</code> and <code>Sepal.Length</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">y_vec</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span>
-<span class="va">x_mat</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Width</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RSAVS_Path.html">RSAVS_Path</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, l_type <span class="op">=</span> <span class="st">"L2"</span>, 
-                  lam1_len <span class="op">=</span> <span class="fl">50</span>, min_lam1_ratio <span class="op">=</span> <span class="fl">0.1</span>, lam2_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, 
-                  max_iter <span class="op">=</span> <span class="fl">1000</span>, cd_max_iter <span class="op">=</span> <span class="fl">0</span>, tol <span class="op">=</span> <span class="fl">10</span> <span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">5</span><span class="op">)</span> , 
-                  const_abc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; `const_r123` is missing. Use default settings!</span>
-<span class="co">#&gt; lam1_vec is missing, use default values...</span>
-<span class="co">#&gt; `initial_values` is missing, use default settings!</span>
-<span class="co">#&gt; prepare intermediate variables needed by the algorithm</span>
-<span class="co">#&gt; generate pairwise difference matrix</span>
-<span class="co">#&gt; compute `beta_lhs`</span>
-<span class="co">#&gt; compute `mu_lhs`</span>
-<span class="co">#&gt; compute `mu_beta_lhs'</span>
-<span class="co">#&gt; additional variables prepared!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span>
-<span class="co">#&gt; No penalty for beta!</span></code></pre></div>
-<p>Here we choose linear regression (<code>l_type = "L2"</code>) coupled with the default SCAD penalty for subgroup analysis. The variable selection in our model is omitted since the penalty vector is set to 0 (<code>lam2_vec = c(0)</code>). We can visualize the estimated subgroups along the solution path.</p>
-<p><strong>NOTE:</strong> This figure is different from the solution path later, because here we use the augmented <code>s_vec</code> in the ADMM algorithm to determine the subgroup structure while later <code>pamk</code> is applied to further determine the group structure.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Sepal.Width</span>, <span class="va">Sepal.Length</span>, color <span class="op">=</span> <span class="va">Species</span>, shape <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre></div>
+<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p>As we can see, these three species seem to share the slope term
+(although in this figure, the slope terms are different), only differs
+at intercept terms, which seems to be suitable for our proposed model.
+We can conduct an subgroup analysis model on the overall dataset:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mu_path</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">Draw_Mu_Path</span><span class="op">(</span>result <span class="op">=</span> <span class="va">res</span>, lam2_id <span class="op">=</span> <span class="fl">1</span>, useS <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 35 group(s).</span>
-<span class="co">#&gt; There are 28 group(s).</span>
-<span class="co">#&gt; There are 28 group(s).</span>
-<span class="co">#&gt; There are 27 group(s).</span>
-<span class="co">#&gt; There are 21 group(s).</span>
-<span class="co">#&gt; There are 19 group(s).</span>
-<span class="co">#&gt; There are 13 group(s).</span>
-<span class="co">#&gt; There are 11 group(s).</span>
-<span class="co">#&gt; There are 9 group(s).</span>
-<span class="co">#&gt; There are 7 group(s).</span>
-<span class="co">#&gt; There are 7 group(s).</span>
-<span class="co">#&gt; There are 7 group(s).</span>
-<span class="co">#&gt; There are 5 group(s).</span>
-<span class="co">#&gt; There are 4 group(s).</span>
-<span class="co">#&gt; There are 4 group(s).</span>
-<span class="co">#&gt; There are 3 group(s).</span>
-<span class="co">#&gt; There are 3 group(s).</span>
-<span class="co">#&gt; There are 3 group(s).</span>
-<span class="co">#&gt; There are 2 group(s).</span>
-<span class="co">#&gt; There are 2 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span>
-<span class="co">#&gt; There are 1 group(s).</span></code></pre></div>
-<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="va">y_vec</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span></span>
+<span><span class="va">x_mat</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Width</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RSAVS_Path.html">RSAVS_Path</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, l_type <span class="op">=</span> <span class="st">"L2"</span>, </span>
+<span>                  lam1_len <span class="op">=</span> <span class="fl">50</span>, min_lam1_ratio <span class="op">=</span> <span class="fl">0.1</span>, lam2_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, </span>
+<span>                  max_iter <span class="op">=</span> <span class="fl">1000</span>, cd_max_iter <span class="op">=</span> <span class="fl">0</span>, tol <span class="op">=</span> <span class="fl">10</span> <span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="fl">5</span><span class="op">)</span> , </span>
+<span>                  const_abc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; `const_r123` is missing. Use default settings!</span></span>
+<span><span class="co">#&gt; lam1_vec is missing, use default values...</span></span>
+<span><span class="co">#&gt; `initial_values` is missing, use default settings!</span></span>
+<span><span class="co">#&gt; prepare intermediate variables needed by the algorithm</span></span>
+<span><span class="co">#&gt; generate pairwise difference matrix</span></span>
+<span><span class="co">#&gt; compute `beta_lhs`</span></span>
+<span><span class="co">#&gt; compute `mu_lhs`</span></span>
+<span><span class="co">#&gt; compute `mu_beta_lhs'</span></span>
+<span><span class="co">#&gt; additional variables prepared!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span>
+<span><span class="co">#&gt; No penalty for beta!</span></span></code></pre></div>
+<p>Here we choose linear regression (<code>l_type = "L2"</code>) coupled
+with the default SCAD penalty for subgroup analysis. The variable
+selection in our model is omitted since the penalty vector is set to 0
+(<code>lam2_vec = c(0)</code>). We can visualize the estimated subgroups
+along the solution path.</p>
+<p><strong>NOTE:</strong> This figure is different from the solution
+path later, because here we use the augmented <code>s_vec</code> in the
+ADMM algorithm to determine the subgroup structure while later
+<code>pamk</code> is applied to further determine the group
+structure.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html">matplot</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">50</span>, <span class="va">mu_path</span>, xlab <span class="op">=</span> <span class="st">"lambda index"</span>, ylab <span class="op">=</span> <span class="st">"mu_est"</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
-<p>We can use the identified subgroups to do post-selection estimation and then choose the model that minimize the mBIC criteria as our final model.</p>
+<code class="sourceCode R"><span><span class="va">mu_path</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">Draw_Mu_Path</span><span class="op">(</span>result <span class="op">=</span> <span class="va">res</span>, lam2_id <span class="op">=</span> <span class="fl">1</span>, useS <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 35 group(s).</span></span>
+<span><span class="co">#&gt; There are 28 group(s).</span></span>
+<span><span class="co">#&gt; There are 28 group(s).</span></span>
+<span><span class="co">#&gt; There are 27 group(s).</span></span>
+<span><span class="co">#&gt; There are 21 group(s).</span></span>
+<span><span class="co">#&gt; There are 19 group(s).</span></span>
+<span><span class="co">#&gt; There are 13 group(s).</span></span>
+<span><span class="co">#&gt; There are 11 group(s).</span></span>
+<span><span class="co">#&gt; There are 9 group(s).</span></span>
+<span><span class="co">#&gt; There are 7 group(s).</span></span>
+<span><span class="co">#&gt; There are 7 group(s).</span></span>
+<span><span class="co">#&gt; There are 7 group(s).</span></span>
+<span><span class="co">#&gt; There are 5 group(s).</span></span>
+<span><span class="co">#&gt; There are 4 group(s).</span></span>
+<span><span class="co">#&gt; There are 4 group(s).</span></span>
+<span><span class="co">#&gt; There are 3 group(s).</span></span>
+<span><span class="co">#&gt; There are 3 group(s).</span></span>
+<span><span class="co">#&gt; There are 3 group(s).</span></span>
+<span><span class="co">#&gt; There are 2 group(s).</span></span>
+<span><span class="co">#&gt; There are 2 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span>
+<span><span class="co">#&gt; There are 1 group(s).</span></span></code></pre></div>
+<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bic_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">mu_mat</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">rsavs_res</span>, <span class="va">useS</span>, <span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">phi</span>, <span class="va">const_a</span>, <span class="va">double_log_lik</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">beta_vec</span> <span class="op">&lt;-</span> <span class="va">rsavs_res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span>
-  <span class="va">mu_vec</span> <span class="op">&lt;-</span> <span class="va">rsavs_res</span><span class="op">$</span><span class="va">mu_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span>
-  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">mu_vec</span><span class="op">)</span>
-  
-  <span class="co"># determine the grouped mu_vec</span>
-  <span class="kw">if</span><span class="op">(</span><span class="va">useS</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">group_res</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_S_to_Groups.html">RSAVS_S_to_Groups</a></span><span class="op">(</span><span class="va">rsavs_res</span><span class="op">$</span><span class="va">s_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span>, <span class="va">n</span><span class="op">)</span>
-    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Determine_Mu.html">RSAVS_Determine_Mu</a></span><span class="op">(</span><span class="va">mu_vec</span>, <span class="va">group_res</span><span class="op">)</span>
-  <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
-    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Determine_Mu.html">RSAVS_Determine_Mu</a></span><span class="op">(</span><span class="va">mu_vec</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="co"># message(length(table(mu_improved)))</span>
-  
-  <span class="co"># post-selection estimation</span>
-  <span class="va">post_est</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html">try</a></span><span class="op">(</span><span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Further_Improve.html">RSAVS_Further_Improve</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">mu_improved</span>, <span class="va">beta_vec</span><span class="op">)</span><span class="op">)</span>
-  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">inherits</a></span><span class="op">(</span><span class="va">post_est</span>, <span class="st">"try-error"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">beta_vec</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">beta_vec</span>
-    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">mu_vec</span>
-  <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"further improve error at id = "</span>, <span class="va">id</span><span class="op">)</span>
-  <span class="op">}</span>
-  
-  <span class="va">bic</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Compute_BIC.html">RSAVS_Compute_BIC</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">beta_vec</span>, <span class="va">mu_improved</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">phi</span>, <span class="va">const_a</span>, <span class="va">double_log_lik</span><span class="op">)</span>
-  <span class="va">active_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">beta_vec</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span>
-  <span class="va">group_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">mu_improved</span><span class="op">)</span><span class="op">)</span>
-  
-  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">bic</span>, <span class="va">group_num</span>, <span class="va">active_num</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"bic"</span>, <span class="st">"group_num"</span>, <span class="st">"active_num"</span><span class="op">)</span>
-  
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-<span class="op">}</span>, 
-rsavs_res <span class="op">=</span> <span class="va">res</span>, useS <span class="op">=</span> <span class="cn">FALSE</span>, y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, 
-l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span class="op">=</span> <span class="fl">0</span>, phi <span class="op">=</span> <span class="fl">5</span>, const_a <span class="op">=</span> <span class="fl">1</span>, double_log_lik <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>We select the model that minimized the modified BIC</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">50</span>, <span class="va">mu_path</span>, xlab <span class="op">=</span> <span class="st">"lambda index"</span>, ylab <span class="op">=</span> <span class="st">"mu_est"</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-4-2.png" width="700"></p>
+<p>We can use the identified subgroups to do post-selection estimation
+and then choose the model that minimize the mBIC criteria as our final
+model.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">bic_res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>
-<span class="op">(</span><span class="va">bic_res</span><span class="op">[</span>, <span class="va">idx</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;        bic  group_num active_num </span>
-<span class="co">#&gt;   3.173693   6.000000   1.000000</span></code></pre></div>
-<p>This chosen model can be visualized in the solution path as</p>
+<code class="sourceCode R"><span><span class="va">bic_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">mu_mat</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">rsavs_res</span>, <span class="va">useS</span>, <span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">phi</span>, <span class="va">const_a</span>, <span class="va">double_log_lik</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">beta_vec</span> <span class="op">&lt;-</span> <span class="va">rsavs_res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span></span>
+<span>  <span class="va">mu_vec</span> <span class="op">&lt;-</span> <span class="va">rsavs_res</span><span class="op">$</span><span class="va">mu_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span></span>
+<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mu_vec</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># determine the grouped mu_vec</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="va">useS</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">group_res</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_S_to_Groups.html">RSAVS_S_to_Groups</a></span><span class="op">(</span><span class="va">rsavs_res</span><span class="op">$</span><span class="va">s_mat</span><span class="op">[</span><span class="va">id</span>, <span class="op">]</span>, <span class="va">n</span><span class="op">)</span></span>
+<span>    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Determine_Mu.html">RSAVS_Determine_Mu</a></span><span class="op">(</span><span class="va">mu_vec</span>, <span class="va">group_res</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Determine_Mu.html">RSAVS_Determine_Mu</a></span><span class="op">(</span><span class="va">mu_vec</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># message(length(table(mu_improved)))</span></span>
+<span>  </span>
+<span>  <span class="co"># post-selection estimation</span></span>
+<span>  <span class="va">post_est</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Further_Improve.html">RSAVS_Further_Improve</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">mu_improved</span>, <span class="va">beta_vec</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">post_est</span>, <span class="st">"try-error"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="va">beta_vec</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">beta_vec</span></span>
+<span>    <span class="va">mu_improved</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">mu_vec</span></span>
+<span>  <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"further improve error at id = "</span>, <span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="va">bic</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Compute_BIC.html">RSAVS_Compute_BIC</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, <span class="va">beta_vec</span>, <span class="va">mu_improved</span>, <span class="va">l_type</span>, <span class="va">l_param</span>, <span class="va">phi</span>, <span class="va">const_a</span>, <span class="va">double_log_lik</span><span class="op">)</span></span>
+<span>  <span class="va">active_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">beta_vec</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="va">group_num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mu_improved</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">bic</span>, <span class="va">group_num</span>, <span class="va">active_num</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bic"</span>, <span class="st">"group_num"</span>, <span class="st">"active_num"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="op">}</span>, </span>
+<span>rsavs_res <span class="op">=</span> <span class="va">res</span>, useS <span class="op">=</span> <span class="cn">FALSE</span>, y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, </span>
+<span>l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span class="op">=</span> <span class="fl">0</span>, phi <span class="op">=</span> <span class="fl">5</span>, const_a <span class="op">=</span> <span class="fl">1</span>, double_log_lik <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>We select the model that minimized the modified BIC</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mu_path</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">Draw_Mu_Path</span><span class="op">(</span>result <span class="op">=</span> <span class="va">res</span>, lam2_id <span class="op">=</span> <span class="fl">1</span>, useS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">lam1_vec</span><span class="op">[</span><span class="va">idx</span><span class="op">]</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
-<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<code class="sourceCode R"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">bic_res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">bic_res</span><span class="op">[</span>, <span class="va">idx</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;        bic  group_num active_num </span></span>
+<span><span class="co">#&gt;   3.173693   6.000000   1.000000</span></span></code></pre></div>
+<p>This chosen model can be visualized in the solution path as</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html">matplot</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">50</span>, <span class="va">mu_path</span>, xlab <span class="op">=</span> <span class="st">"lambda index"</span>, ylab <span class="op">=</span> <span class="st">"mu_est"</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">idx</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></code></pre></div>
-<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
-<p>The selected model identifies three subgroups from the population. We can do post selection estimation, without any penalty, given the chosen model struture.</p>
+<code class="sourceCode R"><span><span class="va">mu_path</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu">Draw_Mu_Path</span><span class="op">(</span>result <span class="op">=</span> <span class="va">res</span>, lam2_id <span class="op">=</span> <span class="fl">1</span>, useS <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">lam1_vec</span><span class="op">[</span><span class="va">idx</span><span class="op">]</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">post_est</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Further_Improve.html">RSAVS_Further_Improve</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span class="op">=</span> <span class="fl">0</span>, 
-                                          mu_vec <span class="op">=</span> <span class="va">mu_path</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span>, 
-                                          beta_vec <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span>
-<span class="va">mu_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">mu_vec</span>
-<span class="va">beta_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">beta_vec</span></code></pre></div>
-<p>When comparing the estimated subgroup structure with the <code>Species</code> variable, we can see that the estimated subgroup structure mainly focuses on the values of <code>Sepal.Length</code>. The Rand Index between the estimated subgroup structure and the <code>Species</code> is only 0.6899329. Also, after accounting for the difference in <code>Sepal.Length</code> into subgroups, the effect of <code>Sepal.Width</code> becomes near to none.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">:</span> <span class="fl">50</span>, <span class="va">mu_path</span>, xlab <span class="op">=</span> <span class="st">"lambda index"</span>, ylab <span class="op">=</span> <span class="st">"mu_est"</span>, type <span class="op">=</span> <span class="st">"l"</span>, col <span class="op">=</span> <span class="st">"black"</span>, lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">idx</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
+<p>The selected model identifies three subgroups from the population. We
+can do post selection estimation, without any penalty, given the chosen
+model struture.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">iris</span><span class="op">$</span><span class="va">new_group_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mu_post</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">iris</span><span class="op">$</span><span class="va">intercept_est</span> <span class="op">&lt;-</span> <span class="va">mu_post</span>
-<span class="va">iris</span><span class="op">$</span><span class="va">slope_est</span> <span class="op">&lt;-</span> <span class="va">beta_post</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">Sepal.Width</span>, <span class="va">Sepal.Length</span>, color <span class="op">=</span> <span class="va">new_group_id</span>, shape <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_abline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="va">slope_est</span>, intercept <span class="op">=</span> <span class="va">intercept_est</span>, color <span class="op">=</span> <span class="va">new_group_id</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">post_est</span> <span class="op">&lt;-</span> <span class="fu">RSAVS</span><span class="fu">:::</span><span class="fu"><a href="../reference/RSAVS_Further_Improve.html">RSAVS_Further_Improve</a></span><span class="op">(</span><span class="va">y_vec</span>, <span class="va">x_mat</span>, l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                                          mu_vec <span class="op">=</span> <span class="va">mu_path</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span>, </span>
+<span>                                          beta_vec <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">mu_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">mu_vec</span></span>
+<span><span class="va">beta_post</span> <span class="op">&lt;-</span> <span class="va">post_est</span><span class="op">$</span><span class="va">beta_vec</span></span></code></pre></div>
+<p>When comparing the estimated subgroup structure with the
+<code>Species</code> variable, we can see that the estimated subgroup
+structure mainly focuses on the values of <code>Sepal.Length</code>. The
+Rand Index between the estimated subgroup structure and the
+<code>Species</code> is only 0.6899329. Also, after accounting for the
+difference in <code>Sepal.Length</code> into subgroups, the effect of
+<code>Sepal.Width</code> becomes near to none.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">iris</span><span class="op">$</span><span class="va">new_group_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">mu_post</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">iris</span><span class="op">$</span><span class="va">intercept_est</span> <span class="op">&lt;-</span> <span class="va">mu_post</span></span>
+<span><span class="va">iris</span><span class="op">$</span><span class="va">slope_est</span> <span class="op">&lt;-</span> <span class="va">beta_post</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Sepal.Width</span>, <span class="va">Sepal.Length</span>, color <span class="op">=</span> <span class="va">new_group_id</span>, shape <span class="op">=</span> <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="va">slope_est</span>, intercept <span class="op">=</span> <span class="va">intercept_est</span>, color <span class="op">=</span> <span class="va">new_group_id</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Play_with_iris_dataset_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<p>The unsupervised nature of the proposed method(subgroup identification) is demonstrated in this example. The algorithm will classify subjects into small groups based on the value of response(residuals after accounting for the covariate effects). The grouping results are not guaranteed to be aligned with any given observed attributes.</p>
+<p>The unsupervised nature of the proposed method(subgroup
+identification) is demonstrated in this example. The algorithm will
+classify subjects into small groups based on the value of
+response(residuals after accounting for the covariate effects). The
+grouping results are not guaranteed to be aligned with any given
+observed attributes.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -483,11 +532,13 @@ l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span cla
 
 
       <footer><div class="copyright">
-  <p>Developed by Chao Cheng.</p>
+  <p></p>
+<p>Developed by Chao Cheng.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
@@ -495,6 +546,8 @@ l_type <span class="op">=</span> <span class="st">"L2"</span>, l_param <span cla
 
   
 
+
+  
 
   </body>
 </html>
