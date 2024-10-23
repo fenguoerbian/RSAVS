@@ -83,6 +83,25 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="development version" id="rsavs-development-version">RSAVS (development version)<a class="anchor" aria-label="anchor" href="#rsavs-development-version"></a></h2>
+<div class="section level3">
+<h3 id="api-changes-development-version">API changes<a class="anchor" aria-label="anchor" href="#api-changes-development-version"></a></h3>
+<ul><li>Make API about specifing loss function’s type more consistent. See the changes of <code>RSAVS_Further_Improve</code> for more details.</li>
+<li>Internally, add functions <code>Draw_Mu_Path</code> and <code>Draw_Beta_Path</code> to visualize the solution path regarding to subgroup identification and variable selection namely.</li>
+<li>Add support to choose whether to use <code>double log likelihood</code> when computing the modified BIC.</li>
+<li>Add a parameter <code>update_mu</code> to <code>RSAVS_Path</code> and <code>RSAVS_Path_PureR</code> so one can choose whether to update the mu vector into meaningful subgroup structure during the computation of solution plain.</li>
+<li>Add a parameter <code>omp_zsw</code> to <code>RSAVS_Path</code> and <code>RSAVS_Solver</code> which controls number of threads during the update of <code>z</code>, <code>s</code> and <code>w</code> via OpenMP.</li>
+<li>Add a parameter <code>s_v2</code> to <code>RSAVS_Path</code> and <code>RSAVS_Solver</code> which indicates whether to use the faster implementation to update <code>s_vec</code> and <code>q2_vec</code>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="general-changes-development-version">General changes<a class="anchor" aria-label="anchor" href="#general-changes-development-version"></a></h3>
+<ul><li>Tidy up some scirpt.</li>
+<li>Add a vignette about applying the proposed method onto the <code>iris</code> dataset. It demonstrates the unsupervised nature of the proposed method.</li>
+<li>Add <code>RSI</code> and <code>RSI_DAC</code> internally.</li>
+<li>Add <code>RSAVS_Simple_Path</code> internally. This is a wrapper function for a simplified search over the solution plane.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.4" id="rsavs-014">RSAVS 0.1.4<a class="anchor" aria-label="anchor" href="#rsavs-014"></a></h2>
 <div class="section level3">
 <h3 id="major-changes-0-1-4">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-1-4"></a></h3>
