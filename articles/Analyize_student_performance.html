@@ -12,14 +12,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Analyze student performance">
-<meta property="og:description" content="RSAVS">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -45,7 +44,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -65,7 +64,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     News
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -91,7 +90,7 @@
 <li>
   <a href="https://github.com/fenguoerbian/RSAVS/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -102,7 +101,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -110,7 +109,7 @@
       <h1 data-toc-skip>Analyze student performance</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/HEAD/vignettes/Analyize_student_performance.Rmd" class="external-link"><code>vignettes/Analyize_student_performance.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/master/vignettes/Analyize_student_performance.Rmd" class="external-link"><code>vignettes/Analyize_student_performance.Rmd</code></a></small>
       <div class="hidden name"><code>Analyize_student_performance.Rmd</code></div>
 
     </div>
@@ -132,14 +131,17 @@ simultaneously via the package <code>RSAVS</code>.</p>
 <span><span class="co">#&gt;     filter, lag</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/" class="external-link">skimr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/" class="external-link">skimr</a></span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"fenguoerbian/RSAVS"</span>, ref <span class="op">=</span> <span class="st">"v0.1.2"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using github PAT from envvar GITHUB_PAT. Use `gitcreds::gitcreds_set()` and unset GITHUB_PAT in .Renviron (or elsewhere) if you want to use the more secure git credential store instead.</span></span>
 <span><span class="co">#&gt; Downloading GitHub repo fenguoerbian/RSAVS@v0.1.2</span></span>
+<span><span class="co">#&gt; quantreg (5.98 -&gt; 5.99) [CRAN]</span></span>
+<span><span class="co">#&gt; Installing 1 packages: quantreg</span></span>
+<span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
 <span><span class="co">#&gt; Running `R CMD build`...</span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpRbusyQ/remotes1ea0751d4c2f/fenguoerbian-RSAVS-fe2e615/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpRaCJx1/remotes1ebf34894df7/fenguoerbian-RSAVS-fe2e615/DESCRIPTION’ ... OK</span></span>
 <span><span class="co">#&gt; * preparing ‘RSAVS’:</span></span>
 <span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
 <span><span class="co">#&gt; * cleaning src</span></span>
@@ -147,9 +149,8 @@ simultaneously via the package <code>RSAVS</code>.</p>
 <span><span class="co">#&gt; * checking for empty or unneeded directories</span></span>
 <span><span class="co">#&gt; * building ‘RSAVS_0.1.2.tar.gz’</span></span>
 <span><span class="co">#&gt; Installing package into '/home/runner/work/_temp/Library'</span></span>
-<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fenguoerbian.github.io/RSAVS/">RSAVS</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; (as 'lib' is unspecified)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fenguoerbian.github.io/RSAVS/">RSAVS</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction-to-the-dataset">Introduction to the dataset<a class="anchor" aria-label="anchor" href="#introduction-to-the-dataset"></a>
 </h2>
@@ -162,7 +163,7 @@ the combination of these two data frames resulting 1044 observations.
 You can find details about these datasets via <code><a href="../reference/Student_performance_dataset.html">?full_df</a></code>.</p>
 <p>In later analysis, we will use the full dataset <code>full_df</code>.
 The basic information of this dataset is shown below:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">skimr</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html" class="external-link">skim</a></span><span class="op">(</span><span class="va">full_df</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Data summary</caption>
@@ -647,7 +648,7 @@ them are actually binary or nominal coded.</p>
 the binary and nominal variables in the dataset. This gives us some
 basic understanding about how the average final grade is distributed
 among different observed subgroups.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">G3</span> <span class="op">~</span> <span class="va">school</span> <span class="op">+</span> <span class="va">address</span> <span class="op">+</span> <span class="va">Pstatus</span> <span class="op">+</span> <span class="va">famsize</span> <span class="op">+</span> <span class="va">schoolsup</span> <span class="op">+</span> <span class="va">famsup</span> <span class="op">+</span> <span class="va">activities</span> <span class="op">+</span> <span class="va">paid</span> <span class="op">+</span> <span class="va">internet</span> <span class="op">+</span> <span class="va">nursery</span> <span class="op">+</span> <span class="va">higher</span> <span class="op">+</span> <span class="va">romantic</span> <span class="op">+</span> <span class="va">Mjob</span> <span class="op">+</span> <span class="va">Fjob</span> <span class="op">+</span> <span class="va">guardian</span> <span class="op">+</span> <span class="va">reason</span>, data <span class="op">=</span> <span class="va">full_df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html" class="external-link">density</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Analyize_student_performance_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
@@ -655,14 +656,14 @@ among different observed subgroups.</p>
 heavy tail at the lower end.</p>
 <p>Next, we try expolore the relationship between individuals and the
 average grading point of the observed subgroup via OLS.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">fitted.values</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">Medu</span> <span class="op">+</span> <span class="va">Fedu</span> <span class="op">+</span> <span class="va">traveltime</span> <span class="op">+</span> <span class="va">studytime</span> <span class="op">+</span> <span class="va">failures</span>  <span class="op">+</span> <span class="va">famrel</span> <span class="op">+</span> <span class="va">freetime</span> <span class="op">+</span> <span class="va">goout</span> <span class="op">+</span> <span class="va">Dalc</span> <span class="op">+</span> <span class="va">Walc</span> <span class="op">+</span> <span class="va">health</span> <span class="op">+</span> <span class="va">absences</span>, </span>
 <span>           data <span class="op">=</span> <span class="va">full_df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html" class="external-link">density</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Analyize_student_performance_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>The fitted value doesn’t tell much, but the residual plot tells
 something</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">fit2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Analyize_student_performance_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>It’s skewed and potentially multimodal, which indicates a robust
@@ -675,9 +676,11 @@ in this study.</p>
 <h2 id="robust-subgroup-analysis-and-variable-selection">Robust subgroup analysis and variable selection<a class="anchor" aria-label="anchor" href="#robust-subgroup-analysis-and-variable-selection"></a>
 </h2>
 <p>Before the analysis, we randomly sample 100 observations and denote
-this dataset as <span class="math inline">\(D_2\)</span>, and use the
-remaining 944 observations as the training dataset <span class="math inline">\(D_1\)</span>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+this dataset as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>2</mn></msub><annotation encoding="application/x-tex">D_2</annotation></semantics></math>,
+and use the remaining 944 observations as the training dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>1</mn></msub><annotation encoding="application/x-tex">D_1</annotation></semantics></math>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># prepare the full dataset</span></span>
 <span><span class="va">y_vec_full</span> <span class="op">&lt;-</span> <span class="va">fit1</span><span class="op">$</span><span class="va">fitted.values</span></span>
 <span><span class="va">x_mat_full</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>    <span class="co"># do not include the intercept term!</span></span>
@@ -700,7 +703,7 @@ remaining 944 observations as the training dataset <span class="math inline">\(D
 <h3 id="analysis-on-the-training-set">Analysis on the training set<a class="anchor" aria-label="anchor" href="#analysis-on-the-training-set"></a>
 </h3>
 <p>Set some basic variables for the proposed algorithm</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lam1_len</span> <span class="op">&lt;-</span> <span class="fl">40</span>    <span class="co"># length of lam1_vec</span></span>
 <span><span class="va">lam2_len</span> <span class="op">&lt;-</span> <span class="fl">30</span>    <span class="co"># length of lam2_vec</span></span>
 <span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="fl">5</span>    <span class="co"># constant needed for mBIC</span></span></code></pre></div>
@@ -708,7 +711,7 @@ remaining 944 observations as the training dataset <span class="math inline">\(D
 use <code>L1</code> loss function coupled with the <code>SCAD</code>
 penalty. You can use <code><a href="../reference/RSAVS_LargeN.html">?RSAVS_LargeN</a></code> to find out more about
 this function.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># It will take some time!</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RSAVS_LargeN.html">RSAVS_LargeN</a></span><span class="op">(</span>y_vec <span class="op">=</span> <span class="va">y_vec</span>, x_mat <span class="op">=</span> <span class="va">x_mat</span>, </span>
 <span>                    lam1_length <span class="op">=</span> <span class="va">lam1_len</span>, lam2_length <span class="op">=</span> <span class="va">lam2_len</span>,</span>
@@ -732,7 +735,7 @@ selection simultaneously via regularization method. It will search over
 the grid space spanned by <code>lam1</code> and <code>lam2</code>. And
 choose a best one according to a modified BIC criteria.</p>
 <p>We can check the covariate effect with</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_ind</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">best_ind</span></span>
 <span><span class="va">mu_new</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">mu_improve_mat</span><span class="op">[</span><span class="va">res</span><span class="op">$</span><span class="va">best_ind</span>, <span class="op">]</span></span>
 <span><span class="va">beta_new</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">w_mat</span><span class="op">[</span><span class="va">res</span><span class="op">$</span><span class="va">best_ind</span>, <span class="op">]</span></span>
@@ -745,14 +748,14 @@ choose a best one according to a modified BIC criteria.</p>
 <span><span class="co">#&gt;      health    absences </span></span>
 <span><span class="co">#&gt;  0.00000000  0.00000000</span></span></code></pre></div>
 <p>and the estimated subgroup information with</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mu_new</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mu_new</span></span>
 <span><span class="co">#&gt; 11.4653382346014 11.4729496143311 </span></span>
 <span><span class="co">#&gt;              442              502</span></span></code></pre></div>
 <p>Also we can visualize the density plot of <code>G3</code> for these
 identified subgroups</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/density.html" class="external-link">density</a></span><span class="op">(</span><span class="va">y_vec</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span> <span class="op">:</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mu_new</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">mu_new</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mu_new</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
@@ -770,7 +773,7 @@ structure from the previous results. And we can perform this
 post-selection estimation over the whole solution plane. (Since there
 are <code>lam1</code> and <code>lam2</code>, the regular solution path
 becomes a solution plane.)</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mu_further_improve_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow <span class="op">=</span> <span class="va">lam1_len</span> <span class="op">*</span> <span class="va">lam2_len</span>, ncol <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span>
 <span><span class="va">beta_further_improve_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow <span class="op">=</span> <span class="va">lam1_len</span> <span class="op">*</span> <span class="va">lam2_len</span>, ncol <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span><span class="va">bic_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">lam1_len</span> <span class="op">*</span> <span class="va">lam2_len</span><span class="op">)</span></span>
@@ -799,21 +802,21 @@ becomes a solution plane.)</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">beta_new</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x_mat</span><span class="op">)</span></span></code></pre></div>
 <p>After this further improving procedure, the estimated covariate
 effects are</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">beta_new</span></span>
 <span><span class="co">#&gt;       sexM        age       Medu       Fedu traveltime  studytime   failures </span></span>
 <span><span class="co">#&gt;  0.0000000 -0.1164212  0.3768496  0.0000000  0.0000000  0.0000000  0.0000000 </span></span>
 <span><span class="co">#&gt;     famrel   freetime      goout       Dalc       Walc     health   absences </span></span>
 <span><span class="co">#&gt;  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000  0.0000000</span></span></code></pre></div>
 <p>and the identified subgroups are</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mu_new</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mu_new</span></span>
 <span><span class="co">#&gt; 11.5671844210441 13.1302268201393 </span></span>
 <span><span class="co">#&gt;              439              505</span></span></code></pre></div>
 <p>We can visualize the estimated subgroups. First we just need to
 prepare a data.frame for <code>ggplot</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Mu_to_ID</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mu_vec</span>, <span class="va">mu_unique</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co"># This function converts the original mu vector to a resulting vector, with the same length.</span></span>
 <span>  <span class="co"># But the entries is replaced with the index of this entry in unique(mu_vec), or the provided variable mu_unique</span></span>
@@ -836,7 +839,7 @@ prepare a data.frame for <code>ggplot</code>.</p>
 <p>Now we can show the density plot of the <code>G3</code> given the
 estimated latent subgroups with the dashed line being the median of each
 group.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rsavs_res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">mu_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>subgroup_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">fitted</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">target</span>, fill <span class="op">=</span> <span class="va">mu_id</span>, color <span class="op">=</span> <span class="va">mu_id</span>, group <span class="op">=</span> <span class="va">mu_id</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -849,18 +852,23 @@ group.</p>
 <h3 id="some-inference-on-the-test-set">Some inference on the test set<a class="anchor" aria-label="anchor" href="#some-inference-on-the-test-set"></a>
 </h3>
 <p>Based on the results from training set, we can propose a model as
-<span class="math display">\[
-y_i = \alpha + \delta d_i + \text{Medu}_i \times \beta_1 + \text{Age}_i
-\times \beta_2 + \varepsilon_i
-\]</span> where <span class="math inline">\(y_i\)</span> refers to the
-<code>G3</code> of the i-th subject and <span class="math inline">\(d_i
-= 0\)</span> if the i-th subject belongs to the subgroup 1 and otherwise
-<span class="math inline">\(d_i = 0\)</span>. <span class="math inline">\(\delta\)</span> is the difference between these 2
-subgroups.</p>
-<p>We use regular K-medoids method to partition the dataset <span class="math inline">\(D_2\)</span> into two clusters with respect to the
-adjusted response with the covariate effects removed with the
-coefficients given by our method based on Dataset <span class="math inline">\(D_1\)</span></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>=</mo><mi>α</mi><mo>+</mo><mi>δ</mi><msub><mi>d</mi><mi>i</mi></msub><mo>+</mo><msub><mtext mathvariant="normal">Medu</mtext><mi>i</mi></msub><mo>×</mo><msub><mi>β</mi><mn>1</mn></msub><mo>+</mo><msub><mtext mathvariant="normal">Age</mtext><mi>i</mi></msub><mo>×</mo><msub><mi>β</mi><mn>2</mn></msub><mo>+</mo><msub><mi>ε</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">
+y_i = \alpha + \delta d_i + \text{Medu}_i \times \beta_1 + \text{Age}_i \times \beta_2 + \varepsilon_i
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">y_i</annotation></semantics></math>
+refers to the <code>G3</code> of the i-th subject and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d_i = 0</annotation></semantics></math>
+if the i-th subject belongs to the subgroup 1 and otherwise
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">d_i = 0</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+is the difference between these 2 subgroups.</p>
+<p>We use regular K-medoids method to partition the dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>2</mn></msub><annotation encoding="application/x-tex">D_2</annotation></semantics></math>
+into two clusters with respect to the adjusted response with the
+covariate effects removed with the coefficients given by our method
+based on Dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>1</mn></msub><annotation encoding="application/x-tex">D_1</annotation></semantics></math></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># residual_test is the adjusted response with the covariate effects removed</span></span>
 <span><span class="va">residual_test</span> <span class="op">&lt;-</span> <span class="va">y_vec_test</span> <span class="op">-</span> <span class="va">x_mat_test</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">beta_new</span></span>
 <span></span>
@@ -872,11 +880,10 @@ coefficients given by our method based on Dataset <span class="math inline">\(D_
 <span><span class="va">x_mat_test_active</span> <span class="op">&lt;-</span> <span class="va">x_mat_test</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">beta_new</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code></pre></div>
 <p>We can make inference about these parameters in the models with the
 simplified robust regression</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rqfit</span> <span class="op">&lt;-</span> <span class="fu">quantreg</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/quantreg/man/rq.html" class="external-link">rq</a></span><span class="op">(</span><span class="va">y_vec_test</span> <span class="op">~</span> <span class="va">group_indicator</span> <span class="op">+</span> <span class="va">x_mat_test_active</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in rq.fit.br(x, y, tau = tau, ...): Solution may be nonunique</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rqfit</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in rq.fit.br(x, y, tau = tau, ...): Solution may be nonunique</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rqfit</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in rq.fit.br(x, y, tau = tau, ci = TRUE, ...): Solution may be</span></span>
 <span><span class="co">#&gt; nonunique</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -900,9 +907,7 @@ education.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -915,16 +920,16 @@ education.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

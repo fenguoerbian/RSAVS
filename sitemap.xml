@@ -1,99 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/404.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/Analyize_student_performance.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/Play_with_iris_dataset.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_BIC.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_Loss_Value.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Determine_Mu.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Further_Improve.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Generate_D_Matrix.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Lam_Max.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Psi.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_LargeN.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Mu_to_Mat.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path_PureR.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_RI.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_S_to_Groups.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Softthresh.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver_PureR.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Summary_Iteration.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateSW.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateZ.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/Student_performance_dataset.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/loss_function.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/penalty_function.html</loc>
-  </url>
-  <url>
-    <loc>https://fenguoerbian.github.io/RSAVS/reference/rcppeigen_hello_world.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://fenguoerbian.github.io/RSAVS/404.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/articles/Analyize_student_performance.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/articles/Play_with_iris_dataset.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/articles/index.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/authors.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/index.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/news/index.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_BIC.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Compute_Loss_Value.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Determine_Mu.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Further_Improve.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Generate_D_Matrix.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Lam_Max.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Get_Psi.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_LargeN.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Mu_to_Mat.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Path_PureR.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_RI.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_S_to_Groups.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Softthresh.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Solver_PureR.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_Summary_Iteration.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateSW.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/RSAVS_UpdateZ.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/Student_performance_dataset.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/index.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/loss_function.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/penalty_function.html</loc></url>
+<url><loc>https://fenguoerbian.github.io/RSAVS/reference/rcppeigen_hello_world.html</loc></url>
 </urlset>
+

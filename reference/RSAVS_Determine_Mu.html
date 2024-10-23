@@ -3,7 +3,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -28,7 +28,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -45,7 +45,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     News
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-header">Releases</li>
@@ -66,20 +66,20 @@
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/fenguoerbian/RSAVS/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determine the subgroup effects</h1>
-    <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/HEAD/R/pre_define_functions.r" class="external-link"><code>R/pre_define_functions.r</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/fenguoerbian/RSAVS/blob/master/R/pre_define_functions.r" class="external-link"><code>R/pre_define_functions.r</code></a></small>
     <div class="hidden name"><code>RSAVS_Determine_Mu.Rd</code></div>
     </div>
 
@@ -99,28 +99,30 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>mu_vec</dt>
+
+
+<dl><dt id="arg-mu-vec">mu_vec<a class="anchor" aria-label="anchor" href="#arg-mu-vec"></a></dt>
 <dd><p>numerical vector. <code>n = length(mu_vec)</code> is the number of observations.
 Presumably it comes from the ADMM algorithm and is not a very good grouping result.</p></dd>
 
 
-<dt>group_res</dt>
+<dt id="arg-group-res">group_res<a class="anchor" aria-label="anchor" href="#arg-group-res"></a></dt>
 <dd><p>a list, containing the grouping results.
 Each element of group_res is a list containing the indecs from the same subgroup.
 See <code><a href="RSAVS_S_to_Groups.html">RSAVS_S_to_Groups</a></code> for the output structure.</p></dd>
 
 
-<dt>klim</dt>
-<dd><p>a length-3 integer vector, storing `kmin`, `kmax`, `dudahart_kmax` 
+<dt id="arg-klim">klim<a class="anchor" aria-label="anchor" href="#arg-klim"></a></dt>
+<dd><p>a length-3 integer vector, storing `kmin`, `kmax`, `dudahart_kmax`
 for specifying settings for clustering algorithm.</p></dd>
 
 
-<dt>usepam</dt>
-<dd><p>boolen, whether to use `cluster::pam()` or instead `cluster::clara()` 
+<dt id="arg-usepam">usepam<a class="anchor" aria-label="anchor" href="#arg-usepam"></a></dt>
+<dd><p>boolen, whether to use `cluster::pam()` or instead `cluster::clara()`
 to estimate center of clusters.</p></dd>
 
 
-<dt>round_digits</dt>
+<dt id="arg-round-digits">round_digits<a class="anchor" aria-label="anchor" href="#arg-round-digits"></a></dt>
 <dd><p>a positive integer digit. If <code>group_res</code> is missing and <code>round_digits</code>
 is provided, then the function will directly round the <code>mu_vec</code> to <code>round_digits</code>
 to provide the final grouping results.</p></dd>
@@ -128,16 +130,14 @@ to provide the final grouping results.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>a length-n vector of subgroup effects. Observations belonging to the same
+    <p>a length-n vector of subgroup effects. Observations belonging to the same
   subgroup should have the same effects.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
     <p>Currently, the resulting subgroup effects are the average value of <code>mu_vec</code>
-  for those belonging to the same subgroup according to <code>group_res</code>.</p>  
-<p>If <code>group_res</code> is missing and <code>round_digits</code> is <code>NULL</code>, 
+  for those belonging to the same subgroup according to <code>group_res</code>.</p>
+<p>If <code>group_res</code> is missing and <code>round_digits</code> is <code>NULL</code>,
   then a simple K-means is performed on <code>mu_vec</code>
   to get the estimated grouping result.</p>
     </div>
@@ -194,15 +194,15 @@ to provide the final grouping results.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
