@@ -1,4 +1,4 @@
-# RSAVS (Upcoming changes)
+# RSAVS (development version)
 
 ## API changes
 
